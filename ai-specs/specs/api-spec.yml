@@ -1,0 +1,32 @@
+openapi: 3.0.3
+info:
+  title: Workee API
+  version: '0.1.0'
+servers:
+  - url: /api
+paths:
+  /planner.php:
+    get:
+      summary: Unified planner events (via ?path=events)
+      parameters:
+        - in: query; name: path; schema: { type: string, enum: [events] }
+        - in: query; name: from; schema: { type: string, format: date-time }
+        - in: query; name: to; schema: { type: string, format: date-time }
+        - in: query; name: projectId; schema: { type: integer }
+        - in: query; name: groupId; schema: { type: integer }
+        - in: query; name: state; schema: { type: string }
+        - in: query; name: mode; schema: { type: string, enum: [PLANNING, ASSIGNMENTS] }
+      responses: { '200': { description: OK } }
+    post:
+      summary: Planner actions (via ?path=slot)
+      parameters: [ { in: query, name: path, schema: { type: string, enum: [slot] } } ]
+      requestBody: { required: true }
+      responses: { '200': { description: OK } }
+  /project-schedule.php:
+    post:
+      summary: Create multi-day slots
+      responses: { '200': { description: OK } }
+  /shifts.php:
+    get:   { summary: List shifts, responses: { '200': { description: OK } } }
+    post:  { summary: Create/Update/Split/Merge/Reassign via action param, responses: { '200': { description: OK } } }
+

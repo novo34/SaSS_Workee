@@ -1,0 +1,29 @@
+# Frontend Standards
+
+## Unified Planner
+
+- One operational calendar page with a right-side drawer (tabs): Summary, Requests, Proposals, Assignments, Incidents.
+
+- Two modes (toggle): PLANNING (capacity view) / ASSIGNMENTS (people view).
+
+- Event color legend: UNCOVERED(red), PROPOSED(amber), CONFIRMED(blue), ASSIGNED(blue-dark), IN_PROGRESS(green), CLOSED(gray).
+
+## UX
+
+- Actions: create slot/WO, send staffing request, review/accept proposals, assign, substitute, split/merge shifts.
+
+- Batch operations: select multiple slots; send request/assign in bulk.
+
+- No `alert/confirm/fetch` direct calls. Use `ApiClient`, `Toast`, `ConfirmDialog`.
+
+- Accessible (labels, focus-visible, ARIA), responsive (drawer full-screen on mobile).
+
+## Routing
+
+- Calendar is the hub for Empresa; do not create a second calendar page.
+
+- Agency has its own calendar showing only its workers' shifts.
+
+## No dead code / no duplication
+
+- Remove/merge former isolated pages into the unified planner.

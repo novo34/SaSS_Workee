@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <title>Planificador</title>
+  <link rel="stylesheet" href="../css/app.css"/>
+  <link rel="stylesheet" href="../vendor/fullcalendar/main.css"/>
+</head>
+<body>
+  <div id="app">
+    <header class="planner-header">
+      <h1>Planificador</h1>
+      <div class="planner-toolbar">
+        <select id="filter-project"></select>
+        <select id="filter-group"></select>
+        <select id="filter-state">
+          <option value="">Todos</option>
+          <option value="UNCOVERED">Sin cubrir</option>
+          <option value="PROPOSED">Propuestas</option>
+          <option value="CONFIRMED">Confirmado</option>
+          <option value="ASSIGNED">Asignado</option>
+          <option value="IN_PROGRESS">En curso</option>
+          <option value="CLOSED">Cerrado</option>
+        </select>
+        <label class="mode-toggle">
+          <input type="checkbox" id="mode-toggle"/>
+          <span>Asignaciones</span>
+        </label>
+        <button id="btn-batch-request">Solicitar personal (lote)</button>
+      </div>
+    </header>
+
+    <main class="planner-layout">
+      <div id="calendar"></div>
+      <aside id="drawer" class="drawer hidden">
+        <div class="drawer-tabs">
+          <button data-tab="summary" class="active">Resumen</button>
+          <button data-tab="requests">Solicitudes</button>
+          <button data-tab="proposals">Propuestas</button>
+          <button data-tab="assignments">Asignaciones</button>
+          <button data-tab="incidents">Incidencias</button>
+        </div>
+        <div id="drawer-content"></div>
+      </aside>
+    </main>
+  </div>
+
+  <script src="../vendor/fullcalendar/main.js"></script>
+  <script src="../js/api-client.js"></script>
+  <script src="../js/planner-state.js"></script>
+  <script src="../js/planner-api.js"></script>
+  <script src="../js/planner-drawer.js"></script>
+  <script src="../js/planner-page.js"></script>
+</body>
+</html>
+

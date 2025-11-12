@@ -1,0 +1,27 @@
+# Base Standards
+
+## Multitenancy & Privacy
+
+- Strict tenant isolation. Every query MUST filter by `tenant_id` (or specific tenant columns like `tenant_company_id`, `tenant_agency_id`).
+
+- Never accept `tenant_id` from the client; inject it from session/JWT in middleware.
+
+- No cross-tenant data exposure in UI or API.
+
+## RBAC
+
+- Route guards + backend guards.
+
+- Roles used: empresa_admin, planificador, supervisor, empleado, temporera_admin, coordinador, trabajador, owner.
+
+## Coding
+
+- Backend: PHP 8+, mysqli prepared via `Database` class, PSR-12, Controllers → Services → Repositories (where applicable).
+
+- Frontend: single-page hubs with drawers/tabs instead of many separate pages; FullCalendar for operations.
+
+- Do not duplicate code. Reuse existing utilities and components.
+
+## Testing
+
+- Aim for stepwise unit tests (backend services) and basic e2e flows for planner actions.

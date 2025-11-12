@@ -1,0 +1,31 @@
+# Backend Standards (PHP + mysqli)
+
+## Tenant & Role Guard
+
+- `TenantGuard::requireTenant()` to fetch tenant_id from session/JWT.
+
+- `TenantGuard::requireRole([...])` on every endpoint.
+
+## Data Access
+
+- All queries include tenant filtering.
+
+- Validate overlaps for shifts per person (no overlapping time windows).
+
+- Allow multi-client per day by splitting shifts; only the overlap is forbidden.
+
+## Endpoints (minimum set)
+
+- `/api/planner.php?path=events` GET: unified calendar feed (WO/Assignments/Shifts/Requests).
+
+- `/api/planner.php?path=slot` POST: create/modify slots.
+
+- `/api/project-schedule.php` POST: create multi-day slots by weekday selection.
+
+- `/api/shifts.php`: list/create/update/split/merge/reassign/status/bulk.
+
+## Responses
+
+- JSON canonical: `{ data, meta }` or `{ error: { code, message } }`.
+
+- Use prepared statements, handle errors centrally.

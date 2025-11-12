@@ -1,0 +1,7 @@
+# Documentation Standards
+
+- Keep `/ai-specs/specs/api-spec.yml` updated with every API change.
+
+- Each change must link to a `changes/SCRUM-*.md` plan with acceptance criteria.
+
+- PRs must include: spec diff (OpenAPI), affected files, and manual test notes.
