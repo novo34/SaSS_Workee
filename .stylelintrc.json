@@ -1,0 +1,83 @@
+{
+  "extends": [
+    "stylelint-config-standard"
+  ],
+  "rules": {
+    "color-no-hex": null,
+    "color-hex-case": "lower",
+    "color-hex-length": "long",
+    "declaration-block-no-duplicate-properties": true,
+    "declaration-block-no-redundant-longhand-properties": true,
+    "declaration-no-important": null,
+    "selector-class-pattern": [
+      "^[a-z]([a-z0-9-]+)?(__([a-z0-9]+-?)+)?(--([a-z0-9]+-?)+){0,2}$",
+      {
+        "message": "Class names should follow BEM methodology: .block__element--modifier or .u-utility (utilities)"
+      }
+    ],
+    "selector-max-id": 0,
+    "selector-max-type": [
+      2,
+      {
+        "ignore": ["child", "compounded", "next-sibling"]
+      }
+    ],
+    "selector-max-compound-selectors": 3,
+    "selector-max-specificity": "0,3,1",
+    "max-nesting-depth": 3,
+    "no-descending-specificity": true,
+    "declaration-property-value-disallowed-list": {
+      "/^color$/": [
+        "/^#[0-9a-fA-F]{3,6}$/",
+        "/^rgb\\(/",
+        "/^rgba\\(/"
+      ],
+      "/^background(-color)?$/": [
+        "/^#[0-9a-fA-F]{3,6}$/",
+        "/^rgb\\(/",
+        "/^rgba\\(/"
+      ],
+      "/^border(-color)?$/": [
+        "/^#[0-9a-fA-F]{3,6}$/",
+        "/^rgb\\(/",
+        "/^rgba\\(/"
+      ]
+    },
+    "custom-property-pattern": "^[a-z][a-z0-9-]*$",
+    "value-keyword-case": "lower",
+    "property-no-unknown": [
+      true,
+      {
+        "ignoreProperties": ["composes"]
+      }
+    ],
+    "at-rule-no-unknown": [
+      true,
+      {
+        "ignoreAtRules": ["import", "use", "forward", "function", "if", "each", "include", "mixin", "return", "warn", "error"]
+      }
+    ],
+    "function-name-case": "lower",
+    "string-quotes": "double",
+    "indentation": 4,
+    "linebreaks": "unix",
+    "max-line-length": null,
+    "no-duplicate-selectors": true,
+    "no-empty-source": null,
+    "no-missing-end-of-source-newline": true,
+    "rule-empty-line-before": [
+      "always-multi-line",
+      {
+        "except": ["first-nested"],
+        "ignore": ["after-comment"]
+      }
+    ]
+  },
+  "ignoreFiles": [
+    "**/node_modules/**",
+    "**/vendor/**",
+    "**/dist/**",
+    "**/build/**"
+  ]
+}
+

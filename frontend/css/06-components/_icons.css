@@ -1,0 +1,145 @@
+/**
+ * Iconografía Consistente - Workee
+ * 
+ * ITCSS Layer 06: Components
+ * Estilos para iconos SVG consistentes
+ * BEM: .icon (block), .icon--* (modifiers)
+ */
+
+/* ============================================
+   ICON BASE
+   ============================================ */
+.icon {
+    display: inline-block;
+    vertical-align: middle;
+    flex-shrink: 0;
+}
+
+.icon svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+/* Tamaños */
+.icon-sm {
+    width: 16px;
+    height: 16px;
+}
+
+.icon-md {
+    width: 20px;
+    height: 20px;
+}
+
+.icon-lg {
+    width: 24px;
+    height: 24px;
+}
+
+.icon-xl {
+    width: 32px;
+    height: 32px;
+}
+
+/* Icono inline (para reemplazar emojis en texto) */
+.icon-inline {
+    display: inline-block;
+    vertical-align: text-bottom;
+    margin: 0 0.2em;
+}
+
+/* Iconos en botones */
+.btn-modern .icon,
+.btn .icon {
+    margin-right: var(--spacing-xs);
+}
+
+.btn-modern .icon:last-child,
+.btn .icon:last-child {
+    margin-right: 0;
+    margin-left: var(--spacing-xs);
+}
+
+/* Iconos en cards */
+.card-modern__icon {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(var(--color-primary-rgb), 0.1);
+    border-radius: var(--border-radius-circle);
+    color: var(--color-primary);
+    flex-shrink: 0;
+}
+
+/* Iconos en KPI cards */
+.kpi-card__icon {
+    width: 48px;
+    height: 48px;
+    color: var(--color-primary);
+    opacity: 0.8;
+}
+
+/* Iconos en quick actions */
+.quick-action-card__icon {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto var(--spacing-sm);
+}
+
+.quick-action-card__icon .icon {
+    width: 100%;
+    height: 100%;
+}
+
+/* Colores de iconos */
+.icon--primary {
+    color: var(--color-primary);
+}
+
+.icon--success {
+    color: var(--color-success);
+}
+
+.icon--warning {
+    color: var(--color-warning);
+}
+
+.icon--danger {
+    color: var(--color-danger);
+}
+
+.icon--info {
+    color: var(--color-info);
+}
+
+.icon--muted {
+    color: var(--color-text-muted);
+}
+
+/* Animaciones */
+.icon--spin {
+    animation: icon-spin 1s linear infinite;
+}
+
+@keyframes icon-spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Respetar prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+    .icon--spin {
+        animation: none;
+    }
+}
+

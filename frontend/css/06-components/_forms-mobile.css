@@ -1,0 +1,280 @@
+/**
+ * Formularios Mobile Optimizations - Workee
+ * 
+ * Estilos específicos para optimizar formularios en móvil
+ * MOB-142: Optimizar Formularios para Móvil
+ */
+
+/* ============================================
+   INPUTS - ALTURA MÍNIMA 44PX
+   ============================================ */
+
+/* MOB-142: Verificar que todos los inputs tengan altura mínima de 44px (ya implementado con --touch-target-min) */
+@media (max-width: 767px) {
+    /* Asegurar altura mínima en todos los inputs */
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="number"],
+    input[type="date"],
+    input[type="time"],
+    input[type="datetime-local"],
+    input[type="search"],
+    input[type="tel"],
+    input[type="url"],
+    textarea,
+    select,
+    .form-modern__input,
+    .form-modern__select,
+    .form-modern__textarea,
+    .form-control {
+        min-height: 44px !important;
+        font-size: 16px !important; /* Evitar zoom automático en iOS */
+        padding: var(--spacing-md) var(--spacing-lg);
+    }
+    
+    /* Textarea mantiene min-height mayor */
+    textarea,
+    .form-modern__textarea {
+        min-height: 120px;
+    }
+}
+
+/* ============================================
+   BOTONES DE ACCIÓN FIJOS EN BOTTOM
+   ============================================ */
+
+/* MOB-142: Botones de acción fijos en bottom en móvil (sticky) */
+.form-actions-mobile {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--color-bg);
+    border-top: var(--border-width-thick) solid var(--color-border-light);
+    padding: var(--spacing-md);
+    box-shadow: var(--shadow-lg);
+    z-index: var(--z-sticky);
+    display: none; /* Oculto en desktop */
+}
+
+.form-actions-mobile--show {
+    display: block;
+}
+
+.form-actions-mobile__buttons {
+    display: flex;
+    gap: var(--spacing-sm);
+    width: 100%;
+}
+
+.form-actions-mobile__buttons .btn,
+.form-actions-mobile__buttons .btn-modern {
+    flex: 1;
+    min-height: 48px; /* Mayor que 44px para mejor UX en móvil */
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+}
+
+/* Espaciado adicional en el contenido cuando hay botones fijos */
+.form-with-sticky-actions {
+    padding-bottom: calc(var(--spacing-lg) + 80px); /* Espacio para botones fijos */
+}
+
+@media (min-width: 992px) {
+    .form-actions-mobile {
+        display: none !important;
+    }
+    
+    .form-with-sticky-actions {
+        padding-bottom: 0;
+    }
+}
+
+/* ============================================
+   DATE PICKERS NATIVOS
+   ============================================ */
+
+/* MOB-142: Date pickers nativos en móvil */
+@media (max-width: 767px) {
+    input[type="date"],
+    input[type="time"],
+    input[type="datetime-local"] {
+        /* Forzar uso de date picker nativo */
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+    }
+    
+    /* Asegurar que el date picker tenga suficiente espacio */
+    input[type="date"]::-webkit-calendar-picker-indicator,
+    input[type="time"]::-webkit-calendar-picker-indicator,
+    input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+        width: 24px;
+        height: 24px;
+        padding: var(--spacing-xs);
+        cursor: pointer;
+    }
+}
+
+/* ============================================
+   VALIDACIÓN SIN BLOQUEAR TECLADO
+   ============================================ */
+
+/* MOB-142: Validación en tiempo real sin bloquear teclado */
+.form-modern__feedback {
+    /* Los mensajes de error no deben bloquear el input */
+    position: relative;
+    margin-top: var(--spacing-xs);
+    animation: form-feedback-fade-in 0.2s ease-in;
+}
+
+@keyframes form-feedback-fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* En móvil, feedback más compacto */
+@media (max-width: 767px) {
+    .form-modern__feedback {
+        font-size: var(--font-size-xs);
+        margin-top: var(--spacing-xs);
+    }
+    
+    /* Evitar que el feedback empuje el input fuera de la vista */
+    .form-modern__group {
+        scroll-margin-top: var(--spacing-md);
+    }
+}
+
+/* ============================================
+   AUTocompletado NATIVO
+   ============================================ */
+
+/* MOB-142: Autocompletado nativo HTML5 (se maneja con atributos HTML) */
+/* Los estilos CSS solo aseguran que el autocompletado sea visible */
+@media (max-width: 767px) {
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover,
+    input:-webkit-autofill:focus,
+    input:-webkit-autofill:active {
+        -webkit-box-shadow: 0 0 0 30px var(--color-bg) inset !important;
+        -webkit-text-fill-color: var(--color-text) !important;
+        font-size: 16px !important; /* Evitar zoom en iOS */
+    }
+}
+
+/* ============================================
+   INPUTMODE Y TECLADO APROPIADO
+   ============================================ */
+
+/* MOB-142: Teclado apropiado (se maneja con atributos HTML inputmode y type) */
+/* Los estilos CSS solo aseguran que los inputs sean lo suficientemente grandes */
+@media (max-width: 767px) {
+    /* Inputs numéricos más grandes para mejor UX */
+    input[type="number"],
+    input[inputmode="numeric"] {
+        text-align: left; /* Alinear a la izquierda para mejor legibilidad */
+    }
+    
+    /* Inputs de teléfono */
+    input[type="tel"],
+    input[inputmode="tel"] {
+        letter-spacing: 0.5px; /* Mejor legibilidad de números */
+    }
+    
+    /* Inputs de email */
+    input[type="email"],
+    input[inputmode="email"] {
+        text-transform: lowercase; /* Evitar mayúsculas en email */
+    }
+}
+
+/* ============================================
+   FORMULARIOS LARGOS - PAGINACIÓN O WIZARD
+   ============================================ */
+
+/* MOB-142: Formularios largos deben tener paginación o wizard (se maneja en JS) */
+.form-wizard {
+    position: relative;
+}
+
+.form-wizard__step {
+    display: none;
+}
+
+.form-wizard__step--active {
+    display: block;
+}
+
+.form-wizard__navigation {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: var(--spacing-lg);
+    padding-top: var(--spacing-md);
+    border-top: var(--border-width) solid var(--color-border-light);
+}
+
+@media (max-width: 767px) {
+    .form-wizard__navigation {
+        position: sticky;
+        bottom: 0;
+        background: var(--color-bg);
+        padding: var(--spacing-md);
+        margin-top: var(--spacing-lg);
+        margin-left: calc(-1 * var(--spacing-md));
+        margin-right: calc(-1 * var(--spacing-md));
+        margin-bottom: calc(-1 * var(--spacing-md));
+        box-shadow: var(--shadow-md);
+        z-index: var(--z-base);
+    }
+}
+
+/* ============================================
+   MEJORAS ADICIONALES MÓVIL
+   ============================================ */
+
+@media (max-width: 767px) {
+    /* Labels más grandes y legibles */
+    .form-modern__label,
+    label {
+        font-size: var(--font-size-base);
+        margin-bottom: var(--spacing-sm);
+    }
+    
+    /* Espaciado generoso entre campos */
+    .form-modern__group {
+        margin-bottom: var(--spacing-lg);
+    }
+    
+    /* Input groups adaptados */
+    .form-modern__input-group {
+        flex-direction: column;
+    }
+    
+    .form-modern__input-group-prepend,
+    .form-modern__input-group-append {
+        border-radius: var(--border-radius);
+        border: var(--border-width-thick) solid var(--color-border);
+        margin-bottom: var(--spacing-xs);
+    }
+    
+    .form-modern__input-group .form-modern__input {
+        border-radius: var(--border-radius);
+    }
+}
+
+/* Respetar prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+    .form-modern__feedback {
+        animation: none;
+    }
+}
+

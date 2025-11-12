@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workee - Parte del Líder</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/frontend/css/main.css">
+    <link rel="stylesheet" href="/frontend/css/pages/group-shift-report.css">
+    <link rel="stylesheet" href="/frontend/css/components/components.css">
+    <link rel="stylesheet" href="/frontend/css/group-shift-report.css">
+</head>
+<body>
+    <!-- El sidebar y header se inyectan automáticamente por index.php -->
+    
+    <main id="main-content" class="container-fluid" role="main">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title" data-i18n="reports.title">Parte del Líder</h1>
+            <div class="page-actions">
+                <a href="/calendar" class="btn-modern btn-modern--ghost">
+                    <svg class="btn-modern__icon btn-modern__icon--left" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                    </svg>
+                    <span data-i18n="common.back">Volver</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Formulario del Parte -->
+        <div class="card-modern">
+            <div class="card-modern__body">
+                <form class="form-modern" id="form-report">
+                    <input type="hidden" id="report-id" value="">
+                    
+                    <!-- Información básica -->
+                    <div class="row mb-4">
+                        <div class="col-12 col-md-4">
+                            <div class="form-modern__group">
+                                <label class="form-modern__label" data-i18n="reports.group">Grupo</label>
+                                <select class="form-modern__select" id="report-group-id" required>
+                                    <option value="" data-i18n="reports.select_group">Seleccionar grupo</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <div class="form-modern__group">
+                                <label class="form-modern__label" data-i18n="reports.date">Fecha</label>
+                                <input type="date" class="form-modern__input" id="report-date" required>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <div class="form-modern__group">
+                                <label class="form-modern__label" data-i18n="reports.shift">Turno (opcional)</label>
+                                <select class="form-modern__select" id="report-shift-id">
+                                    <option value="" data-i18n="reports.no_shift">Sin turno</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Notas -->
+                    <div class="form-modern__group">
+                        <label class="form-modern__label" data-i18n="reports.notes">Notas</label>
+                        <textarea class="form-modern__textarea" id="report-notes" rows="3" placeholder="Notas adicionales sobre el parte..."></textarea>
+                    </div>
+                    
+                    <!-- Tabla de miembros -->
+                    <div class="mb-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 data-i18n="reports.members">Miembros del Grupo</h5>
+                            <button type="button" class="btn-modern btn-modern--primary btn-modern--sm" id="btn-add-member">
+                                <svg class="btn-modern__icon btn-modern__icon--left" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                </svg>
+                                <span data-i18n="reports.add_member">Agregar Miembro</span>
+                            </button>
+                        </div>
+                        
+                        <div class="table-responsive">
+                            <table class="table table-bordered" id="members-table">
+                                <thead>
+                                    <tr>
+                                        <th data-i18n="reports.member_name">Miembro</th>
+                                        <th data-i18n="reports.attended">Asistió</th>
+                                        <th data-i18n="reports.clock_in">Entrada</th>
+                                        <th data-i18n="reports.clock_out">Salida</th>
+                                        <th data-i18n="reports.breaks">Pausas (min)</th>
+                                        <th data-i18n="reports.notes">Notas</th>
+                                        <th data-i18n="common.actions">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="members-tbody">
+                                    <tr>
+                                        <td colspan="7" class="text-center text-muted">
+                                            <em data-i18n="reports.no_members">No hay miembros. Selecciona un grupo para cargar miembros.</em>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <!-- Botones de acción -->
+                    <div class="d-flex justify-content-between">
+                        <button type="button" class="btn-modern btn-modern--secondary" id="btn-cancel" data-i18n="common.cancel">Cancelar</button>
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn-modern btn-modern--ghost" id="btn-save-draft" data-i18n="reports.save_draft">Guardar Borrador</button>
+                            <button type="submit" class="btn-modern btn-modern--primary" id="btn-submit" data-i18n="reports.submit">Enviar Parte</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Agregar/Editar Miembro -->
+    <div class="modal fade" id="modal-member" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" data-i18n="reports.member_details">Detalles del Miembro</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form class="form-modern" id="form-member">
+                        <input type="hidden" id="member-line-id" value="">
+                        
+                        <div class="form-modern__group">
+                            <label class="form-modern__label" data-i18n="reports.member_type">Tipo de Miembro</label>
+                            <select class="form-modern__select" id="member-type" required>
+                                <option value="own_employee" data-i18n="reports.employee_own">Empleado Propio</option>
+                                <option value="agency_worker" data-i18n="reports.employee_agency">Trabajador Temporero</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-modern__group" id="member-employee-container">
+                            <label class="form-modern__label" data-i18n="reports.employee">Empleado</label>
+                            <select class="form-modern__select" id="member-employee-id">
+                                <option value="" data-i18n="reports.select_employee">Seleccionar empleado</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-modern__group d-none" id="member-worker-container">
+                            <label class="form-modern__label" data-i18n="reports.worker">Trabajador</label>
+                            <select class="form-modern__select" id="member-worker-id">
+                                <option value="" data-i18n="reports.select_worker">Seleccionar trabajador</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-modern__group">
+                            <div class="form-modern__check">
+                                <input class="form-modern__check-input" type="checkbox" id="member-attended" checked>
+                                <label class="form-modern__check-label" for="member-attended" data-i18n="reports.attended">Asistió</label>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-12 col-md-6">
+                                <div class="form-modern__group">
+                                    <label class="form-modern__label" data-i18n="reports.clock_in">Entrada</label>
+                                    <input type="datetime-local" class="form-modern__input" id="member-clock-in">
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="form-modern__group">
+                                    <label class="form-modern__label" data-i18n="reports.clock_out">Salida</label>
+                                    <input type="datetime-local" class="form-modern__input" id="member-clock-out">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-modern__group">
+                            <label class="form-modern__label" data-i18n="reports.breaks">Pausas (minutos)</label>
+                            <input type="number" class="form-modern__input" id="member-breaks" min="0" value="0">
+                        </div>
+                        
+                        <div class="form-modern__group">
+                            <label class="form-modern__label" data-i18n="reports.notes">Notas</label>
+                            <textarea class="form-modern__textarea" id="member-notes" rows="2"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-modern btn-modern--secondary" data-bs-dismiss="modal" data-i18n="common.cancel">Cancelar</button>
+                    <button type="button" class="btn-modern btn-modern--primary" id="btn-save-member" data-i18n="common.save">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/frontend/js/core/components-loader.js"></script>
+    <script src="/frontend/js/layout.js"></script>
+    <script src="/frontend/js/group-shift-report.js"></script>
+</body>
+</html>
+

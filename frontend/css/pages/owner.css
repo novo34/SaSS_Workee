@@ -1,0 +1,97 @@
+/**
+ * Estilos para Owner Dashboard
+ * ITCSS Layer: Pages
+ * Mobile-first design
+ */
+
+/* Ajustes generales mobile-first */
+body {
+    font-size: var(--font-size-sm);
+}
+
+@media (min-width: 768px) {
+    body {
+        font-size: var(--font-size-base);
+    }
+}
+
+/* Cards responsivos */
+.card {
+    margin-bottom: var(--spacing-md);
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--border-radius);
+}
+
+.card-title {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-muted);
+    margin-bottom: var(--spacing-sm);
+}
+
+.card-text {
+    font-size: var(--font-size-xxl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text);
+}
+
+@media (min-width: 768px) {
+    .card-text {
+        font-size: 2rem;
+    }
+}
+
+/* Navbar mobile-friendly */
+.navbar-toggler {
+    border: none;
+    padding: var(--spacing-xs) var(--spacing-xs);
+}
+
+.navbar-nav .nav-link {
+    padding: var(--spacing-xs) var(--spacing-md);
+    font-size: var(--font-size-base);
+}
+
+@media (min-width: 992px) {
+    .navbar-nav .nav-link {
+        padding: var(--spacing-xs) var(--spacing-lg);
+    }
+}
+
+/* Botones táctiles (mínimo 44x44px) */
+.btn {
+    min-height: var(--touch-target-min);
+    min-width: var(--touch-target-min);
+    padding: var(--spacing-xs) var(--spacing-md);
+    font-size: var(--font-size-base);
+}
+
+@media (min-width: 768px) {
+    .btn {
+        padding: var(--spacing-xs) var(--spacing-sm);
+        font-size: var(--font-size-base);
+    }
+}
+
+/* Espaciado entre elementos interactivos */
+.g-3 > * {
+    margin-bottom: var(--spacing-sm);
+}
+
+@media (min-width: 768px) {
+    .g-3 > * {
+        margin-bottom: 0;
+    }
+}
+
+/* Mejoras de accesibilidad */
+:focus {
+    outline: var(--border-width-thick) solid var(--color-primary);
+    outline-offset: var(--spacing-xs);
+}
+
+/* Loading states */
+.loading {
+    opacity: var(--opacity-disabled);
+    pointer-events: none;
+}

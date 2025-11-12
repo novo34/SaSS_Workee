@@ -1,0 +1,98 @@
+/**
+ * CSS Reset - Workee
+ * 
+ * ITCSS Layer 03: Generic
+ * Reset básico para normalizar estilos entre navegadores
+ */
+
+/* Box sizing */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+/* Reset margins y padding */
+* {
+    margin: 0;
+    padding: 0;
+}
+
+/* HTML y Body */
+html {
+    -webkit-text-size-adjust: 100%;
+    -moz-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+/* Listas */
+ul,
+ol {
+    list-style: none;
+}
+
+/* Enlaces */
+a {
+    text-decoration: none;
+}
+
+/* Imágenes */
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Botones */
+button {
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+/* Inputs */
+input,
+textarea,
+select {
+    font-family: inherit;
+    font-size: inherit;
+}
+
+/* Tablas */
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+/* MOB-140: Prevenir pull-to-refresh nativo del navegador SOLO en body/html */
+/* NO aplicar a elementos específicos donde queremos pull-to-refresh personalizado */
+html, body {
+    overscroll-behavior-y: contain; /* Previene pull-to-refresh nativo */
+    overscroll-behavior-x: none; /* Previene scroll horizontal accidental */
+}
+
+/* En móvil, asegurar que no haya pull-to-refresh nativo */
+@media (max-width: 991px) {
+    html, body {
+        overscroll-behavior-y: contain;
+        touch-action: pan-y; /* Permitir solo scroll vertical */
+    }
+    
+    /* PERMITIR pull-to-refresh personalizado en elementos específicos */
+    #main-content,
+    .main-content,
+    main,
+    .data-table__container,
+    [data-pull-to-refresh],
+    [data-pull-to-refresh-initialized] {
+        overscroll-behavior-y: auto !important; /* Permitir pull-to-refresh personalizado */
+        touch-action: pan-y !important; /* Permitir scroll vertical y gestures */
+    }
+}
+

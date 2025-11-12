@@ -1,0 +1,1291 @@
+# HorasPro / Workee - SaaS Multitenant - Reglas de Desarrollo
+## CONTEXTO DEL PROYECTO
+SaaS multitenant que conecta Empresas (planifican trabajo) con Temporeras (suministran trabajadores).- Stack: PHP 8.x + mysqli (NO PDO),
+MySQL,
+Bootstrap 5,
+JS modular - Multitenancy estricta: tenant_id obligatorio en todas las tablas de negocio - Dos tipos de tenant: 'empresa' y 'temporera' (más 'owner' para backoffice SaaS) - Billing: cuota fija mensual + variable por empleado activo - Flujos críticos: Solicitudes → Propuestas → Confirmaciones → Asignaciones → Fichajes → Aprobaciones → Disputas ## REGLAS CRÍTICAS DE MULTITENANCY
+### 1. TENANT_ID OBLIGATORIO
+- TODAS las tablas de negocio DEBEN tener `tenant_id INT NOT NULL` - EXCEPCIÓN: solo tablas globales de Owner (
+    tenants,
+    subscriptions,
+    invoices,
+    audit_logs globales
+) - NUNCA crear una tabla de negocio sin `tenant_id` - TODAS las consultas SQL DEBEN filtrar por `tenant_id` explícitamente - NUNCA hacer JOINs sin incluir `tenant_id` en el
+WHERE - Verificar que el middleware TenantMiddleware inyecta `tenant_id` antes de cualquier query ### 2. AISLAMIENTO DE DATOS
+    - NUNCA permitir consultas cross - tenant sin autorización explícita - Las relaciones Empresa ↔ Temporera SOLO a través de `agency_company_links` con permisos verificados - Objetos compartidos (staffing_requests, proposals, assignments) requieren ACL explícitas - TODAS las funciones de base de datos DEBEN recibir `tenant_id` como parámetro - NUNCA confiar en que el usuario no puede cambiar `tenant_id` en el frontend ### 3. MIDDLEWARE OBLIGATORIO
+    - TODAS las rutas de API DEBEN pasar por TenantMiddleware - TODAS las rutas de API DEBEN pasar por RBACMiddleware - NUNCA crear endpoints sin estos middlewares - El TenantMiddleware DEBE extraer tenant_id de JWT / sesión / cabecera y validarlo - El RBACMiddleware DEBE verificar permisos por rol / acción antes de ejecutar ## REGLAS DE CÓDIGO Y ARQUITECTURA
+    ### 4. PHP - MYSQLI OBLIGATORIO (NO PDO)
+    - USAR EXCLUSIVAMENTE mysqli con prepared statements - NUNCA usar PDO - NUNCA usar mysql_ * (deprecated) - TODAS las queries DEBEN usar prepared statements - Formato: `$stmt = $conn->prepare("SELECT ... WHERE tenant_id = ?"); $stmt->bind_param("i", $tenant_id);` - NUNCA concatenar variables directamente en SQL (SQL injection risk) ### 5. ESTRUCTURA DE RESPUESTAS JSON
+    - TODAS las APIs DEBEN retornar JSON con formato consistente: ```json
+  {
+    "success": true|false,
+    "error": "clave_de_traduccion" o null,
+    "error_key": "validation.required" (clave para traducir en frontend),
+    "error_params": {"field": "email"} (parámetros para la traducción),
+    "data": {...}
+  }
+  ``` - NUNCA retornar HTML en endpoints API - NUNCA retornar arrays planos sin envolver - Manejar errores con códigos HTTP apropiados (400, 401, 403, 404, 500) - Errores: retornar CLAVE de traducción,
+    NO mensaje hardcodeado (frontend traduce) ### 6. ESTRUCTURA DE ARCHIVOS
+    - Backend: `backend/core/` (middlewares, servicios),
+    `backend/api/` (endpoints),
+    `backend/models/` (modelos),
+    `backend/jobs/` (cron jobs),
+    `backend/helpers/` (utilidades),
+    `backend/lang/` (traducciones por idioma) - Frontend: `frontend/pages/` (HTML),
+    `frontend/js/` (JS modular),
+    `frontend/css/` (estilos) - Base de datos: `backend/db/` (migraciones, schemas) - Tests: `tests/` (pruebas de aislamiento, funcionales) - Traducciones: `backend/lang/{locale}/{namespace}.php` (ej: `backend/lang/es/common.php`) - * * Scripts no esenciales * *: `scripts/` (
+        scripts de utilidad,
+        pruebas,
+        mantenimiento,
+        importación,
+        exportación,
+        etc.
+    ) ### 6.1. SCRIPTS NO ESENCIALES - OBLIGATORIO
+    - * * NUNCA crear scripts en la raíz del proyecto * * o en carpetas de ejecución (`backend/api/`, `backend/core/`, etc.) - * * TODOS los scripts que NO sean indispensables para la ejecución del sistema * * DEBEN ir en `scripts/` - * * Scripts que DEBEN ir en `scripts/` * *: - Scripts de utilidad (
+        ej: `scripts/utils/import_users.php`,
+        `scripts/utils/export_data.php`
+    ) - Scripts de prueba / desarrollo (
+        ej: `scripts/dev/test_connection.php`,
+        `scripts/dev/seed_data.php`
+    ) - Scripts de mantenimiento (
+        ej: `scripts/maintenance/cleanup_old_files.php`,
+        `scripts/maintenance/optimize_db.php`
+    ) - Scripts de migración de datos (ej: `scripts/migrations/migrate_legacy_data.php`) - Scripts de importación / exportación manual (
+        ej: `scripts/import/import_csv.php`,
+        `scripts/export/export_reports.php`
+    ) - Scripts de configuración inicial (ej: `scripts/setup/create_default_config.php`) - Scripts de análisis / debugging (ej: `scripts/debug/check_tenant_isolation.php`) - Scripts de generación de datos de prueba (ej: `scripts/dev/generate_test_data.php`) - * * Archivos que NO van en `scripts/` * * (son esenciales): - Endpoints API (`backend/api/`) - Middlewares (`backend/core/`) - Jobs cron (`backend/jobs/`) - Helpers reutilizables (`backend/helpers/`) - Modelos (`backend/models/`) - * * Estructura sugerida de `scripts/` * *: ```
+  scripts/
+    utils/          # Utilidades generales
+    dev/            # Scripts de desarrollo/pruebas
+    maintenance/    # Scripts de mantenimiento
+    migrations/     # Migraciones de datos (no esquema)
+    import/         # Scripts de importación
+    export/         # Scripts de exportación
+    setup/          # Scripts de configuración inicial
+    debug/          # Scripts de debugging/análisis
+  ``` - * * NUNCA dejar scripts sueltos * * en la raíz o en carpetas de ejecución - * * Documentar cada script * * con comentario al inicio explicando su propósito - * * Verificar antes de crear * *: si un script no es parte del flujo normal del sistema,
+    va a `scripts/` ### 7. NOMENCLATURA
+    - Archivos PHP: snake_case (
+        ej: `staffing_requests.php`,
+        `tenant_middleware.php`
+    ) - Archivos JS: kebab -case
+        (ej: `group-builder.js`, `calendar.js`) - Clases PHP: PascalCase (ej: `TenantMiddleware`, `MatchingService`) - Funciones PHP: camelCase (ej: `getTenantId()`, `validatePermissions()`) - Variables: camelCase en PHP,
+        camelCase en JS - Tablas DB: snake_case (ej: `work_groups`, `staffing_requests`) ## REGLAS DE DESARROLLO Y REFACTORIZACIÓN
+        ### 7.5. CONSULTAR DOCUMENTACIÓN OBLIGATORIA
+        - * * ANTES de desarrollar cualquier funcionalidad * *,
+        SIEMPRE consultar `docs/Workee_kickoff_v_1.md` - El archivo `docs/Workee_kickoff_v_1.md` es la * * especificación oficial * * del proyecto y DEBE ser la referencia principal - Verificar en la documentación: - Modelo de datos y estructura de tablas - Flujos de negocio y casos de uso - Reglas de negocio específicas - Endpoints y contratos de API - Roles y permisos - Configuraciones y feature flags - Si hay dudas sobre cómo implementar algo,
+        consultar primero `docs/Workee_kickoff_v_1.md` antes de preguntar - NUNCA implementar funcionalidades que contradigan lo especificado en `docs/Workee_kickoff_v_1.md` - Si la especificación no cubre un caso,
+        documentarlo y consultar antes de implementar ### 8. ANÁLISIS ANTES DE CÓDIGO
+        - SIEMPRE buscar código existente antes de crear nuevo - Usar `codebase_search` para encontrar funciones / archivos similares - Usar `grep` para buscar patrones específicos - NUNCA duplicar código existente - Si existe funcionalidad similar,
+        REUTILIZAR o EXTENDER,
+        no duplicar ### 9. NO REFACTORIZAR SIN SOLICITUD
+        - NUNCA refactorizar código existente a menos que el usuario lo solicite explícitamente - NUNCA cambiar nombres de variables / funciones / clases existentes sin permiso - NUNCA reorganizar estructura de archivos sin consultar - Si encuentras código que podría mejorarse,
+        SOLO sugerirlo,
+        no cambiarlo ### 10. ELIMINAR CÓDIGO MUERTO
+        - NUNCA dejar funciones / clases / archivos no utilizados - Si se reemplaza código,
+        ELIMINAR el antiguo - Verificar que no hay imports / requires de archivos eliminados - Limpiar comentarios obsoletos o código comentado (a menos que sea documentación útil) ### 11. REUTILIZACIÓN DE CÓDIGO
+        - Crear funciones helper reutilizables en `backend/helpers/` - Crear servicios compartidos en `backend/core/` - NUNCA copiar - paste código entre archivos - Si necesitas la misma lógica en 2 + lugares,
+        crear una función común ### 11.5. SOLUCIONES PERMANENTES - PROHIBIDO PARCHES
+        - * * NUNCA crear parches,
+        workarounds o soluciones temporales * * - * * TODAS las soluciones DEBEN resolver el problema desde la raíz * * - * * Prohibido * *: - Código comentado con "TODO: arreglar después" - Validaciones solo en frontend sin backend - Try - catch que oculta errores sin resolverlos - Variables globales para "arreglar" problemas de scope - Queries SQL con múltiples
+        WHERE para "arreglar" datos inconsistentes - Comentarios tipo "hack",
+            "temporary fix",
+            "quick fix",
+            "workaround" - Deshabilitar validaciones o checks de seguridad "temporalmente" - Ignorar errores con `@` o `suppress warnings` - * * SIEMPRE hacer * *: - Analizar la causa raíz del problema antes de codificar - Implementar la solución correcta desde el inicio - Si el problema es arquitectural,
+            refactorizar apropiadamente - Si hay dependencias rotas,
+            arreglarlas completamente - Si hay datos inconsistentes,
+            crear migración para corregirlos - Si hay bugs de lógica,
+            corregir la lógica,
+            no agregar excepciones - * * Si una solución requiere tiempo * *: documentar el plan completo y crear un issue / ticket,
+            pero implementar la solución correcta,
+            no un parche - * * Excepciones temporales solo en emergencias críticas * *: si es absolutamente necesario un parche temporal,
+            DEBE: - Estar claramente marcado con comentario `// TEMPORARY FIX - [FECHA] - [ISSUE_ID]` - Tener un ticket / issue asociado para la solución permanente - Tener fecha límite de revisión (máximo 1 semana) - Ser revisado en el próximo sprint ### 11.6. APLICACIÓN COMPLETA EN TODO EL SISTEMA - OBLIGATORIO
+            - * * SIEMPRE aplicar cambios globales en TODAS las páginas / componentes * *: - Si se crea un componente que debe usarse en todas las páginas,
+            aplicarlo en TODAS las páginas - Si se crea una mejora de UI / UX que debe aplicarse globalmente,
+            aplicarla en TODAS las páginas - Si se crea un helper o utilidad que debe usarse en todo el sistema,
+            reemplazar TODAS las implementaciones antiguas - Si se refactoriza un patrón,
+            aplicarlo en TODAS las instancias,
+            no solo en ejemplos - * * NUNCA dejar implementaciones parciales * *: - ❌ NUNCA aplicar solo en páginas de ejemplo o páginas principales - ❌ NUNCA dejar código antiguo mezclado con código nuevo - ❌ NUNCA crear "ejemplos" sin completar la implementación en todo el sistema - ❌ NUNCA dejar comentarios tipo "aplicar en otras páginas después" - * * Proceso obligatorio al crear algo global * *: 1.Identificar TODAS las páginas / componentes donde debe aplicarse 2.Aplicar el cambio en TODAS las instancias identificadas 3.Verificar que no quedan instancias antiguas sin actualizar 4.Documentar el cambio completo (qué se cambió y dónde) 5.Verificar funcionalidad en TODAS las páginas afectadas - * * Excepciones solo con justificación explícita * *: - Si hay una razón técnica válida para no aplicar en alguna página específica,
+            documentarla explícitamente - Si se requiere migración gradual,
+            crear plan de migración completo con fechas - Si hay dependencias que impiden aplicación completa,
+            resolver dependencias primero - * * Verificación antes de considerar completado * *: - Buscar en todo el código base para encontrar todas las instancias - Verificar que TODAS las páginas usan el nuevo componente / patrón - Eliminar código antiguo que fue reemplazado - Verificar que no hay inconsistencias entre páginas - * * SIEMPRE hacer * *: - ✅ Aplicar cambios globales en TODAS las páginas del sistema - ✅ Buscar todas las instancias antes de aplicar cambios - ✅ Reemplazar TODAS las implementaciones antiguas - ✅ Verificar funcionalidad en TODAS las páginas afectadas - ✅ Documentar dónde se aplicó el cambio - ✅ Eliminar código antiguo después de reemplazarlo - * * NUNCA hacer * *: - ❌ Aplicar solo en páginas de ejemplo - ❌ Dejar implementaciones parciales - ❌ Mezclar código antiguo con código nuevo - ❌ Dejar comentarios sobre "aplicar después" - ❌ Considerar completado sin verificar todas las páginas ### 12. VALIDACIÓN Y SEGURIDAD
+            - TODAS las entradas de usuario DEBEN ser validadas - TODAS las entradas DEBEN ser sanitizadas antes de usar en SQL - Usar prepared statements SIEMPRE (previene SQL injection) - Validar tenant_id en cada request - Validar permisos RBAC en cada acción - CSRF tokens en formularios - Rate limiting en endpoints sensibles (
+                / auth / login,
+                / api
+                /*)
+                 
+                 ## REGLAS DE BASE DE DATOS
+                 
+                 ### 13. ESQUEMA Y MIGRACIONES
+                 - TODAS las tablas DEBEN tener campos estándar: `created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP`, `updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`
+                 - Campos de auditoría: `created_by INT NULL`, `updated_by INT NULL` donde aplique
+                 - Foreign Keys OBLIGATORIAS con ON DELETE apropiado (CASCADE para dependencias, RESTRICT para datos críticos)
+                 - Índices en campos de búsqueda frecuente (tenant_id, fechas, status)
+                 - NUNCA crear tablas sin definir FKs apropiadas
+                 
+                 ### 14. TIPOS DE DATOS
+                 - IDs: `INT AUTO_INCREMENT PRIMARY KEY`
+                 - Tenant IDs: `INT NOT NULL` con FK a tenants(id)
+                 - Fechas: `DATE` o `DATETIME` según necesidad
+                 - Booleanos: `TINYINT(1) NOT NULL DEFAULT 0|1`
+                 - Texto corto: `VARCHAR(n)` con límite apropiado
+                 - Texto largo: `TEXT`
+                 - JSON: `JSON` para datos estructurados flexibles
+                 - Decimales monetarios: `DECIMAL(10,2)`
+                 - ENUMs para estados limitados (status, tipos, etc.)
+                 
+                 ### 15. INTEGRIDAD REFERENCIAL
+                 - TODAS las FKs DEBEN estar definidas
+                 - ON DELETE CASCADE solo para datos dependientes (ej: group_members cuando se borra group)
+                 - ON DELETE RESTRICT para datos críticos (ej: no borrar tenant si tiene facturas)
+                 - NUNCA hacer DELETE físico sin verificar dependencias
+                 - Usar soft-delete (campo `deleted_at` o `is_active`) donde aplique
+                 
+                 ## REGLAS DE FRONTEND
+                 
+                 ### 16. BOOTSTRAP 5
+                 - USAR Bootstrap 5 para UI base
+                 - NUNCA usar versiones anteriores de Bootstrap
+                 - Mantener consistencia visual con componentes Bootstrap
+                 - JS modular: cada página/funcionalidad en su propio archivo JS
+                 - NUNCA poner JS inline en HTML (excepto inicialización mínima)
+                 
+                 ### 16.5. SISTEMA DE DISEÑO Y CSS CORPORATIVO - OBLIGATORIO
+                 - **CSS Base obligatorio**: TODAS las páginas DEBEN usar el sistema de diseño corporativo centralizado
+                 - **Archivo principal**: `frontend/css/theme.css` o `frontend/css/corporate.css` con variables CSS y estilos base
+                 - **Variables CSS (Custom Properties)**:
+                 - **Colores corporativos**: definir paleta completa en `:root`
+                 ```css
+                 :root {
+                 /* Colores primarios */
+                --color-primary: #0066cc;
+                --color-primary-dark: #0052a3;
+                --color-primary-light: #3385d6;
+                /* Colores secundarios */
+                --color-secondary: #6c757d;
+                --color-secondary-dark: #5a6268;
+                --color-secondary-light: #868e96;
+                /* Colores de estado */
+                --color-success: #28a745;
+                --color-warning: #ffc107;
+                --color-danger: #dc3545;
+                --color-info: #17a2b8;
+                /* Colores neutros */
+                --color-text: #212529;
+                --color-text-muted: #6c757d;
+                --color-bg: #ffffff;
+                --color-bg-light: #f8f9fa;
+                --color-border: #dee2e6;
+                /* Colores específicos por tenant (opcional) */
+                --tenant-primary: var(--color-primary);
+                --tenant-accent: var(--color-secondary);
+                } ```
+  - **Tipografía**: fuentes, tamaños, pesos
+    ``` css :root { --font-family-base: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+                --font-size-base: 1rem;
+                --font-weight-normal: 400;
+                --font-weight-bold: 700;
+                --line-height-base: 1.5;
+                } ```
+  - **Espaciado**: sistema de espaciado consistente
+    ``` css :root { --spacing-xs: 0.25rem;
+                --spacing-sm: 0.5rem;
+                --spacing-md: 1rem;
+                --spacing-lg: 1.5rem;
+                --spacing-xl: 3rem;
+                } ```
+  - **Bordes y sombras**: estilos consistentes
+    ``` css :root { --border-radius: 0.375rem;
+                --border-radius-lg: 0.5rem;
+                --box-shadow-sm: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+                --box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+                } ```
+- **Estructura de archivos CSS**:
+  ``` frontend / css / theme.css # Variables CSS y estilos base (OBLIGATORIO)
+                components.css # Estilos de componentes reutilizables
+                utilities.css # Clases utilitarias personalizadas
+                [tenant].css # Estilos específicos por tenant (opcional)
+                ```
+- **Uso de variables CSS**:
+  - NUNCA hardcodear colores en CSS (usar ` var(
+                    --color-primary)`)
+                    - NUNCA usar colores hexadecimales directamente (excepto en definición de variables) - TODOS los colores DEBEN venir de variables CSS - Ejemplo CORRECTO: `color: var(--color-primary); background: var(--color-bg-light);` - Ejemplo INCORRECTO: `color: #0066cc; background: #f8f9fa;` - * * Integración con Bootstrap 5 * *: - Sobrescribir variables de Bootstrap con variables corporativas - Usar `!default` en Bootstrap,
+                    sobrescribir en `theme.css` - Ejemplo: ```css
+    /* En theme.css, después de importar Bootstrap */
+    :root {
+      --bs-primary: var(--color-primary);
+      --bs-primary-rgb: 0, 102, 204;
+      --bs-success: var(--color-success);
+      /* etc. */
+    }
+    ``` - * * Clases utilitarias personalizadas * *: - Crear clases reutilizables para patrones comunes - Ejemplo: `.text-corporate`,
+                    `.bg-corporate`,
+                    `.btn-corporate` - Documentar todas las clases utilitarias - * * Temas por tenant (opcional) * *: - Si se requiere personalización por tenant,
+                    usar variables CSS con prefijo - Cargar CSS específico por tenant si está configurado - Fallback a tema corporativo por defecto - * * Responsive en CSS * *: - Usar variables CSS para breakpoints consistentes - Ejemplo: `@media (min-width: var(--breakpoint-md)) { ... }` - * * Modo oscuro (opcional, fase 2) * *: - Preparar variables CSS para soportar modo oscuro - Usar `prefers-color-scheme` o toggle manual - * * NUNCA hacer * *: - ❌ Crear estilos inline en HTML (excepto casos muy específicos) - ❌ Duplicar estilos de colores en múltiples archivos - ❌ Usar colores hardcodeados sin variables - ❌ Crear CSS específico por página sin usar el sistema base - ❌ Ignorar el archivo `theme.css` al crear nuevas páginas - * * SIEMPRE hacer * *: - ✅ Importar `theme.css` en TODAS las páginas HTML - ✅ Usar variables CSS para todos los colores - ✅ Consultar `theme.css` antes de crear nuevos estilos - ✅ Reutilizar clases existentes antes de crear nuevas - ✅ Documentar nuevas variables CSS agregadas - ✅ Mantener consistencia con el sistema de diseño - * * Validación * *: - Antes de desplegar,
+                    verificar que no hay colores hardcodeados - Verificar que todas las páginas importan `theme.css` - Verificar que el sistema de colores es consistente en toda la aplicación ### 16.6. ARQUITECTURA Y ORGANIZACIÓN CSS - BASADO EN SASS GUIDELINES
+                    - * * Estructura modular obligatoria * *: organizar CSS en archivos pequeños y enfocados por funcionalidad - * * Estructura recomendada * * (basada en 7 -1 pattern): ```
+  frontend/css/
+    theme.css          # Variables CSS (ya definido en 16.5)
+    base/              # Reset, tipografía base, elementos HTML
+      _reset.css
+      _typography.css
+    components/        # Componentes reutilizables
+      _buttons.css
+      _cards.css
+      _forms.css
+      _modals.css
+    layout/            # Estructura de página
+      _header.css
+      _sidebar.css
+      _footer.css
+      _grid.css
+    pages/             # Estilos específicos por página (mínimos)
+      _dashboard.css
+      _calendar.css
+    utilities/         # Clases utilitarias
+      _spacing.css
+      _text.css
+      _display.css
+    vendors/           # Librerías externas (Bootstrap override)
+      _bootstrap-custom.css
+  ``` - * * Principios de organización * *: - Un archivo por componente / funcionalidad - Archivos pequeños y enfocados (máximo 300 -400 líneas) - Separar estilos base,
+                    componentes,
+                    layout y utilidades - NUNCA crear archivos CSS monolíticos de miles de líneas - * * Importación ordenada * *: si se usa preprocesador (Sass / SCSS) o @import: 1.Variables y configuración 2.Base (reset, tipografía) 3.Layout 4.Componentes 5.Páginas específicas 6.Utilidades 7.Vendors / overrides ### 16.7. CONVENCIONES DE NOMENCLATURA CSS
+                    - * * BEM (Block Element Modifier) recomendado * * para componentes: - Formato: `.block__element--modifier` - Ejemplo: `.card__header--highlighted`,
+                    `.btn--primary`,
+                    `.modal__close-btn` - * * Nomenclatura consistente * *: - Clases en minúsculas - Separación con guiones simples para palabras: `.user-profile`,
+                    `.work-group` - Separación con doble guion bajo para elementos BEM: `.card__header` - Separación con doble guion para modificadores BEM: `.btn--disabled` - * * Prefijos para utilidades * * (opcional): - `.u-` para utilidades: `.u-text-center`,
+                    `.u-mt-2` - `.is-` para estados: `.is-active`,
+                    `.is-disabled` - `.has-` para variantes: `.has-error`,
+                    `.has-warning` - * * Nombres descriptivos y semánticos * *: - ✅ CORRECTO: `.staffing-request-card`,
+                    `.work-log-approval-panel` - ❌ INCORRECTO: `.card1`,
+                    `.div-red`,
+                    `.big-box` - * * Evitar nombres genéricos * *: no usar nombres como `.container`,
+                    `.wrapper`,
+                    `.content` sin contexto - * * Consistencia * *: mantener la misma convención en todo el proyecto ### 16.8. ANIDAMIENTO Y ESPECIFICIDAD CSS
+                    - * * Anidamiento máximo * *: máximo 3 niveles de anidamiento ```css
+  /* ✅ CORRECTO - 3 niveles máximo */
+  .card {
+    .card__header {
+      .card__title { }
+    }
+  }
+  
+  /* ❌ INCORRECTO - demasiado anidado */
+  .page .section .container .card .header .title { }
+  ``` - * * Especificidad baja * *: priorizar clases sobre IDs o selectores complejos - ✅ Usar: `.btn-primary` - ❌ Evitar: `#main-content .sidebar .btn.primary` - * * Evitar selectores demasiado específicos * *: dificultan mantenimiento y reutilización - * * Uso de `!important` * *: - NUNCA usar `!important` excepto para overrides de Bootstrap o casos muy específicos - Si necesitas `!important`,
+                    revisar la especificidad del selector - Documentar por qué se usa `!important` con comentario - * * Selectores de pseudo - clases / elementos * *: pueden anidarse dentro de su selector padre ### 16.9. COMENTARIOS Y DOCUMENTACIÓN CSS
+                    - * * Comentarios para secciones complejas * *: documentar lógica no obvia - * * Comentarios para decisiones de diseño * *: explicar por qué se eligió un enfoque - * * Comentarios para variables importantes * *: documentar propósito y uso - * * Separadores de sección * *: usar comentarios para organizar archivos grandes ```css
+  /* ==========================================================================
+     COMPONENTES - BOTONES
+     ========================================================================== */
+  ``` - * * Mantener comentarios actualizados * *: eliminar comentarios obsoletos - * * SassDoc para APIs públicas * * (si se usa Sass): documentar mixins,
+                    funciones y placeholders públicos ### 16.10. RESPONSIVE Y MEDIA QUERIES
+                    - * * Organización de media queries * *: elegir un enfoque y mantenerlo consistente - Opción 1: Media queries anidadas dentro de selectores (recomendado para Sass) - Opción 2: Media queries agrupadas al final del archivo (para CSS puro) - * * Breakpoints en variables * *: usar variables CSS para breakpoints (ya definido en theme.css) - * * Mobile - first obligatorio * *: todas las media queries deben ser `min-width` (ya cubierto en regla 18) - * * Agrupación consistente * *: si se agrupan media queries,
+                    mantener orden: sm,
+                    md,
+                    lg,
+                    xl - * * Evitar media queries innecesarias * *: no crear breakpoints para diferencias mínimas ### 16.11. PERFORMANCE Y OPTIMIZACIÓN CSS
+                    - * * Selectores eficientes * *: evitar selectores complejos o lentos - ✅ Eficiente: `.btn-primary` - ❌ Lento: `div > ul > li > a.btn-primary` - * * Evitar duplicación * *: reutilizar clases en lugar de duplicar estilos - * * Minimizar uso de `!important` * *: ya cubierto en 16.8 - * * Critical CSS * * (opcional, fase 2): considerar extraer CSS crítico para above - the - fold - * * Optimización de carga * *: - Combinar archivos CSS en producción - Minificar CSS en producción - Usar lazy loading para CSS no crítico si es necesario - * * Evitar selectores universales en producción * *: `* { }` solo para reset específico ### 16.12. MANTENIBILIDAD Y LIMPIEZA CSS
+                    - * * Archivos pequeños y enfocados * *: máximo 300 -400 líneas por archivo - * * Separar por funcionalidad * *: un componente = un archivo - * * Eliminar código CSS muerto * *: - Revisar periódicamente estilos no utilizados - Usar herramientas para detectar CSS no usado - Eliminar estilos comentados obsoletos - * * Refactorizar cuando sea necesario * *: si un archivo crece demasiado,
+                    dividirlo - * * Mantener consistencia * *: seguir la misma estructura en todos los archivos CSS - * * Revisión periódica * *: incluir revisión de CSS en code reviews ### 16.13. INTEGRACIÓN CON BOOTSTRAP 5
+                    - * * Sobrescribir de forma organizada * *: crear archivo `vendors/_bootstrap-custom.css` para personalizaciones - * * Usar variables de Bootstrap * *: aprovechar sistema de variables de Bootstrap 5 - * * Evitar conflictos de especificidad * *: usar clases de Bootstrap como base,
+                    extender con clases propias - * * Documentar personalizaciones * *: comentar cambios significativos a componentes de Bootstrap - * * Mantener actualizaciones * *: al actualizar Bootstrap,
+                    revisar personalizaciones - * * No duplicar estilos de Bootstrap * *: reutilizar componentes en lugar de recrearlos ### 16.14. HERRAMIENTAS Y VALIDACIÓN CSS
+                    - * * Linter CSS recomendado * *: usar Stylelint o similar para validar CSS - * * Configuración de linter * *: incluir reglas para: - Nomenclatura consistente - Especificidad máxima - Anidamiento máximo - Uso de `!important` - Colores hardcodeados - * * Validación antes de commit * *: integrar linter en proceso de desarrollo - * * Verificación de compatibilidad * *: probar en navegadores objetivo antes de desplegar - * * Formato consistente * *: usar herramienta de formateo (Prettier) para mantener formato uniforme ### 16.15. ARQUITECTURA CSS ITCSS - OBLIGATORIO
+                    - * * ITCSS (Inverted Triangle CSS) obligatorio * *: organizar CSS en capas de especificidad creciente - * * Estructura ITCSS obligatoria * *: ```
+  frontend/css/
+    01-settings/        # Variables CSS, design tokens (theme.css)
+      theme.css
+    02-tools/          # Mixins, funciones (si se usa preprocesador)
+      _mixins.css
+    03-generic/        # Reset, normalize, elementos base
+      _reset.css
+      _normalize.css
+    04-elements/       # Elementos HTML sin clases (h1, p, a, etc.)
+      _typography.css
+      _forms.css
+      _tables.css
+    05-objects/        # Patrones de layout reutilizables (grids, wrappers)
+      _grid.css
+      _layout.css
+      _container.css
+    06-components/     # Componentes UI específicos (botones, cards, modals)
+      _buttons.css
+      _cards.css
+      _modals.css
+      _data-table.css
+      _toast.css
+    07-utilities/      # Clases utilitarias (helpers, overrides)
+      _spacing.css
+      _text.css
+      _display.css
+  ``` - * * Orden de importación ITCSS * * (si se usa @import o preprocesador): 1.Settings (variables) 2.Tools (mixins) 3.Generic (reset) 4.Elements (HTML base) 5.Objects (layout) 6.Components (UI) 7.Utilities (helpers) - * * Principios ITCSS * *: - Especificidad aumenta de arriba a abajo - Settings: solo variables,
+                    sin CSS real - Generic: estilos base sin clases - Objects: clases de layout reutilizables (`.o-container`, `.o-grid`) - Components: clases específicas de UI (`.c-button`, `.c-card`) - Utilities: clases de utilidad (`.u-text-center`, `.u-mt-2`) - * * Prefijos ITCSS recomendados * *: - Settings: sin prefijo (variables CSS) - Objects: `.o-` (ej: `.o-container`, `.o-grid`) - Components: `.c-` o sin prefijo (ej: `.c-button`, `.card`) - Utilities: `.u-` (ej: `.u-text-center`, `.u-mt-2`) - * * NUNCA mezclar capas * *: no poner estilos de componentes en utilities,
+                    no poner variables en components ### 16.16. DESIGN TOKENS Y VARIABLES CSS MEJORADOS
+                    - * * Design tokens obligatorios * *: todas las decisiones de diseño deben estar en variables CSS - * * Categorías de design tokens * * (en `theme.css`): ```css
+  :root {
+    /* Tokens de color (ya definidos en 16.5) */
+    --color-*: ...;
+    
+    /* Tokens de tipografía */
+    --font-*: ...;
+    
+    /* Tokens de espaciado */
+    --spacing-*: ...;
+    
+    /* Tokens de sombras (mejorados) */
+    --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+    --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.15);
+    --shadow-inner: inset 0 2px 4px rgba(0, 0, 0, 0.06);
+    
+    /* Tokens de transiciones */
+    --transition-fast: 150ms ease;
+    --transition-base: 250ms ease;
+    --transition-slow: 350ms ease;
+    --transition-all: all var(--transition-base);
+    
+    /* Tokens de z-index (sistema de capas) */
+    --z-base: 1;
+    --z-dropdown: 1000;
+    --z-sticky: 1020;
+    --z-fixed: 1030;
+    --z-modal-backdrop: 1040;
+    --z-modal: 1050;
+    --z-popover: 1060;
+    --z-tooltip: 1070;
+    
+    /* Tokens de opacidad */
+    --opacity-disabled: 0.6;
+    --opacity-hover: 0.8;
+    --opacity-overlay: 0.5;
+    
+    /* Tokens de layout (dashboards) */
+    --sidebar-width: 260px;
+    --sidebar-collapsed-width: 80px;
+    --header-height: 64px;
+    --content-padding: var(--spacing-lg);
+    --card-padding: var(--spacing-md);
+  }
+  ``` - * * NUNCA hardcodear valores * *: usar tokens para TODO (
+                        colores,
+                        espaciados,
+                        sombras,
+                        transiciones,
+                        z - index
+                    ) - * * Documentar tokens * *: comentar propósito y uso de cada token - * * Tokens semánticos * *: crear tokens con significado (
+                        ej: `--color-text-primary` en lugar de `--color-gray-900`
+                    ) ### 16.17. RESPONSIVE DESIGN Y GRIDS PARA DASHBOARDS
+                    - * * Grid system para dashboards * *: usar CSS Grid para layouts complejos ```css
+  .dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--spacing-md);
+  }
+  
+  /* Layout de dashboard típico */
+  .dashboard-layout {
+    display: grid;
+    grid-template-areas:
+      "sidebar header"
+      "sidebar main";
+    grid-template-columns: var(--sidebar-width) 1fr;
+    grid-template-rows: var(--header-height) 1fr;
+  }
+  ``` - * * Breakpoints consistentes * *: usar variables CSS para breakpoints ```css
+  @media (min-width: var(--breakpoint-sm)) { }
+  @media (min-width: var(--breakpoint-md)) { }
+  @media (min-width: var(--breakpoint-lg)) { }
+  ``` - * * Container queries (cuando esté disponible) * *: usar container queries para componentes responsivos - * * Fluid typography * *: usar `clamp()` para tipografía fluida ```css
+  h1 {
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
+  }
+  ``` - * * Aspect ratios * *: usar `aspect-ratio` para mantener proporciones ```css
+  .card-image {
+    aspect-ratio: 16 / 9;
+  }
+  ``` - * * Layouts de dashboard responsivos * *: - Mobile: stack vertical,
+                    sidebar colapsado - Tablet: sidebar colapsable,
+                    grid 2 columnas - Desktop: sidebar fijo,
+                    grid 3 -4 columnas - * * KPI Cards responsive * *: - Mobile: 1 columna - Tablet: 2 columnas - Desktop: 3 -4 columnas ### 16.18. IMÁGENES RESPONSIVAS Y PERFORMANCE
+                    - * * Imágenes responsivas obligatorias * *: usar `<picture>` o `srcset` para imágenes ```html
+  <img 
+    src="image-400w.jpg" 
+    srcset="image-400w.jpg 400w, image-800w.jpg 800w, image-1200w.jpg 1200w"
+    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+    alt="Descripción"
+    loading="lazy"
+  >
+  ``` - * * Lazy loading obligatorio * *: usar `loading="lazy"` en todas las imágenes no críticas - * * Formato WebP * *: preferir WebP con fallback ```html
+  <picture>
+    <source srcset="image.webp" type="image/webp">
+    <img src="image.jpg" alt="Descripción" loading="lazy">
+  </picture>
+  ``` - * * Aspect ratio en CSS * *: definir dimensiones para evitar CLS (Cumulative Layout Shift) ```css
+  .responsive-image {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+  }
+  ``` - * * Imágenes de fondo responsivas * *: usar `background-size: cover` y media queries - * * Optimización de imágenes * *: - Comprimir imágenes antes de subir - Usar tamaños apropiados (no imágenes de 4000px para thumbnails) - Considerar CDN para assets estáticos ### 16.19. ACCESIBILIDAD CSS - OBLIGATORIO
+                    - * * Contraste de colores WCAG AA mínimo * *: - Texto normal: ratio mínimo 4.5 :1 - Texto grande (18px +): ratio mínimo 3 :1 - Usar herramientas para verificar contraste - * * Focus visible obligatorio * *: todos los elementos interactivos deben tener focus visible ```css
+  *:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+  
+  /* NUNCA ocultar outline sin reemplazo */
+  *:focus {
+    outline: none; /* ❌ INCORRECTO */
+  }
+  ``` - * * Skip links * *: agregar enlaces de salto para navegación por teclado ```css
+  .skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: var(--color-primary);
+    color: var(--color-text-inverse);
+    padding: var(--spacing-sm);
+    z-index: var(--z-tooltip);
+  }
+  
+  .skip-link:focus {
+    top: 0;
+  }
+  ``` - * * Reducción de movimiento * *: respetar `prefers-reduced-motion` ```css
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+  ``` - * * Alto contraste * *: considerar `prefers-contrast` para usuarios con necesidades de alto contraste - * * Tamaños de toque * *: elementos interactivos mínimo 44x44px (ya cubierto en regla 18) - * * Textos alternativos * *: siempre incluir `alt` en imágenes (HTML, no CSS, pero verificar) ### 16.20. LAYOUTS DE DASHBOARD SAAS - MEJORES PRÁCTICAS
+                    - * * Jerarquía visual clara * *: información más importante más prominente ```css
+  .kpi-card--primary {
+    border-left: 4px solid var(--color-primary);
+    box-shadow: var(--shadow-lg);
+  }
+  ``` - * * Espaciado consistente * *: usar sistema de espaciado para mantener ritmo visual - * * Cards de dashboard * *: ```css
+  .dashboard-card {
+    background: var(--color-bg);
+    border-radius: var(--border-radius-lg);
+    padding: var(--card-padding);
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition-all);
+  }
+  
+  .dashboard-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+  }
+  ``` - * * Grid de dashboard responsive * *: ```css
+  .dashboard-grid {
+    display: grid;
+    gap: var(--spacing-md);
+    grid-template-columns: 1fr; /* Mobile first */
+  }
+  
+  @media (min-width: var(--breakpoint-md)) {
+    .dashboard-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  @media (min-width: var(--breakpoint-lg)) {
+    .dashboard-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  ``` - * * Filtros y búsqueda * *: siempre accesibles,
+                    sticky en móvil si es necesario - * * Tablas en dashboard * *: usar componente DataTable (ya cubierto en regla 18.8) - * * Gráficos responsivos * *: usar librerías que soporten responsive (Chart.js, ApexCharts) ### 16.21. REFACTORIZACIÓN CSS EXISTENTE - PRIORIDAD
+                    - * * Eliminar colores hardcodeados * *: buscar y reemplazar todos los colores hexadecimales por variables - Buscar: `#[0-9a-fA-F]{3,6}` en archivos CSS - Reemplazar: `#ffffff` → `var(--color-bg)` - Reemplazar: `#e9ecef` → `var(--color-bg-dark)` - Reemplazar: `#f5f6fa` → `var(--color-bg-light)` - * * Reorganizar según ITCSS * *: mover archivos a estructura ITCSS - * * Aplicar BEM consistentemente * *: renombrar clases para seguir BEM - * * Eliminar código duplicado * *: consolidar estilos similares en componentes reutilizables - * * Verificar accesibilidad * *: revisar contraste,
+                    focus,
+                    skip links - * * Optimizar imágenes * *: comprimir y convertir a WebP donde sea posible ### 17. CALENDARIO Y DRAG & DROP
+                    - Usar FullCalendar o librería similar para calendario - Implementar drag & drop con validaciones (conflictos, límites, skills) - Validar en frontend Y backend (nunca confiar solo en frontend) - Feedback visual inmediato al usuario ### 18. MOBILE-FIRST Y RESPONSIVE - OBLIGATORIO
+                    - * * MOBILE - FIRST es OBLIGATORIO * *: TODAS las interfaces DEBEN diseñarse primero para móvil,
+                    luego adaptarse a desktop - * * Todos los usuarios deben poder usar el sistema desde móvil * *: - * * Owner * *: gestión de tenants,
+                    planes,
+                    facturación,
+                    métricas - * * Empresa - Admin / Planificador * *: calendario,
+                    solicitudes,
+                    grupos,
+                    aprobaciones - * * Supervisor * *: aprobación de horas,
+                    revisión de partes - * * Empleado * *: fichaje,
+                    ver turnos,
+                    comentarios - * * Temporera - Admin / Coordinador * *: propuestas,
+                    trabajadores,
+                    asignaciones - * * Trabajador * *: fichaje (si habilitado),
+                    ver asignaciones - * * Bootstrap 5 Mobile - First * *: usar clases de Bootstrap 5 con enfoque mobile - first (
+                        col -12 por defecto,
+                        luego col - md - *,
+                        col - lg - *
+                    ) - * * Breakpoints estándar * *: - Mobile: < 576px (default, sin prefijo) - Tablet: ≥ 576px (sm) - Desktop: ≥ 768px (md),
+                    ≥ 992px (lg),
+                    ≥ 1200px (xl) - * * UI táctil - friendly obligatoria * *: - Botones mínimo 44x44px (área de toque) - Espaciado adecuado entre elementos interactivos (mín.8px) - Inputs grandes y fáciles de usar con teclado móvil - Menús hamburguesa para navegación principal - Swipe gestures donde aplique (calendario, listas) - * * Funcionalidades críticas móviles * *: - Fichaje: botones grandes,
+                    fácil acceso,
+                    validación inmediata - Parte del líder: formulario optimizado para móvil,
+                    fotos con cámara - Calendario: vista móvil con scroll horizontal,
+                    tap para detalles - Aprobaciones: lista simplificada,
+                    acciones rápidas (swipe to approve) - Solicitudes / Propuestas: formularios paso a paso,
+                    validación en tiempo real - * * Performance móvil * *: - Cargar solo lo necesario (lazy loading de imágenes) - Minimizar requests HTTP (combinar recursos) - Cachear datos críticos localmente - Optimizar imágenes (WebP, lazy loading) - * * Testing móvil obligatorio * *: - Probar en dispositivos reales (iOS y Android) - Probar en diferentes tamaños de pantalla - Probar con conexión lenta (3G simulation) - Probar orientación vertical y horizontal - * * PWA opcional (fase 2) * *: considerar Progressive Web App para instalación en móvil - * * NUNCA asumir que algo solo se usará en desktop * *: TODAS las funcionalidades deben ser usables en móvil ### 18.5. ARQUITECTURA FRONTEND MODERNA PARA SAAS - BASADO EN BEST PRACTICES
+                    - * * Arquitectura modular y escalable * *: organizar frontend en módulos independientes y reutilizables - * * Separación de concerns * *: separar lógica de negocio,
+                    presentación y datos - * * Componentización * *: crear componentes reutilizables para patrones comunes del SaaS - * * Estructura de archivos frontend * *: ```
+  frontend/
+    pages/              # Páginas HTML (una por vista)
+      owner/
+      empresa/
+      temporera/
+    js/
+      core/             # Utilidades core, helpers, servicios
+        api.js          # Cliente API centralizado
+        auth.js         # Gestión de autenticación
+        utils.js        # Utilidades generales
+      components/       # Componentes JS reutilizables
+        data-table.js   # Tabla de datos genérica
+        modal.js        # Modal reutilizable
+        form-validator.js
+        date-picker.js
+      modules/          # Módulos por funcionalidad
+        calendar/
+        groups/
+        requests/
+        worklogs/
+      pages/            # JS específico por página (mínimo)
+    css/
+      theme.css         # Variables y base (ya definido)
+      components/       # Estilos de componentes
+      layout/           # Estilos de layout
+      pages/            # Estilos específicos por página (mínimos)
+  ``` - * * Principios de arquitectura * *: - Un módulo = una funcionalidad completa (calendario, grupos, solicitudes) - Componentes reutilizables en `js/components/` - Utilidades compartidas en `js/core/` - JS específico de página solo cuando sea absolutamente necesario - NUNCA duplicar lógica entre módulos ### 18.6. COMPONENTIZACIÓN Y REUTILIZACIÓN
+                    - * * Componentes obligatorios para SaaS * *: - * * DataTable / DataGrid * *: tabla de datos con paginación,
+                    ordenamiento,
+                    filtros (reutilizable) - * * Modal / Dialog * *: modales reutilizables con diferentes tamaños y tipos - * * FormBuilder * *: constructor de formularios dinámicos con validación - * * DateRangePicker * *: selector de rangos de fechas - * * StatusBadge * *: badges de estado reutilizables - * * LoadingSpinner * *: indicadores de carga consistentes - * * Toast / Notification * *: sistema de notificaciones toast - * * EmptyState * *: estados vacíos con mensajes y acciones - * * Crear componentes antes de duplicar * *: - Si necesitas una funcionalidad en 2 + lugares,
+                    crear componente reutilizable - Componentes deben ser independientes y configurables - Documentar props / parámetros de cada componente - * * API de componentes consistente * *: - Todos los componentes deben tener inicialización similar - Usar eventos o callbacks para comunicación - Ejemplo: `new DataTable(container, options)` con opciones estándar ### 18.7. DASHBOARDS Y VISUALIZACIÓN DE DATOS
+                    - * * Principios de diseño de dashboards SaaS * *: - * * Jerarquía visual clara * *: información más importante más prominente - * * KPIs destacados * *: métricas clave visibles sin scroll - * * Filtros accesibles * *: filtros siempre visibles o fácilmente accesibles - * * Actualización en tiempo real * *: donde aplique (notificaciones, contadores) - * * Carga progresiva * *: mostrar datos críticos primero,
+                    luego secundarios - * * Componentes de dashboard * *: - * * KPI Cards * *: tarjetas con métricas principales (formato consistente) - * * Charts / Graphs * *: gráficos para visualización de datos (usar librería ligera) - * * Activity Feed * *: feed de actividad reciente - * * Quick Actions * *: acciones rápidas accesibles desde dashboard - * * Recent Items * *: lista de elementos recientes - * * Performance en dashboards * *: - Lazy loading de gráficos y datos secundarios - Cachear datos de dashboard (localStorage / sessionStorage) - Debounce en filtros y búsquedas - Paginación o virtual scrolling para listas largas ### 18.8. TABLAS Y DATA GRIDS
+                    - * * Componente DataTable obligatorio * *: crear componente reutilizable para todas las tablas - * * Funcionalidades estándar de DataTable * *: - Paginación (client - side o server - side) - Ordenamiento por columnas (click en header) - Filtros por columna - Búsqueda global - Selección de filas (checkbox) - Acciones por fila (dropdown de acciones) - Export a CSV / Excel (opcional) - * * Responsive en tablas * *: - En móvil: convertir tabla a cards o lista - Ocultar columnas menos importantes en móvil - Scroll horizontal solo si es absolutamente necesario - * * Performance en tablas grandes * *: - Virtual scrolling para > 100 filas - Paginación server - side para > 1000 registros - Lazy loading de datos - Debounce en filtros (mínimo 300ms) - * * Accesibilidad en tablas * *: - Headers con `scope="col"` o `scope="row"` - Navegación por teclado (Tab, Enter, flechas) - ARIA labels para acciones - Indicadores visuales de ordenamiento ### 18.9. GESTIÓN DE ESTADO Y DATOS
+                    - * * Cliente API centralizado * *: crear `js/core/api.js` para todas las llamadas API ```javascript
+  // Ejemplo de estructura
+  const API = {
+    baseURL: '/api/v1',
+    get: (endpoint, params) => { },
+    post: (endpoint, data) => { },
+    put: (endpoint, data) => { },
+    delete: (endpoint) => { }
+  }
+  ``` - * * Manejo de errores consistente * *: - Interceptor global para errores de API - Mostrar errores con sistema de notificaciones - Traducir claves de error del backend - * * Cache de datos * *: - Cachear datos que cambian poco (configuraciones, listas de referencia) - Invalidar cache cuando sea necesario - Usar localStorage / sessionStorage apropiadamente - * * Loading states * *: - Mostrar estados de carga en todas las operaciones as íncronas - Skeleton screens para contenido que tarda en cargar - Indicadores de progreso para operaciones largas ### 18.10. UX/UI ESPECÍFICA PARA SAAS - IMPLEMENTACIÓN TÉCNICA
+                    - * * Empty states obligatorios * *: crear componente `EmptyState` con mensaje traducible y acción opcional ```javascript
+  // Ejemplo de uso
+  new EmptyState(container, {
+    icon: 'icon-name',
+    title: t('common.no_data'),
+    message: t('requests.no_requests_found'),
+    action: { label: t('common.create'), callback: () => {} }
+  });
+  ``` - * * Tooltips técnicos * *: usar atributo `title` o componente tooltip de Bootstrap con claves de traducción - * * Feedback visual técnico * *: - Implementar estados CSS para hover,
+                    active,
+                    disabled (usar variables CSS) - Mostrar mensajes de éxito / error usando componente Toast / Notification con claves de traducción - Usar animaciones CSS (transitions) en lugar de JavaScript cuando sea posible - * * Navegación técnica * *: - Implementar breadcrumbs con estructura HTML semántica (`<nav aria-label="breadcrumb">`) - Menú contextual: mostrar / ocultar según permisos RBAC (verificar en backend) - Búsqueda global: implementar input con event listener para tecla rápida (ej: Ctrl + K con `keydown` event) - Atajos de teclado: usar `keydown` events con `preventDefault()` para acciones frecuentes - * * Formularios - implementación técnica * *: - Validación en tiempo real: usar eventos `input`,
+                    `blur` con validación inmediata - Mensajes de error: mostrar usando claves de traducción del backend - Autocompletado: usar `<datalist>` o componente autocomplete con datos del API - Guardado automático: implementar `setInterval` o `debounce` para guardar borradores en localStorage - Wizard: crear componente multi - paso con navegación por pasos (botones anterior / siguiente) ### 18.11. PERFORMANCE Y OPTIMIZACIÓN FRONTEND
+                    - * * Code splitting * *: - Cargar JS solo cuando sea necesario - Lazy loading de módulos pesados (calendario, gráficos) - Separar código crítico de no crítico - * * Optimización de assets * *: - Minificar JS y CSS en producción - Comprimir imágenes (WebP, lazy loading) - Usar CDN para assets estáticos si aplica - Preload de recursos críticos - * * Rendimiento de renderizado * *: - Evitar re - renders innecesarios - Usar debounce / throttle en eventos frecuentes (scroll, resize, input) - Virtual scrolling para listas largas - Paginación o infinite scroll según caso - * * Métricas de performance (implementación técnica) * *: - Implementar código para medir tiempo de carga (usar `performance.now()` o `Performance API`) - Registrar métricas en consola o enviar a endpoint de analytics si está configurado - Optimizar LCP: cargar recursos críticos primero,
+                    usar `preload` para fuentes / imágenes críticas - Minimizar CLS: definir dimensiones de imágenes / videos,
+                    evitar insertar contenido dinámico arriba del fold ### 18.12. ACCESIBILIDAD Y USABILIDAD
+                    - * * Accesibilidad obligatoria * *: - Navegación por teclado en todos los elementos interactivos - ARIA labels donde sea necesario - Contraste de colores según WCAG AA mínimo - Focus visible en todos los elementos interactivos - Textos alternativos en imágenes informativas - * * Usabilidad - implementación técnica * *: - Mensajes de error: usar claves de traducción claras y específicas (ya cubierto en i18n) - Confirmaciones: implementar `confirm()` o modal de confirmación antes de acciones destructivas (DELETE, eliminar, etc.) - Deshacer / rehacer: implementar stack de acciones con `history` pattern (opcional, solo si es crítico) - Búsqueda con sugerencias: implementar autocomplete con resultados del API mientras el usuario escribe - Filtros guardados: guardar filtros en localStorage con clave `filters_{module}` y restaurar al cargar página ### 18.13. TESTING Y VALIDACIÓN FRONTEND - IMPLEMENTACIÓN TÉCNICA
+                    - * * Testing de componentes - código técnico * *: - Crear funciones de prueba para componentes reutilizables que validen diferentes estados - Implementar validación de estados: verificar que componente muestra correctamente loading,
+                    error,
+                    empty,
+                    success - Implementar tests de interacciones: simular eventos (click, hover, focus) y verificar comportamiento - * * Testing de integración - código técnico * *: - Crear tests que simulen flujos completos (crear → editar → eliminar) - Validar integración con APIs: mockear respuestas del API y verificar que el frontend maneja correctamente - Verificar compatibilidad: probar código en diferentes navegadores (Chrome, Firefox, Safari) manualmente o con herramientas - * * Validación técnica de mensajes * *: - Verificar que todos los mensajes usan claves de traducción (no texto hardcodeado) - Verificar que los mensajes de error son específicos y accionables (técnicamente, no subjetivamente) ### 18.14. UX/UI MODERNO PARA SAAS - DISEÑO VISUAL Y EXPERIENCIA
+                    - * * Principios de diseño visual moderno obligatorios * *: - * * Espaciado generoso * *: usar espaciado amplio entre elementos (
+                        mínimo `--spacing-md` entre cards,
+                        `--spacing-lg` entre secciones
+                    ) - * * Tipografía jerárquica clara * *: diferencias significativas entre tamaños (
+                        h1: `--font-size-xxxl`,
+                        h2: `--font-size-xxl`,
+                        h3: `--font-size-xl`
+                    ) - * * Sombras sutiles y modernas * *: usar `--shadow-sm` para cards,
+                    `--shadow-md` para hover,
+                    `--shadow-lg` para modales - * * Bordes redondeados consistentes * *: usar `--border-radius-lg` para cards,
+                    `--border-radius` para botones - * * Colores con contraste adecuado * *: verificar contraste WCAG AA,
+                    usar colores de estado semánticos - * * Cards modernas para SaaS * *: ```css
+  .card-modern {
+    background: var(--color-bg);
+    border: 1px solid var(--color-border-light);
+    border-radius: var(--border-radius-lg);
+    padding: var(--spacing-lg);
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition-all);
+  }
+  
+  .card-modern:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+    border-color: var(--color-primary-light);
+  }
+  ``` - * * KPI Cards modernas * *: ```css
+  .kpi-card {
+    background: var(--color-bg);
+    border-left: 4px solid var(--color-primary);
+    border-radius: var(--border-radius-lg);
+    padding: var(--spacing-lg);
+    box-shadow: var(--shadow-sm);
+  }
+  
+  .kpi-card__value {
+    font-size: var(--font-size-xxxl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-primary);
+  }
+  
+  .kpi-card__label {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  ``` - * * Botones modernos con estados claros * *: ```css
+  .btn-modern {
+    padding: var(--spacing-sm) var(--spacing-lg);
+    border-radius: var(--border-radius);
+    font-weight: var(--font-weight-medium);
+    transition: var(--transition-all);
+    box-shadow: var(--shadow-sm);
+  }
+  
+  .btn-modern:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+  }
+  
+  .btn-modern:active {
+    transform: translateY(0);
+    box-shadow: var(--shadow-sm);
+  }
+  ``` - * * Microinteracciones y feedback visual * *: - Transiciones suaves en todos los elementos interactivos (usar `--transition-base`) - Hover effects en cards,
+                    botones,
+                    enlaces (transform, shadow, color) - Loading states con animaciones sutiles (spinner, skeleton screens) - Feedback inmediato en acciones (toast notifications, cambios de estado visual) - Estados de focus mejorados (outline con color primario, offset adecuado) - * * Jerarquía visual mejorada * *: - Títulos grandes y prominentes (
+                        h1: `--font-size-xxxl`,
+                        font - weight: `--font-weight-bold`
+                    ) - Subtítulos con color muted (
+                        h2,
+                        h3: `--color-text-muted` para subtítulos secundarios
+                    ) - Espaciado vertical generoso entre secciones (`--spacing-xl` o `--spacing-xxl`) - Cards con sombras para crear profundidad y jerarquía - Uso de color primario para elementos importantes (botones primarios, enlaces, badges) - * * Formularios modernos * *: ```css
+  .form-modern .form-control {
+    border: 2px solid var(--color-border);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-sm) var(--spacing-md);
+    transition: var(--transition-all);
+  }
+  
+  .form-modern .form-control:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.1);
+    outline: none;
+  }
+  
+  .form-modern .form-label {
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text);
+    margin-bottom: var(--spacing-xs);
+  }
+  ``` - * * Tablas modernas y limpias * *: - Headers con fondo `--color-bg-light` y texto `--color-text` con `--font-weight-semibold` - Filas con hover effect sutil (`background-color: var(--color-bg-light)`) - Bordes sutiles (`border-color: var(--color-border-light)`) - Espaciado adecuado en celdas (`padding: var(--spacing-md)`) - Alternancia de filas opcional (zebra striping con `--color-bg-light`) - * * Navegación moderna * *: - Sidebar con fondo `--color-bg`,
+                    bordes sutiles - Items de menú con hover effect y estado activo claro - Iconos alineados con texto,
+                    espaciado consistente - Breadcrumbs con separadores modernos (> /) - Header sticky con sombra sutil cuando scrolleas - * * Empty states atractivos * *: - Iconos grandes y coloridos (usar color primario o secundario) - Mensajes claros y accionables - Botones de acción prominentes - Ilustraciones o iconos SVG cuando sea posible - * * Modales modernos * *: - Backdrop con blur effect (`backdrop-filter: blur(4px)`) - Modal con sombra grande (`--shadow-xl`) - Animación de entrada suave (fade + scale) - Header con borde inferior sutil - Footer con botones alineados a la derecha - * * Badges y tags modernos * *: ```css
+  .badge-modern {
+    display: inline-flex;
+    align-items: center;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--border-radius-pill);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  ``` - * * Gráficos y visualizaciones * *: - Colores consistentes con paleta corporativa - Tooltips informativos en hover - Leyendas claras y accesibles - Responsive: adaptarse a diferentes tamaños de pantalla - * * NUNCA hacer en diseño moderno * *: - ❌ Espaciado muy apretado entre elementos - ❌ Colores planos sin profundidad (usar sombras sutiles) - ❌ Tipografía sin jerarquía clara - ❌ Botones sin estados hover / active - ❌ Cards sin sombras o bordes - ❌ Transiciones bruscas o sin animación - ❌ Formularios sin feedback visual en focus - * * SIEMPRE hacer en diseño moderno * *: - ✅ Espaciado generoso y respirable - ✅ Sombras sutiles para crear profundidad - ✅ Transiciones suaves en interacciones - ✅ Jerarquía visual clara (tamaños, pesos, colores) - ✅ Feedback visual inmediato en acciones - ✅ Estados hover / active / focus bien definidos - ✅ Bordes redondeados consistentes - ✅ Colores con contraste adecuado ### 18.15. UX/UI ESPECÍFICA PARA SAAS - PRINCIPIOS Y MEJORES PRÁCTICAS
+                    - * * Onboarding y primera experiencia * *: - Implementar tutoriales interactivos para nuevas funcionalidades (usar componente Modal o Tooltip) - Empty states informativos con acciones claras (usar componente EmptyState) - Welcome screens para nuevos usuarios con información contextual - Tooltips contextuales para elementos complejos (usar atributo `title` o componente tooltip) - * * Feedback visual inmediato * *: - Confirmaciones visuales para acciones (botones, formularios) usando componente Toast - Estados de hover,
+                    active,
+                    disabled claros (usar variables CSS y transiciones) - Animaciones sutiles para transiciones (usar `--transition-base`, evitar excesivas) - Mensajes de éxito / error claros y accionables (usar componente Toast con claves de traducción) - * * Navegación intuitiva * *: - Breadcrumbs para navegación profunda (
+                        estructura HTML semántica `<nav aria-label="breadcrumb">`
+                    ) - Menú contextual según rol y permisos (verificar permisos RBAC en backend) - Búsqueda global accesible (tecla rápida, ej: Ctrl + K con `keydown` event) - Atajos de teclado para acciones frecuentes (usar `keydown` events con `preventDefault()`) - * * Formularios optimizados * *: - Validación en tiempo real (
+                        usar eventos `input`,
+                        `blur` con validación inmediata
+                    ) - Mensajes de error claros y específicos (usar claves de traducción del backend) - Autocompletado donde aplique (
+                        usar `<datalist>` o componente autocomplete con datos del API
+                    ) - Guardado automático de borradores (
+                        implementar `setInterval` o `debounce` para guardar en localStorage
+                    ) - Wizard para formularios complejos (
+                        crear componente multi - paso con navegación por pasos
+                    ) - * * Velocidad percibida y rendimiento * *: - Skeleton screens para contenido que tarda (usar componente LoadingSpinner) - Optimistic UI updates (actualizar UI inmediatamente, revertir si falla) - Lazy loading de contenido no crítico (usar `loading="lazy"` y code splitting) - Indicadores de progreso para operaciones largas (usar componente LoadingSpinner con mensaje) - * * Confianza y seguridad visual * *: - Indicadores de estado claros (badges, iconos, colores semánticos) - Confirmaciones para acciones destructivas (usar componente Modal.confirm()) - Mensajes de error constructivos (explicar qué pasó y cómo solucionarlo) - Indicadores de carga y progreso visibles (usar componente LoadingSpinner) ### 18.16. COMPONENTES UI MODERNOS PARA SAAS - IMPLEMENTACIÓN
+                    - * * Componente Card moderno * *: - Crear componente `.card-modern` con estilos modernos - Variantes: `.card-modern--elevated`,
+                    `.card-modern--outlined` - Estados: hover,
+                    active,
+                    disabled - * * Criterios * *: Card con sombras,
+                    bordes redondeados,
+                    transiciones,
+                    hover effects - * * Componente KPI Card * *: - Crear componente `.kpi-card` para métricas - Estructura: valor grande,
+                    label pequeño,
+                    icono opcional,
+                    trend indicator opcional - Variantes de color según tipo de métrica - * * Criterios * *: KPI cards con jerarquía visual clara,
+                    valores destacados,
+                    labels descriptivos - * * Componente Badge / Tag moderno * *: - Crear componente `.badge-modern` con variantes de color - Formato pill (bordes redondeados) - Tamaños: sm,
+                    md,
+                    lg - * * Criterios * *: Badges con colores semánticos,
+                    tipografía legible,
+                    espaciado adecuado - * * Componente Input moderno * *: - Crear estilos para `.form-modern` con inputs mejorados - Estados: default,
+                    focus,
+                    error,
+                    success,
+                    disabled - Labels flotantes opcionales - Iconos de ayuda / error inline - * * Criterios * *: Inputs con bordes claros,
+                    focus ring,
+                    estados visuales,
+                    feedback inmediato - * * Componente Button moderno * *: - Crear variantes: `.btn-modern--primary`,
+                    `.btn-modern--secondary`,
+                    `.btn-modern--ghost` - Tamaños: sm,
+                    md,
+                    lg - Estados: hover,
+                    active,
+                    disabled,
+                    loading - Iconos opcionales (left / right) - * * Criterios * *: Botones con sombras sutiles,
+                    transiciones,
+                    estados claros,
+                    iconos alineados - * * Componente Table moderno * *: - Crear estilos para `.table-modern` - Headers destacados,
+                    filas con hover,
+                    bordes sutiles - Responsive: convertir a cards en móvil - * * Criterios * *: Tablas limpias,
+                    legibles,
+                    con jerarquía visual clara - * * Componente Sidebar moderno * *: - Crear estilos para `.sidebar-modern` - Items de menú con hover,
+                    estado activo claro - Iconos + texto,
+                    espaciado consistente - * * Criterios * *: Sidebar limpia,
+                    navegación clara,
+                    estados visuales definidos - * * Componente Modal moderno * *: - Mejorar estilos de modal existente - Backdrop con blur,
+                    animación de entrada - Header y footer con estilos modernos - * * Criterios * *: Modal con backdrop blur,
+                    animaciones suaves,
+                    diseño limpio ### 18.17. PRINCIPIOS DE UX PARA SAAS - MEJORES PRÁCTICAS 2025
+                    - * * Onboarding efectivo * *: - Progreso visible en onboarding (indicador de pasos completados) - Tutoriales contextuales con tooltips interactivos - Ejemplos de datos o plantillas para empezar rápido - Skip option para usuarios avanzados - * * Implementación técnica * *: usar componente Modal con pasos,
+                    componente ProgressBar,
+                    tooltips con `data-tooltip` - * * Retención y engagement * *: - Notificaciones relevantes y no intrusivas (usar componente Toast) - Recordatorios de funcionalidades no usadas (opcional, fase 2) - Logros o milestones visuales (badges, progress bars) - * * Implementación técnica * *: sistema de notificaciones con preferencias,
+                    badges visuales con componente Badge - * * Claridad y simplicidad * *: - Información jerárquica: lo más importante primero - Agrupación lógica de funciones relacionadas - Lenguaje claro y accionable (usar claves de traducción descriptivas) - Iconografía consistente y reconocible - * * Implementación técnica * *: usar componentes EmptyState con mensajes claros,
+                    iconos SVG consistentes - * * Eficiencia del usuario * *: - Atajos de teclado para acciones frecuentes (documentar con tooltips) - Autocompletado inteligente en búsquedas y formularios - Acciones rápidas (quick actions) en dashboards - Filtros guardados / favoritos - * * Implementación técnica * *: event listeners para atajos (Ctrl + K para búsqueda),
+                    localStorage para filtros guardados - * * Feedback constante * *: - Confirmaciones visuales inmediatas para todas las acciones - Estados de carga claros (skeleton screens, spinners) - Mensajes de error constructivos (qué pasó y cómo solucionarlo) - Indicadores de progreso para operaciones largas - * * Implementación técnica * *: usar componentes Toast,
+                    LoadingSpinner,
+                    ProgressBar ### 18.18. DISEÑO VISUAL MODERNO SAAS - TENDENCIAS 2025
+                    - * * Estilo visual moderno obligatorio * *: - * * Glassmorphism sutil * *: backdrop blur en modales y overlays (usar `backdrop-filter: blur(4px)`) - * * Neumorphism ligero * *: sombras sutiles para profundidad (usar `--shadow-sm` y `--shadow-md`) - * * Gradientes sutiles * *: en botones primarios y elementos destacados (usar `--gradient-primary`) - * * Espaciado generoso * *: mínimo `--spacing-lg` entre secciones,
+                    `--spacing-md` entre cards - * * Tipografía moderna * *: sistema de fuentes con jerarquía clara,
+                    letter - spacing ajustado - * * Componentes visuales modernos * *: - * * Cards con elevación * *: sombras que aumentan en hover (`--shadow-sm` → `--shadow-md`) - * * Botones con profundidad * *: transform en hover (`translateY(-2px)`),
+                    sombras dinámicas - * * Inputs con focus ring * *: anillo de color primario en focus (
+                        `box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.1)`
+                    ) - * * Badges modernos * *: formato pill,
+                    colores semánticos,
+                    tipografía uppercase con letter - spacing - * * Modales con backdrop blur * *: `backdrop-filter: blur(4px)` para efecto glassmorphism - * * Paleta de colores moderna * *: - Colores primarios vibrantes pero profesionales - Colores de estado semánticos (success, warning, danger, info) con variantes light / dark - Gradientes sutiles para elementos destacados - Modo oscuro preparado (variables CSS para dark mode, fase 2) - * * Microinteracciones modernas * *: - Transiciones suaves en todos los elementos interactivos (`--transition-base: 250ms ease`) - Hover effects con transform y shadow - Loading states con animaciones sutiles (spinner, skeleton screens) - Feedback táctil en móvil (vibration API opcional, fase 2) - * * Diseño de dashboards moderno * *: - Grid system flexible con CSS Grid - KPI Cards destacadas con iconos y valores grandes - Gráficos con colores corporativos y tooltips informativos - Filtros siempre accesibles (sticky en móvil) - Quick actions prominentes ### 18.19. NAVEGACIÓN SAAS - MEJORES PRÁCTICAS 2025 - OBLIGATORIO
+                    - * * Estructura de navegación jerárquica obligatoria * *: - * * Agrupación lógica por funcionalidad * *: agrupar items relacionados (
+                        ej: "Planificación" → Calendario,
+                        Solicitudes,
+                        Grupos
+                    ) - * * Máximo 7 -9 items principales por sección * *: evitar sobrecarga cognitiva - * * Secciones colapsables * *: secciones con subitems deben poder expandirse / colapsarse - * * Separadores visuales * *: usar separadores sutiles entre secciones diferentes - * * Jerarquía visual clara * *: secciones principales más prominentes que subitems - * * Sidebar navigation moderna * *: - * * Ancho configurable * *: usar `--sidebar-width` (default: 260px),
+                    `--sidebar-collapsed-width` (80px) - * * Estado colapsado * *: sidebar debe poder colapsarse mostrando solo iconos (hover muestra tooltip) - * * Items con iconos + texto * *: iconos SVG consistentes (NUNCA emojis),
+                    texto visible siempre - * * Estados visuales claros * *: hover (fondo sutil),
+                    active (borde izquierdo destacado + fondo),
+                    disabled (opacidad reducida) - * * Badges de notificación * *: mostrar contadores en items con notificaciones pendientes (ej: "Aprobaciones (3)") - * * Búsqueda integrada * *: input de búsqueda en la parte superior del sidebar (opcional, fase 2) - * * Mega menu para navegación compleja * * (opcional, si hay muchas secciones): - * * Trigger en hover / click * *: mostrar mega menu al hacer hover o click en item principal - * * Layout en columnas * *: organizar subitems en columnas lógicas (máximo 4 columnas) - * * Iconos grandes * *: iconos más grandes en mega menu para mejor reconocimiento - * * Descripciones cortas * *: descripción de 1 línea para cada subitem (opcional) - * * Quick actions * *: acciones rápidas destacadas en mega menu (ej: "Nueva solicitud") - * * Breadcrumbs obligatorios * *: - * * Estructura semántica * *: usar `<nav aria-label="breadcrumb">` con `<ol>` - * * Separadores modernos * *: usar `/` o `>` estilizados,
+                    no texto plano - * * Último item no clickeable * *: el item actual no debe ser un enlace - * * Responsive * *: en móvil,
+                    mostrar solo últimos 2 -3 niveles o colapsar - * * Navegación responsive mobile - first * *: - * * Mobile * *: sidebar oculto por defecto,
+                    toggle button visible,
+                    overlay al abrir - * * Tablet * *: sidebar colapsable,
+                    toggle button visible - * * Desktop * *: sidebar fijo,
+                    toggle opcional para colapsar - * * Swipe gestures * *: en móvil,
+                    permitir swipe para abrir / cerrar sidebar - * * Navegación por teclado obligatoria * *: - * * Tab navigation * *: todos los items deben ser accesibles con Tab - * * Atajos de teclado * *: - `Ctrl+K` o `Cmd+K`: búsqueda global (ya implementado) - `Esc`: cerrar sidebar en móvil - `Arrow keys`: navegar entre items (opcional, fase 2) - * * Focus visible * *: outline claro en items con focus - * * Skip links * *: enlace "Saltar a contenido principal" al inicio del sidebar - * * Iconografía consistente * *: - * * SVG icons obligatorios * *: NUNCA usar emojis en navegación (solo para contenido) - * * Librería de iconos * *: usar librería consistente (
+                        Font Awesome,
+                        Heroicons,
+                        Material Icons,
+                        o SVG custom
+                    ) - * * Tamaño consistente * *: todos los iconos del mismo tamaño (default: 20px) - * * Color semántico * *: iconos con color del texto,
+                    cambiar en hover / active - * * Estados y feedback visual * *: - * * Item activo * *: borde izquierdo destacado (4px, color primario),
+                    fondo sutil,
+                    texto en negrita - * * Hover effect * *: transform translateX(2px),
+                    fondo sutil,
+                    sombra sutil - * * Loading state * *: spinner en item mientras carga página - * * Badge de notificación * *: badge pequeño con contador (ej: "3") en color primario - * * Tooltip en colapsado * *: cuando sidebar está colapsado,
+                    mostrar tooltip con texto completo al hover - * * Accesibilidad obligatoria * *: - * * ARIA labels * *: todos los items deben tener `aria-label` descriptivo - * * Roles semánticos * *: usar `<nav>`,
+                    `<aside>` con roles apropiados - * * Contraste WCAG AA * *: verificar contraste de texto y fondos - * * Screen readers * *: estructura semántica que screen readers puedan navegar - * * Focus management * *: al abrir sidebar en móvil,
+                    focus debe ir al primer item - * * Performance * *: - * * Lazy loading de iconos * *: cargar iconos SVG solo cuando se necesiten - * * Debounce en búsqueda * *: si hay búsqueda integrada,
+                    usar debounce (300ms) - * * Cache de estado * *: guardar estado colapsado / expandido en localStorage - * * NUNCA hacer en navegación * *: - ❌ Usar emojis como iconos (solo SVG o icon fonts) - ❌ Más de 9 items principales sin agrupación - ❌ Navegación sin estados visuales (hover, active) - ❌ Sidebar sin opción de colapsar - ❌ Items sin accesibilidad (ARIA, keyboard navigation) - ❌ Navegación sin breadcrumbs en páginas profundas - ❌ Iconos inconsistentes (diferentes estilos, tamaños) - * * SIEMPRE hacer en navegación * *: - ✅ Agrupar items relacionados lógicamente - ✅ Usar iconos SVG consistentes - ✅ Implementar estados visuales claros (hover, active) - ✅ Hacer sidebar colapsable - ✅ Implementar breadcrumbs en todas las páginas - ✅ Verificar accesibilidad (ARIA, keyboard, contraste) - ✅ Mobile - first: sidebar oculto en móvil,
+                    toggle button visible - ✅ Guardar preferencias de usuario (colapsado / expandido) ### 18.20. OPTIMIZACIÓN MÓVIL SAAS - MEJORES PRÁCTICAS 2025 - OBLIGATORIO
+                    - * * Navegación móvil optimizada * *: - * * Bottom navigation bar opcional * *: para apps con 3 -5 secciones principales,
+                    considerar bottom nav bar (opcional, fase 2) - * * Swipe gestures obligatorios * *: permitir swipe desde borde izquierdo para abrir sidebar,
+                    swipe derecho para cerrar - * * Hamburger menu mejorado * *: animación suave,
+                    feedback táctil (opcional: vibration API) - * * Navegación por gestos * *: swipe up / down para acciones rápidas (opcional, fase 2) - * * Bottom sheet para acciones * *: usar bottom sheet en lugar de modales para acciones secundarias en móvil - * * Dashboards móviles optimizados * *: - * * KPI Cards apiladas * *: en móvil,
+                    KPI cards en 1 columna,
+                    valores grandes y legibles - * * Gráficos adaptados * *: gráficos con scroll horizontal o versión simplificada en móvil - * * Filtros colapsables * *: filtros en bottom sheet o drawer colapsable,
+                    no siempre visibles - * * Quick actions flotantes * *: Floating Action Button (FAB) para acción principal en móvil - * * Pull to refresh * *: implementar pull to refresh en listas y dashboards móviles - * * Lazy loading agresivo * *: cargar solo datos visibles,
+                    cargar más al hacer scroll - * * Componentes móviles optimizados * *: - * * Tablas a cards * *: convertir tablas a cards en móvil automáticamente (DataTable ya lo hace) - * * Modales fullscreen o bottom sheet * *: modales en móvil deben ser fullscreen o bottom sheet,
+                    no centrados - * * Formularios optimizados * *: inputs grandes,
+                    labels flotantes,
+                    teclado numérico donde aplique - * * Date pickers nativos * *: usar `<input type="date">` en móvil para mejor UX - * * Touch targets grandes * *: mínimo 44x44px,
+                    espaciado mínimo 8px entre elementos interactivos - * * Interacciones táctiles * *: - * * Swipe actions * *: swipe left / right en listas para acciones rápidas (eliminar, editar, etc.) - * * Long press * *: long press para acciones contextuales (opcional) - * * Pull to refresh * *: en listas y dashboards (ya mencionado) - * * Swipe to dismiss * *: en notificaciones,
+                    modales,
+                    bottom sheets - * * Pinch to zoom * *: en imágenes y gráficos (opcional) - * * Performance móvil * *: - * * Code splitting agresivo * *: cargar solo código necesario para la página actual - * * Lazy loading de imágenes * *: todas las imágenes no críticas con `loading="lazy"` - * * Debounce en scroll * *: debounce en eventos de scroll para mejor performance - * * Virtual scrolling * *: en listas largas (> 50 items) usar virtual scrolling - * * Cache agresivo * *: cachear datos de dashboard y listas en localStorage - * * Minimizar re - renders * *: evitar re - renders innecesarios en componentes móviles - * * Formularios móviles * *: - * * Inputs grandes * *: altura mínima 44px,
+                    padding generoso - * * Labels flotantes * *: labels que flotan cuando hay contenido (ya implementado en form - modern) - * * Teclado apropiado * *: `inputmode` y `type` correctos (tel, email, numeric, etc.) - * * Autocompletado nativo * *: usar `autocomplete` HTML5 para mejor UX móvil - * * Validación en tiempo real * *: feedback inmediato sin bloquear el teclado - * * Botones de acción fijos * *: botones de submit / guardar fijos en bottom en móvil - * * Gestos y animaciones móviles * *: - * * Animaciones suaves * *: usar `transform` y `opacity` para animaciones (mejor performance) - * * Respetar prefers - reduced - motion * *: ya implementado,
+                    mantener - * * Feedback táctil * *: vibration API para feedback táctil (opcional, fase 2) - * * Transiciones rápidas * *: animaciones más rápidas en móvil (150 - 200ms vs 250ms desktop) - * * Navegación móvil avanzada * *: - * * Tab bar sticky * *: si se implementa bottom nav,
+                    debe ser sticky en bottom - * * Badges en tabs * *: mostrar contadores en tabs de navegación - * * Deep linking * *: soporte para deep links a secciones específicas (opcional, fase 2) - * * Back button handling * *: manejar botón back del navegador correctamente - * * Optimización de contenido móvil * *: - * * Texto legible * *: tamaño mínimo 16px para texto normal (evitar zoom automático en iOS) - * * Contraste mejorado * *: contraste mínimo WCAG AA,
+                    preferiblemente AAA en móvil - * * Espaciado generoso * *: espaciado mínimo 8px entre elementos táctiles - * * Imágenes optimizadas * *: usar `srcset` con tamaños móviles,
+                    WebP con fallback - * * Videos responsivos * *: videos con `aspect-ratio` y `object-fit: cover` - * * Testing móvil obligatorio * *: - * * Dispositivos reales * *: probar en iOS (iPhone) y Android (varios tamaños) - * * Orientaciones * *: probar vertical y horizontal - * * Conexiones * *: probar con 3G simulation (conexión lenta) - * * Touch events * *: verificar que todos los elementos son táctiles y responden correctamente - * * Performance * *: verificar tiempos de carga y scroll performance - * * NUNCA hacer en móvil * *: - ❌ Modales centrados pequeños (usar fullscreen o bottom sheet) - ❌ Tablas con scroll horizontal (convertir a cards) - ❌ Botones pequeños (< 44x44px) - ❌ Texto pequeño (< 16px) que cause zoom automático - ❌ Elementos muy juntos (< 8px de espaciado) - ❌ Formularios largos sin paginación o wizard - ❌ Cargar todo el contenido de una vez (usar lazy loading) - ❌ Animaciones pesadas que afecten scroll performance - * * SIEMPRE hacer en móvil * *: - ✅ Convertir tablas a cards automáticamente - ✅ Usar bottom sheet o fullscreen para modales - ✅ Implementar swipe gestures para navegación - ✅ Optimizar dashboards para 1 columna en móvil - ✅ Usar FAB para acción principal - ✅ Implementar pull to refresh - ✅ Touch targets mínimo 44x44px - ✅ Texto mínimo 16px - ✅ Lazy loading agresivo - ✅ Cache de datos críticos ### 18.21. COMPONENTES UI ESPECÍFICOS SAAS - IMPLEMENTACIÓN TÉCNICA
+                    - * * Dashboard Cards modernas * *: ```css
+  .dashboard-card-modern {
+    background: var(--color-bg);
+    border: 1px solid var(--color-border-light);
+    border-radius: var(--border-radius-lg);
+    padding: var(--spacing-lg);
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition-all);
+  }
+  
+  .dashboard-card-modern:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+    border-color: var(--color-primary-light);
+  }
+  ``` - * * KPI Cards con trend indicators * *: ```css
+  .kpi-card-modern {
+    background: var(--color-bg);
+    border-left: 4px solid var(--color-primary);
+    border-radius: var(--border-radius-lg);
+    padding: var(--spacing-lg);
+    box-shadow: var(--shadow-sm);
+  }
+  
+  .kpi-card-modern__value {
+    font-size: var(--font-size-xxxl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-primary);
+  }
+  
+  .kpi-card-modern__trend {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    font-size: var(--font-size-sm);
+    color: var(--color-success);
+  }
+  ``` - * * Formularios modernos con labels flotantes * *: ```css
+  .form-group-modern {
+    position: relative;
+  }
+  
+  .form-label-modern {
+    position: absolute;
+    top: var(--spacing-sm);
+    left: var(--spacing-md);
+    transition: var(--transition-base);
+    pointer-events: none;
+  }
+  
+  .form-control-modern:focus + .form-label-modern,
+  .form-control-modern:not(:placeholder-shown) + .form-label-modern {
+    top: -8px;
+    font-size: var(--font-size-xs);
+    background: var(--color-bg);
+    padding: 0 var(--spacing-xs);
+  }
+  ``` - * * Navegación moderna con estados claros * *: ```css
+  .nav-item-modern {
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--border-radius);
+    transition: var(--transition-base);
+  }
+  
+  .nav-item-modern:hover {
+    background: var(--color-bg-light);
+  }
+  
+  .nav-item-modern.is-active {
+    background: var(--color-primary);
+    color: var(--color-text-inverse);
+  }
+  ``` ### 18.20. MEJORAS UI/UX OBLIGATORIAS - CHECKLIST
+                    - * * Antes de considerar una página "terminada" * *: - ✅ Espaciado generoso entre elementos (mínimo `--spacing-md`) - ✅ Sombras sutiles en cards y elementos elevados - ✅ Transiciones suaves en todos los elementos interactivos - ✅ Estados hover / active / focus bien definidos - ✅ Jerarquía visual clara (tamaños de fuente, pesos, colores) - ✅ Feedback visual inmediato en todas las acciones - ✅ Empty states atractivos con acciones claras - ✅ Loading states con skeleton screens o spinners - ✅ Mensajes de error constructivos y accionables - ✅ Diseño mobile - first verificado - ✅ Accesibilidad WCAG AA verificada - ✅ Contraste de colores adecuado - ✅ Navegación por teclado funcional - * * Componentes que DEBEN usar estilos modernos * *: - Cards: `.card-modern` o `.dashboard-card-modern` - Botones: `.btn-modern` con variantes - Formularios: `.form-modern` con inputs mejorados - Tablas: `.table-modern` con hover effects - Modales: backdrop blur y animaciones - Badges: `.badge-modern` formato pill - Navegación: `.nav-modern` con estados claros ## REGLAS DE INTERNACIONALIZACIÓN (i18n) - CRÍTICO
+                    ### 18.1. NUNCA HARDCODEAR TEXTO VISIBLE
+                    - NUNCA escribir texto directamente en código que el usuario verá - NUNCA usar strings literales en PHP / JS para mensajes,
+                    labels,
+                    botones,
+                    títulos,
+                    errores - NUNCA hardcodear texto en HTML (excepto placeholders técnicos) - TODOS los textos visibles DEBEN usar claves de traducción - Ejemplo INCORRECTO: `echo "Usuario guardado";` o `<button>Guardar</button>` - Ejemplo CORRECTO: `echo t('users.save_success');` o `<button><?= t('common.save') ?></button>` ### 18.2. ESTRUCTURA DE CLAVES DE TRADUCCIÓN
+                    - Formato: `namespace.modulo.clave` (
+                        ej: `common.save`,
+                        `users.create_success`,
+                        `calendar.shift_conflict`
+                    ) - Namespaces sugeridos: `common`,
+                    `users`,
+                    `calendar`,
+                    `groups`,
+                    `requests`,
+                    `proposals`,
+                    `worklogs`,
+                    `disputes`,
+                    `billing`,
+                    `errors`,
+                    `validation`,
+                    `notifications` - Nombres descriptivos y específicos (no genéricos como `msg1`, `text`) - Usar snake_case para claves: `user_not_found`,
+                    `shift_created_successfully` ### 18.3. ARCHIVOS DE TRADUCCIÓN
+                    - Estructura: `backend/lang/{locale}/{namespace}.php` (
+                        ej: `backend/lang/es/common.php`,
+                        `backend/lang/de/common.php`
+                    ) - Idiomas soportados: español (es),
+                    alemán (de),
+                    francés (fr),
+                    italiano (it) - según especificación - Cada archivo retorna array asociativo: `return ['save' => 'Guardar', 'cancel' => 'Cancelar'];` - Helper global: función `t($key, $vars = [], $locale = null)` en `backend/helpers/i18n.php` - Fallback: si no existe traducción,
+                    usar español (es) como default,
+                    luego mostrar clave si no existe ### 18.4. USO EN PHP (BACKEND)
+                    - Función helper: `t('common.save')` o `t('users.welcome', ['name' => $userName])` - En respuestas JSON: `"error": t('validation.required', ['field' => 'email'])` - En emails / notificaciones: usar plantillas con claves de traducción - En PDFs: generar con traducciones según idioma del tenant - NUNCA concatenar traducciones: usar variables en claves ### 18.5. USO EN JAVASCRIPT (FRONTEND)
+                    - Cargar traducciones al inicio: `const translations = await fetch('/api/i18n/translations?locale=es');` - Función JS: `t('common.save')` o `t('errors.required', {field: 'email'})` - Almacenar en objeto global o módulo: `window.i18n = {...}` o módulo ES6 - Actualizar dinámicamente cuando cambia idioma del usuario - NUNCA hardcodear texto en alert(),
+                    confirm(),
+                    console.log() visible al usuario ### 18.6. USO EN HTML
+                    - Atributos data - i18n: `<button data-i18n="common.save">Guardar</button>` (procesar con JS) - O usar PHP: `<button><?= t('common.save') ?></button>` - Placeholders: `<input placeholder="<?= t('users.email_placeholder') ?>">` - Títulos y tooltips: `title="<?= t('common.tooltip_info') ?>"` ### 18.7. VARIABLES EN TRADUCCIONES
+                    - Formato: `'welcome' => 'Bienvenido, {name}'` → `t('users.welcome', ['name' => 'Juan'])` - Sintaxis: usar `{variable}` en traducciones,
+                    reemplazar con valores - Validación: verificar que todas las variables estén presentes antes de mostrar - Ejemplo: `'shift_from_to' => 'Turno de {start} a {end}'` ### 18.8. MENSAJES DE ERROR Y VALIDACIÓN
+                    - TODOS los mensajes de error DEBEN usar claves: `validation.required`,
+                    `validation.email_invalid`,
+                    `validation.min_length` - Errores de API: retornar clave en JSON: `{"error": "validation.required", "field": "email"}` - Frontend traduce la clave recibida del backend - NUNCA retornar mensajes de error hardcodeados desde API ### 18.9. NOTIFICACIONES Y EMAILS
+                    - Plantillas de email: usar claves de traducción según idioma del destinatario - Variables dinámicas: `t('notifications.proposal_received', ['company' => $companyName, 'date' => $date])` - Detectar idioma: del tenant o preferencia del usuario - Archivos de plantilla: `backend/lang/{locale}/notifications.php` ### 18.10. FECHAS, NÚMEROS Y FORMATOS
+                    - Usar librerías de i18n para fechas: formato según locale (DD / MM / YYYY vs MM / DD / YYYY) - Monedas: formatear según locale y moneda del tenant - Números: separadores decimales según locale (coma vs punto) - Días de semana,
+                    meses: usar traducciones,
+                    no hardcodear ### 18.11. PLURALIZACIÓN
+                    - Manejar singular / plural: `'items_count' => '{count} elemento|{count} elementos'` - Usar formato con pipe: `{count} elemento|elementos` y detectar automáticamente - O claves separadas: `item_singular`,
+                    `item_plural` ### 18.12. IDIOMA POR DEFECTO Y DETECCIÓN
+                    - Idioma por defecto: español (es) - Detectar desde: preferencia del usuario,
+                    configuración del tenant,
+                    header Accept - Language,
+                    o default - Permitir cambio de idioma: selector en UI que persiste preferencia - Almacenar preferencia: en sesión,
+                    cookie,
+                    o perfil de usuario ### 18.13. TRADUCCIONES EN BASE DE DATOS
+                    - Datos de negocio (nombres, descripciones): NO traducir (son datos del usuario) - Estados,
+                    tipos ENUM: traducir en frontend con claves (ej: `status.pending`, `status.approved`) - Configuraciones: etiquetas traducibles,
+                    valores no - NUNCA almacenar texto traducible en BD (excepto contenido generado por usuario) ### 18.14. VERIFICACIÓN Y VALIDACIÓN
+                    - Al crear nueva funcionalidad: verificar que TODOS los textos usen claves - Revisar que existan traducciones en TODOS los idiomas soportados - Si falta traducción: mostrar clave con prefijo [MISSING] en desarrollo,
+                    fallback en producción - Mantener archivos de traducción sincronizados entre idiomas ### 18.15. ESTRUCTURA DE ARCHIVOS i18n
+                    ```
+                 backend/
+                 lang/
+                 es/
+                 common.php
+                 users.php
+                 calendar.php
+                 groups.php
+                 requests.php
+                 proposals.php
+                 worklogs.php
+                 disputes.php
+                 billing.php
+                 errors.php
+                 validation.php
+                 notifications.php
+                 de/
+                 common.php
+                 ... (mismos archivos)
+                 fr/
+                 ...
+                 it/
+                 ...
+                 helpers/
+                 i18n.php (función t() y helpers)
+                 ``` ### 18.16. EJEMPLOS CORRECTOS
+                    ```php
+                 // PHP Backend
+                 echo t('users.save_success');
+                 $error = t('validation.required', ['field' => 'email']);
+                 return json_encode(['error' => t('errors.not_found', ['resource' => 'Usuario'])]);
+                 
+                 // JavaScript Frontend
+                 button.textContent = t('common.save');
+                 alert(t('validation.invalid_email'));
+                 
+                 // HTML
+                 <button><?= t('common.save') ?></button>
+                 <input placeholder="<?= t('users.email_placeholder') ?>">
+                 ``` ### 18.17. EJEMPLOS INCORRECTOS (NUNCA HACER)
+                    ```php
+                 // ❌ INCORRECTO
+                 echo "Usuario guardado correctamente";
+                 return json_encode(['error' => 'Usuario no encontrado']);
+                 <button>Guardar</button>
+                 alert('Email inválido');
+                 ``` ## REGLAS DE BILLING Y FACTURACIÓN
+                    ### 19. SNAPSHOTS DE ACTIVOS
+                    - Job diario que cuenta empleados / trabajadores activos por tenant - Almacenar en `usage_employee_snapshots` (tenant_id, date, active_count) - Cálculo mensual: promedio o pico según configuración del plan - NUNCA facturar sin snapshot válido ### 20. FACTURACIÓN
+                    - Ciclo mensual (1 -31) - Pre - billing de fijo + post - billing de variable - Generar factura PDF con detalle - Integración con Stripe (suscripciones + usage records) - Manejar fallos de cobro y dunning ### 21. REGLAS DE ACTIVOS
+                    - Empresa: cuenta empleados propios activos - Temporera: cuenta trabajadores activos (sean o no asignados) - Regla especial: Temporera factura desde mes siguiente si se desactiva trabajador - Prorrateo si alta / baja de tenant a mitad de ciclo ## REGLAS DE FLUJOS CRÍTICOS
+                    ### 22. SOLICITUDES Y PROPUESTAS
+                    - Empresa crea Solicitud → envía a Temporeras vinculadas - Temporera responde con Propuesta (auto - matching opcional) - Empresa confirma candidatos → genera Asignaciones - NUNCA asignar trabajador sin confirmación explícita - Auditoría de todos los cambios de estado ### 23. GRUPOS Y ASIGNACIONES
+                    - Grupo: 1 líder (empleado propio) + N miembros (propios / temporeros) - Validar límites de capacidad,
+                    ratios,
+                    skills - Conflictos de horario: verificar antes de asignar - NUNCA permitir asignaciones sin validar conflictos ### 24. FICHAJES Y APROBACIONES
+                    - Fichaje individual O parte del líder (genera work_logs masivos) - Flujo: draft → submitted → approved / rejected - Co - aprobación si trabajador es de Temporera (configurable) - Validaciones: pausas,
+                    umbrales diarios / semanales,
+                    horarios nocturnos / festivos ### 25. DISPUTAS
+                    - Ventana de reclamación configurable (ej: 72h) - Estados: sin_disputa → disputado → resuelto - Evidencias requeridas (comentarios, fotos) - Notificaciones automáticas ### 26. ÓRDENES DE TRABAJO (OT)
+                    - Multi - día / multi - mes - Vinculadas a calendario,
+                    grupos,
+                    partes - Parte diario genera work_logs - Firma digital del cliente al cierre - Exportes para facturación / costeo ## REGLAS DE APIS Y WEBHOOKS
+                    ### 27. API PÚBLICA REST
+                    - Base path: `/api/v1/` - Autenticación: API Keys por tenant - Scoping: todas las respuestas filtradas por tenant_id del API key - Documentación: endpoints claros,
+                    ejemplos de request / response - Versionado: preparar para v2,
+                    v3,
+                    etc.### 28. WEBHOOKS
+                    - Eventos: request.created,
+                    proposal.submitted,
+                    proposal.accepted,
+                    shift.assigned,
+                    worklog.approved,
+                    invoice.issued - Configurables por tenant (URLs, eventos suscritos) - Retry logic con backoff exponencial - Logging de intentos y fallos ## REGLAS DE NOTIFICACIONES
+                    ### 29. CANALES Y PLANTILLAS
+                    - Canales: Email (SMTP),
+                    SMS (Twilio),
+                    WhatsApp,
+                    WebPush - Plantillas multi - idioma con variables - Preferencias por tenant y usuario (opt - in / out, quiet hours) - Integración n8n vía webhooks ### 30. EVENTOS
+                    - Solicitud creada,
+                    propuesta recibida,
+                    confirmación,
+                    cambio horario,
+                    parte enviado,
+                    disputa creada / resuelta,
+                    factura emitida - Configurables por tenant (qué eventos, qué canales) ## REGLAS DE AUDITORÍA Y SEGURIDAD
+                    ### 31. LOGS DE AUDITORÍA
+                    - Registrar: quién,
+                    cuándo,
+                    qué (tabla / acción),
+                    diffs de cambios - Operaciones sensibles: billing,
+                    sharing,
+                    cambios de permisos,
+                    eliminaciones - IP y User - Agent para trazabilidad - Retención configurable ### 32. SEGURIDAD ADICIONAL
+                    - Hashing de passwords: bcrypt (nunca MD5, SHA1) - JWT con expiración corta + refresh tokens - Secretos en.env (nunca hardcodeados) - Rotación de claves API - Enmascaramiento de PII cuando se requiera - GDPR / LPD Suiza: export / erase de datos ## REGLAS DE TESTING
+                    ### 33. TESTS DE AISLAMIENTO
+                    - Tests obligatorios para verificar que no hay fugas cross - tenant - Verificar que queries sin tenant_id fallan - Verificar que tenant_id incorrecto no devuelve datos ### 34. TESTS FUNCIONALES
+                    - Validar flujos críticos: solicitud → propuesta → confirmación → asignación - Validar billing: snapshots,
+                    cálculos,
+                    facturas - Validar permisos RBAC ## REGLAS DE CONFIGURACIÓN
+                    ### 35. CONFIGURACIÓN DINÁMICA
+                    - Herencia: Owner (global) → Tenant → Proyecto / Cliente → Grupo - Feature flags para módulos (webhooks, APIs públicas, OCR, etc.) - Configuración por tenant: fichaje,
+                    aprobaciones,
+                    disputas,
+                    matching,
+                    notificaciones,
+                    billing,
+                    privacidad - NUNCA hardcodear valores configurables ## REGLAS DE DOCUMENTACIÓN
+                    ### 36. COMENTARIOS Y DOCS
+                    - Comentar código complejo o no obvio - Documentar funciones públicas con parámetros y retornos - Mantener README actualizado con estructura del proyecto - Documentar decisiones arquitectónicas importantes ### 36.5. GESTIÓN Y ACTUALIZACIÓN DE DOCUMENTACIÓN - OBLIGATORIO
+                    - * * SIEMPRE analizar documentación existente antes de crear nueva * *: - Buscar documentación relacionada en `docs/` antes de crear nueva - Verificar si ya existe documentación sobre el tema - Si existe,
+                    ACTUALIZAR en lugar de crear duplicada - * * Actualizar documentación cuando cambie código * *: - Si se refactoriza código documentado,
+                    ACTUALIZAR la documentación - Si se cambia funcionalidad documentada,
+                    ACTUALIZAR la documentación - Si se elimina funcionalidad documentada,
+                    ELIMINAR o marcar como obsoleta la documentación - * * Verificar vigencia de documentación * *: - Analizar si la documentación anterior sigue siendo válida - Verificar que no hay contradicciones entre documentación y código actual - Eliminar documentación obsoleta que ya no aplica por refactorizaciones - Actualizar documentación que tiene información parcialmente incorrecta - * * Proceso obligatorio al documentar * *: 1.Buscar documentación existente relacionada 2.Si existe: analizar si está vigente o necesita actualización 3.Si está vigente: actualizar con nueva información 4.Si está obsoleta: eliminar o marcar como "DEPRECATED" con fecha 5.Si no existe: crear nueva documentación 6.Verificar que no hay contradicciones con otra documentación - * * NUNCA hacer * *: - ❌ Crear documentación duplicada sin verificar si ya existe - ❌ Dejar documentación obsoleta sin actualizar o eliminar - ❌ Mantener documentación que contradice el código actual - ❌ Dejar documentación sobre funcionalidades eliminadas sin marcar como obsoleta - * * SIEMPRE hacer * *: - ✅ Buscar documentación existente antes de crear nueva - ✅ Actualizar documentación existente si el código cambió - ✅ Eliminar o marcar como obsoleta documentación que ya no aplica - ✅ Verificar consistencia entre documentación y código actual - ✅ Revisar documentación relacionada para evitar contradicciones ## REGLAS ESPECÍFICAS DE IMPLEMENTACIÓN
+                    ### 37. MATCHING SERVICE
+                    - Algoritmo: disponibilidad,
+                    cercanía (Haversine),
+                    skills,
+                    rating histórico,
+                    conflictos - Ponderación configurable - Retornar ranking ordenado ### 38. EXPORTES
+                    - CSV estándar para contabilidad / nómina - Plantillas descargables para importación - Validación de datos antes de importar - Vista previa antes de confirmar ### 39. REPORTES
+                    - Por empleado / trabajador,
+                    grupo,
+                    cliente / proyecto,
+                    período,
+                    tipo de hora - KPIs: cumplimiento turnos,
+                    extras,
+                    ausencias,
+                    coste hora - Descargas: CSV / XLSX / PDF ## REGLAS DE PERFORMANCE
+                    ### 40. OPTIMIZACIÓN
+                    - Índices en campos de búsqueda frecuente - Evitar N + 1 queries (usar JOINs apropiados) - Cachear datos que cambian poco (configuraciones, planes) - Paginación en listados grandes - Lazy loading donde aplique ## REGLAS ESPECÍFICAS DE ÓRDENES DE TRABAJO (OT)
+                    ### 44. ÓRDENES DE TRABAJO (OT) – REGLAS ESPECÍFICAS
+                    - * * Editor OT obligatorio * *: debe existir editor completo con alcance,
+                    tareas,
+                    checklist,
+                    materiales,
+                    seguridad,
+                    adjuntos - * * Calendario / Gantt de OT * *: vista por día / semana / mes con vínculo directo con `shifts` - * * Parte del líder por OT * *: genera `work_logs` para todos los miembros;
+permite registrar ausencias / tardanzas por línea individual - * * Firmas digitales * *: soporte para firmas de cliente / empresa / temporera;
+PDF OT con QR seguro (token temporal para acceso) - * * Disputas en OT * *: disputas referenciadas a líneas específicas del parte con evidencia (foto / comentario) - * * ACL estricta * *: solo miembros / grupo asignado y temporera vinculada pueden ver la OT;
+datos enmascarados según configuración de privacidad - * * Vínculo con calendario * *: OT debe estar vinculada a `shifts` y `work_groups` para trazabilidad completa ## REGLAS DE API - PAGINACIÓN, FILTROS Y ORDEN
+### 45. API – PAGINACIÓN / FILTROS / ORDEN
+- * * Parámetros estándar * *: TODAS las listas DEBEN aceptar: - `page` (número de página, default: 1) - `page_size` (tamaño de página, máx.100, default: 20) - `sort_by` (campo para ordenar) - `sort_dir` (ASC / DESC, default: ASC) - `q` (búsqueda general de texto) - Filtros de negocio específicos (`status`, `from`, `to`, `tenant_id`, etc.) - * * Respuesta estándar de lista * *: ```json
+                 {
+                 "data": [...],
+                 "page": 1,
+                 "page_size": 20,
+                 "total": 150,
+                 "total_pages": 8,
+                 "sort_by": "created_at",
+                 "sort_dir": "DESC"
+                 }
+                 ``` - * * Validación * *: `page_size` nunca puede exceder 100;
+validar que `sort_by` sea un campo válido - * * Performance * *: usar
+LIMIT / OFFSET en SQL con índices apropiados en campos de ordenamiento ## REGLAS DE API - IDEMPOTENCIA Y DEDUPLICACIÓN
+    ### 46. API – IDEMPOTENCIA Y DEDUPLICACIÓN
+    - * * Idempotency - Key * *: endpoints POST que crean recursos DEBEN aceptar header `Idempotency-Key` (UUID) - * * Almacenamiento * *: guardar clave y respuesta durante 24 horas;
+si se repite la misma clave,
+devolver la misma respuesta (sin crear duplicado) - * * Conflictos * *: si hay conflicto real (mismo key pero datos diferentes),
+retornar 409 Conflict - * * Versionado para drag & drop * *: usar campo `version` o `updated_at` en recursos del calendario - * * Optimistic locking * *: al actualizar,
+verificar que `version` no haya cambiado;
+si cambió,
+retornar 409 Conflict (evita overwrites concurrentes) - * * Implementación * *: tabla `idempotency_keys` con `key`,
+`response`,
+`created_at`,
+`expires_at` ## REGLAS DE WEBHOOKS - SEGURIDAD Y RETRY
+### 47. WEBHOOKS – SEGURIDAD Y RETRY
+- * * Firma HMAC * *: firmar payload con HMAC - SHA256 usando secreto compartido;
+incluir en header `X-Signature` - * * Verificación * *: receptor DEBE verificar firma antes de procesar;
+rechazar si no coincide (401 Unauthorized) - * * Retry con backoff exponencial * *: - Reintentos hasta 24 horas después del primer intento - Máximo 10 intentos - Backoff: 1s,
+2s,
+4s,
+8s,
+16s,
+32s,
+64s,
+128s,
+256s,
+512s - * * Registro de intentos * *: tabla `webhook_deliveries` con `webhook_id`,
+`attempt`,
+`status`,
+`response_code`,
+`response_body`,
+`attempted_at` - * * Deduplicación * *: header `X-Webhook-Id` (UUID) para que el receptor pueda deduplicar eventos - * * Timeout * *: timeout de 30 segundos por intento;
+marcar como fallido si excede ## REGLAS DE ARCHIVOS Y ADJUNTOS
+### 48. ARCHIVOS / ADJUNTOS
+- * * Almacenamiento S3 * *: subida a S3 - compatible (o servicio similar);
+NUNCA almacenar en sistema de archivos local - * * URLs firmadas * *: generar URLs firmadas con caducidad corta (ej: 1 hora) para acceso seguro - * * Validación MIME * *: validar tipo MIME en backend antes de aceptar;
+whitelist de tipos permitidos por tipo de adjunto - * * Validación de tamaño * *: límite máximo configurable por tipo (ej: 10MB para fotos, 50MB para PDFs) - * * Antivirus opcional * *: escanear con ClamAV o servicio similar si está disponible (fase 2) - * * Nombres de archivo * *: NUNCA almacenar PII en nombres de archivo;
+usar IDs / UUID + extensión - * * Estructura * *: `{tenant_id}/{resource_type}/{resource_id}/{uuid}.{ext}` - * * Metadata * *: almacenar `original_filename`,
+`mime_type`,
+`size`,
+`uploaded_by`,
+`uploaded_at` en BD ## REGLAS DE AUTENTICACIÓN Y SSO
+### 49. AUTENTICACIÓN / SSO
+- * * Políticas de contraseña * *: - Longitud mínima configurable (default: 8 caracteres) - Complejidad opcional (mayúsculas, números, símbolos) - Histórico de contraseñas (n últimas no permitidas, default: 5) - Expiración configurable (días, default: 90) - * * 2FA opcional * *: soporte para TOTP (Time - based One - Time Password) con apps como Google Authenticator - * * SSO (fase 2) * *: soporte para SAML 2.0 y OIDC por plan (Enterprise);
+configuración por tenant - * * Verificación de email * *: obligatoria antes de acceder a datos de producción;
+token de verificación con expiración (24h) - * * Sesiones * *: JWT con expiración corta (15 min) + refresh tokens (7 días);
+rotación de refresh tokens - * * Rate limiting en auth * *: `/auth/login` limitado a 5 intentos / min por IP,
+60 / min por tenant ## REGLAS DE MULTIDOMINIO Y CORS
+### 50. MULTIDOMINIO / CORS
+- * * Subdominios por tenant * *: soportar `{tenant-slug}.workee.app` o dominio propio configurado - * * CORS restringido * *: CORS configurado por dominio del tenant;
+whitelist de
+or ígenes permitidos - * * Cabeceras de seguridad obligatorias * *: - `Content-Security-Policy` (CSP) configurado por tenant - `X-Frame-Options: DENY` (o SAMEORIGIN si iframe necesario) - `Strict-Transport-Security` (HSTS) con max - age - `Referrer-Policy: strict-origin-when-cross-origin` - `X-Content-Type-Options: nosniff` - * * Configuración por tenant * *: cada tenant puede tener su dominio / SSL;
+validar certificado antes de activar ## REGLAS DE BACKUPS Y RETENCIÓN
+### 51. BACKUPS / RETENCIÓN
+- * * Backups diarios * *: backups automáticos diarios de toda la base de datos - * * Retención * *: mantener backups por 30 días;
+backups semanales por 3 meses;
+backups mensuales por 1 año - * * Restauración por tenant * *: capacidad de restaurar datos de un tenant específico bajo solicitud (solo Owner - Admin) - * * Políticas de retención configurables * *: - Logs de auditoría: retención configurable (default: 1 año) - Adjuntos: retención según tipo (fotos: 2 años, documentos: 5 años) - Datos de trabajo: según regulación local (ej: Suiza: 10 años para nóminas) - * * Purga programada * *: jobs automáticos que purgan datos según políticas;
+notificar antes de purgar datos críticos - * * Export antes de purga * *: permitir export de datos antes de purgar (GDPR / LPD) ## REGLAS DE OBSERVABILIDAD
+### 52. OBSERVABILIDAD
+- * * Request ID * *: incluir `X-Request-ID` (UUID) en todas las respuestas;
+propagar en logs y llamadas internas - * * Logs estructurados * *: formato JSON con campos obligatorios: ```json
+                 {
+                 "timestamp": "ISO8601",
+                 "level": "INFO|WARN|ERROR",
+                 "request_id": "UUID",
+                 "tenant_id": 123,
+                 "user_id": 456,
+                 "endpoint": "/api/v1/shifts",
+                 "method": "POST",
+                 "duration_ms": 45,
+                 "message": "..."
+                 }
+                 ``` - * * Tiempos por endpoint * *: registrar tiempo de respuesta de cada endpoint;
+alertar si > umbral (ej: 1 segundo) - * * Métricas de jobs * *: para cada job cron,
+registrar: - Tiempo en cola - Latencia de ejecución - Número de fallos - Items procesados - * * Alertas * *: alertar si error rate > umbral (ej: 5 %) por tenant o endpoint en ventana de tiempo (ej: 5 minutos) - * * Health checks * *: endpoint `/health` que verifica BD,
+S3,
+servicios externos ## REGLAS DE ERRORES - CONVENCIÓN
+### 53. ERRORES – CONVENCIÓN
+- * * error_code numérico * *: además de `error_key` (clave de traducción),
+incluir `error_code` numérico único - * * Mapeo a HTTP * *: - `400 Bad Request`: datos inválidos en formato - `401 Unauthorized`: no autenticado - `403 Forbidden`: no autorizado (permisos) - `404 Not Found`: recurso no existe - `409 Conflict`: conflicto de versión / idempotencia / recurso duplicado - `422 Unprocessable Entity`: validación de negocio fallida - `429 Too Many Requests`: rate
+limit excedido - `500 Internal Server Error`: error del servidor - `503 Service Unavailable`: dependencias externas caídas - * * Formato de error * *: ```json
+                 {
+                 "success": false,
+                 "error_code": 1001,
+                 "error_key": "validation.required",
+                 "error_params": {"field": "email"},
+                 "message": "El campo email es requerido",
+                 "request_id": "uuid"
+                 }
+                 ``` - * * Documentación * *: mantener lista de códigos de error con descripción ## REGLAS DE MIGRACIONES - VERSIONADO
+    ### 54. MIGRACIONES – VERSIONADO
+    - * * Convención de archivo * *: `YYYYMMDDHHMM__descripcion.sql` (ej: `202401151430__add_work_orders_table.sql`) - * * NUNCA modificar migraciones aplicadas * *: si una migración ya se ejecutó en producción, NUNCA modificarla;
+crear nueva migración con ALTER - * * Script de verificación * *: antes de cada release,
+ejecutar script que verifica: - Todas las tablas tienen `tenant_id` (excepto globales) - Todas las Foreign Keys están definidas - Índices en campos críticos existen - No hay tablas huérfanas sin FKs - * * Rollback * *: cada migración debe tener script de rollback (opcional pero recomendado) - * * Transacciones * *: ejecutar migraciones dentro de transacciones;
+rollback automático si falla - * * Registro * *: tabla `schema_migrations` con `version`,
+`applied_at`,
+`checksum` ## REGLAS DE PRIVACIDAD EMPRESA↔TEMPORERA
+### 55. PRIVACIDAD EMPRESA↔TEMPORERA
+- * * Visibilidad PII configurable * *: configuración por tenant de visibilidad de PII (teléfono / email) del trabajador temporero: - `oculto`: no visible hasta confirmación - `visible_al_confirmar`: visible cuando se confirma la propuesta - `oculto_tras_cierre`: oculto después de cerrar el trabajo - * * Logs de acceso a PII * *: registrar TODOS los accesos a datos PII: - Quién accedió (user_id, tenant_id) - Cuándo (timestamp) - Qué datos (tipo: teléfono, email, dirección) - Propósito (justificación) - * * Enmascaramiento * *: enmascarar datos según configuración (ej: `+41 ** *** 12 34` para teléfono) - * * Auditoría * *: reportes de acceso a PII disponibles para Owner y Temporera - Admin ## REGLAS DE LÍMITES Y CUOTAS
+### 56. LÍMITES / CUOTAS
+- * * Rate limits por endpoint * *: - `/auth/login`: 5 intentos / min por IP,
+60 / min por tenant - `/api/*`: 100 req / min por tenant (configurable por plan) - Endpoints de creación: 10 req / min por usuario - * * Cuotas API pública * *: límites por tenant según plan: - Basic: 1,
+000 req / día - Pro: 10,
+000 req / día - Enterprise: ilimitado - * * Tamaño máximo de respuesta * *: 1MB por defecto;
+configurable por endpoint - * * Headers de rate
+limit * *: incluir en respuesta: - `X-RateLimit-Limit`: límite total - `X-RateLimit-Remaining`: requests restantes - `X-RateLimit-Reset`: timestamp de reset - * * Respuesta 429 * *: cuando se excede,
+    retornar 429 con `Retry-After` header (segundos) ## REGLAS DE SEGURIDAD DE ENTRADA
+    ### 57. SEGURIDAD DE ENTRADA
+    - * * Tamaño máximo de JSON * *: 1MB por request;
+rechazar con 413 Payload Too Large si excede - * * Límite de campos de listas * *: máximo 100 ítems en arrays de entrada (ej: `candidates[]`);
+rechazar si excede - * * Normalización de direcciones * *: normalizar direcciones antes de almacenar (para matching por cercanía): - Eliminar acentos,
+convertir a mayúsculas - Normalizar abreviaciones (Calle → C /, Avenida → Av.) - Validar formato de código postal según país - * * Validación de coordenadas * *: validar que coordenadas (lat / lng) estén en rangos válidos: - Latitud: -90 a 90 - Longitud: -180 a 180 - Precisión mínima: 6 decimales para matching por Haversine - * * Sanitización * *: sanitizar TODOS los inputs antes de procesar (trim, escape, validar tipos) - * * Validación de tipos * *: validar tipos de datos estrictamente (no confiar en type coercion) ## REGLAS FINALES
+### 41. DEFINICIÓN DE DONE
+- * * Especificación consultada * *: `docs/Workee_kickoff_v_1.md` revisado y funcionalidad alineada con la especificación - * * Sin parches temporales * *: solución implementada desde la raíz,
+sin workarounds ni código temporal - Código revisado y sin duplicación - Validaciones y errores JSON consistentes - Tenancy y permisos verificados - Tests de aislamiento pasando - Auditoría activada para operaciones sensibles - Documentación actualizada si aplica: - Documentación existente revisada y actualizada si cambió el código - Documentación obsoleta eliminada o marcada como DEPRECATED - Sin contradicciones entre documentación y código actual - Sin documentación duplicada - Todas las traducciones creadas en todos los idiomas - Verificación de migraciones antes de release - * * Interfaz probada y funcional en móvil * * (iOS y Android) - * * Diseño mobile - first implementado * * (responsive en todos los breakpoints) - * * UI táctil - friendly verificada * * (botones 44x44px mínimo, espaciado adecuado) - * * Sistema de diseño CSS verificado * *: `theme.css` importado,
+variables CSS usadas,
+sin colores hardcodeados,
+arquitectura modular,
+BEM aplicado - * * Arquitectura frontend verificada * *: componentes reutilizables creados,
+cliente API centralizado,
+DataTable usado para tablas,
+estados de carga implementados,
+dashboards con jerarquía visual clara - * * Aplicación completa verificada * *: cambios globales aplicados en TODAS las páginas del sistema,
+no solo en ejemplos o páginas principales,
+todas las instancias antiguas reemplazadas,
+funcionalidad verificada en TODAS las páginas afectadas,
+código antiguo eliminado después de reemplazo ### 42. NUNCA HACER
+- ❌ Usar PDO (solo mysqli) - ❌ Crear tablas sin tenant_id (excepto globales) - ❌ Queries sin prepared statements - ❌ Refactorizar sin solicitud explícita - ❌ Dejar código muerto - ❌ Duplicar código existente - ❌ Saltarse middlewares de tenancy / RBAC - ❌ Hardcodear valores configurables - ❌ Confiar solo en validación frontend - ❌ Exponer datos cross - tenant sin autorización - ❌ Hardcodear texto visible al usuario (SIEMPRE usar claves de traducción) - ❌ Escribir strings literales en mensajes,
+labels,
+botones,
+errores - ❌ Retornar mensajes de error hardcodeados desde APIs - ❌ Usar texto directo en HTML sin función t() - ❌ Almacenar texto traducible en base de datos - ❌ Modificar migraciones ya aplicadas - ❌ Almacenar archivos en sistema de archivos local (usar S3) - ❌ Exponer PII sin logs de acceso - ❌ Diseñar primero para desktop (SIEMPRE mobile - first) - ❌ Asumir que una funcionalidad solo se usará en desktop - ❌ Crear interfaces no usables en móvil - ❌ Botones pequeños (< 44x44px) o elementos muy juntos - ❌ Desarrollar sin consultar `docs/Workee_kickoff_v_1.md` primero - ❌ Implementar funcionalidades que contradigan la especificación - ❌ Crear scripts en la raíz del proyecto o en carpetas de ejecución - ❌ Dejar scripts sueltos sin organizar en `scripts/` - ❌ Crear scripts de utilidad / prueba en `backend/api/` o `backend/core/` - ❌ Crear parches,
+workarounds o soluciones temporales - ❌ Dejar código con "TODO: arreglar después" o comentarios de "hack/temporary fix" - ❌ Ocultar errores con try - catch sin resolver la causa raíz - ❌ Ignorar errores con `@` o `suppress warnings` - ❌ Validar solo en frontend sin validación en backend - ❌ Deshabilitar validaciones o checks de seguridad "temporalmente" - ❌ Hardcodear colores en CSS (SIEMPRE usar variables CSS) - ❌ Crear páginas sin importar `theme.css` - ❌ Duplicar estilos de colores en múltiples archivos CSS - ❌ Usar estilos inline en HTML (excepto casos muy específicos) - ❌ Crear archivos CSS monolíticos de miles de líneas - ❌ Anidar selectores más de 3 niveles - ❌ Usar `!important` sin documentar el motivo - ❌ Crear nombres de clases genéricos o sin contexto - ❌ Usar selectores complejos o lentos (ej: `div > ul > li > a`) - ❌ Dejar código CSS muerto sin eliminar - ❌ Duplicar lógica JS entre módulos o páginas - ❌ Hardcodear valores de z - index (usar tokens `--z-*`) - ❌ Hardcodear valores de transiciones (usar tokens `--transition-*`) - ❌ Hardcodear valores de sombras (usar tokens `--shadow-*`) - ❌ Mezclar capas ITCSS (poner componentes en utilities, etc.) - ❌ Ocultar outline sin reemplazo (usar `:focus-visible`) - ❌ Usar imágenes sin `loading="lazy"` o sin `srcset` - ❌ Ignorar `prefers-reduced-motion` en animaciones - ❌ Crear tablas sin usar componente DataTable reutilizable - ❌ Hacer llamadas API directamente sin usar cliente centralizado - ❌ Crear componentes específicos por página sin intentar reutilizar - ❌ Ignorar estados de carga en operaciones as íncronas - ❌ Crear dashboards sin jerarquía visual clara - ❌ Crear documentación duplicada sin verificar si ya existe - ❌ Dejar documentación obsoleta sin actualizar o eliminar - ❌ Mantener documentación que contradice el código actual - ❌ Dejar documentación sobre funcionalidades eliminadas sin marcar como obsoleta - ❌ Espaciado muy apretado entre elementos (usar espaciado generoso) - ❌ Colores planos sin profundidad (usar sombras sutiles) - ❌ Tipografía sin jerarquía clara - ❌ Botones sin estados hover / active - ❌ Cards sin sombras o bordes - ❌ Transiciones bruscas o sin animación - ❌ Formularios sin feedback visual en focus - ❌ Usar emojis como iconos en navegación (solo SVG o icon fonts) - ❌ Más de 9 items principales sin agrupación en navegación - ❌ Navegación sin estados visuales (hover, active) - ❌ Sidebar sin opción de colapsar - ❌ Items de navegación sin accesibilidad (ARIA, keyboard navigation) - ❌ Navegación sin breadcrumbs en páginas profundas - ❌ Iconos inconsistentes en navegación (diferentes estilos, tamaños) - ❌ Aplicar cambios globales solo en páginas de ejemplo o páginas principales - ❌ Dejar implementaciones parciales de componentes / mejoras globales - ❌ Mezclar código antiguo con código nuevo sin completar la migración - ❌ Dejar comentarios sobre "aplicar después" sin completar la implementación - ❌ Considerar completado sin verificar todas las páginas del sistema - ❌ Modales centrados pequeños en móvil (usar fullscreen o bottom sheet) - ❌ Tablas con scroll horizontal en móvil (convertir a cards) - ❌ Texto pequeño (< 16px) que cause zoom automático en iOS - ❌ Elementos muy juntos (< 8px de espaciado) en móvil - ❌ Formularios largos sin paginación o wizard en móvil - ❌ Cargar todo el contenido de una vez en móvil (usar lazy loading) - ❌ Animaciones pesadas que afecten scroll performance en móvil ### 43. SIEMPRE HACER
+- ✅ Consultar `docs/Workee_kickoff_v_1.md` ANTES de desarrollar cualquier funcionalidad - ✅ Verificar código existente antes de crear nuevo - ✅ Usar prepared statements con mysqli - ✅ Incluir tenant_id en todas las queries - ✅ Validar permisos RBAC - ✅ Retornar JSON consistente - ✅ Auditar operaciones sensibles - ✅ Validar y sanitizar entradas - ✅ Manejar errores apropiadamente - ✅ Documentar código complejo - ✅ Eliminar código no utilizado - ✅ Usar claves de traducción para TODO texto visible al usuario - ✅ Crear traducciones en TODOS los idiomas soportados al agregar nueva funcionalidad - ✅ Usar función t() en PHP y JS para todos los textos - ✅ Retornar claves de error desde APIs (no mensajes hardcodeados) - ✅ Verificar que existan traducciones antes de desplegar - ✅ Implementar paginación en todas las listas - ✅ Incluir Request - ID en todas las respuestas - ✅ Validar tamaño de JSON y arrays de entrada - ✅ Registrar accesos a PII - ✅ Diseñar mobile - first (móvil primero, luego desktop) - ✅ Probar todas las funcionalidades en móvil antes de desplegar - ✅ Usar botones y áreas táctiles de mínimo 44x44px - ✅ Optimizar para performance móvil (lazy loading, cache) - ✅ Considerar todos los roles de usuario en diseño móvil - ✅ Crear scripts no esenciales en `scripts/` con estructura organizada - ✅ Verificar si un script es esencial antes de decidir dónde crearlo - ✅ Documentar el propósito de cada script con comentarios - ✅ Resolver problemas desde la raíz,
+nunca con parches temporales - ✅ Analizar la causa raíz del problema antes de codificar - ✅ Implementar la solución correcta desde el inicio - ✅ Si hay datos inconsistentes,
+crear migración para corregirlos - ✅ Si hay bugs de lógica,
+corregir la lógica completa,
+no agregar excepciones - ✅ Importar `theme.css` en TODAS las páginas HTML - ✅ Usar variables CSS para todos los colores y estilos - ✅ Consultar `theme.css` antes de crear nuevos estilos - ✅ Mantener consistencia con el sistema de diseño corporativo - ✅ Organizar CSS en archivos pequeños y modulares (máx.300 -400 líneas) - ✅ Usar convención BEM para nombres de clases - ✅ Mantener anidamiento máximo de 3 niveles - ✅ Documentar decisiones de diseño complejas en CSS - ✅ Revisar y eliminar código CSS muerto periódicamente - ✅ Usar linter CSS (Stylelint) para validar código - ✅ Usar cliente API centralizado para todas las llamadas API - ✅ Crear componentes reutilizables antes de duplicar código - ✅ Usar componente DataTable para todas las tablas - ✅ Mostrar estados de carga en operaciones as íncronas - ✅ Implementar jerarquía visual clara en dashboards - ✅ Optimizar performance frontend (code splitting, lazy loading) - ✅ Implementar navegación por teclado y accesibilidad - ✅ Crear tests técnicos para componentes y flujos - ✅ Organizar CSS según ITCSS (capas de especificidad creciente) - ✅ Usar design tokens para TODOS los valores (colores, sombras, transiciones, z - index) - ✅ Implementar skip links para navegación por teclado - ✅ Respetar `prefers-reduced-motion` en todas las animaciones - ✅ Usar imágenes responsivas con `srcset` y `loading="lazy"` - ✅ Verificar contraste WCAG AA en todos los colores de texto - ✅ Usar CSS Grid para layouts de dashboard - ✅ Aplicar BEM consistentemente en todos los componentes - ✅ Refactorizar CSS existente eliminando colores hardcodeados - ✅ Buscar documentación existente antes de crear nueva - ✅ Actualizar documentación existente si el código cambió - ✅ Eliminar o marcar como obsoleta documentación que ya no aplica - ✅ Verificar consistencia entre documentación y código actual - ✅ Revisar documentación relacionada para evitar contradicciones - ✅ Usar espaciado generoso y respirable entre elementos - ✅ Aplicar sombras sutiles para crear profundidad - ✅ Implementar transiciones suaves en interacciones - ✅ Crear jerarquía visual clara (tamaños, pesos, colores) - ✅ Proporcionar feedback visual inmediato en acciones - ✅ Definir estados hover / active / focus bien definidos - ✅ Usar bordes redondeados consistentes - ✅ Verificar colores con contraste adecuado - ✅ Agrupar items de navegación relacionados lógicamente - ✅ Usar iconos SVG consistentes en navegación (NUNCA emojis) - ✅ Implementar estados visuales claros en navegación (hover, active) - ✅ Hacer sidebar colapsable con estado guardado en localStorage - ✅ Implementar breadcrumbs en todas las páginas con estructura semántica - ✅ Verificar accesibilidad de navegación (ARIA, keyboard, contraste) - ✅ Mobile - first en navegación: sidebar oculto en móvil,
+toggle button visible - ✅ Guardar preferencias de usuario para navegación (colapsado / expandido) - ✅ Aplicar cambios globales en TODAS las páginas del sistema (no solo en ejemplos) - ✅ Buscar todas las instancias antes de aplicar cambios globales - ✅ Reemplazar TODAS las implementaciones antiguas al crear nuevos componentes / helpers - ✅ Verificar funcionalidad en TODAS las páginas afectadas antes de considerar completado - ✅ Documentar dónde se aplicó cada cambio global - ✅ Eliminar código antiguo después de reemplazarlo completamente - ✅ Convertir tablas a cards automáticamente en móvil - ✅ Usar bottom sheet o fullscreen para modales en móvil - ✅ Implementar swipe gestures para navegación móvil - ✅ Optimizar dashboards para 1 columna en móvil - ✅ Usar FAB para acción principal en móvil - ✅ Implementar pull to refresh en listas y dashboards móviles - ✅ Touch targets mínimo 44x44px en móvil - ✅ Texto mínimo 16px en móvil (evitar zoom automático) - ✅ Lazy loading agresivo en móvil - ✅ Cache de datos críticos en móvil ## REFERENCIA RÁPIDA
+* * Documentación * *: SIEMPRE consultar `docs/Workee_kickoff_v_1.md` antes de desarrollar * * Stack * *: PHP 8.x + mysqli,
+MySQL,
+Bootstrap 5,
+JS modular * * Multitenancy * *: tenant_id obligatorio,
+middleware obligatorio * * Seguridad * *: prepared statements,
+RBAC,
+CSRF,
+rate limiting,
+HMAC webhooks * * i18n * *: NUNCA hardcodear texto,
+SIEMPRE usar claves de traducción (t()) * * CSS * *: Sistema de diseño corporativo obligatorio (`theme.css`),
+variables CSS,
+ITCSS (arquitectura escalable),
+BEM,
+design tokens (colores, sombras, transiciones, z - index),
+responsive design (CSS Grid),
+imágenes responsivas,
+accesibilidad WCAG AA,
+NUNCA valores hardcodeados * * Frontend * *: Arquitectura modular,
+componentes reutilizables,
+DataTable obligatorio,
+cliente API centralizado,
+dashboards con jerarquía visual * * Mobile - First * *: OBLIGATORIO - todas las interfaces diseñadas primero para móvil * * Scripts * *: scripts no esenciales OBLIGATORIO en `scripts/`,
+nunca en raíz o carpetas de ejecución * * Soluciones * *: NUNCA parches temporales,
+SIEMPRE resolver desde la raíz del problema * * Billing * *: fijo + variable por activo,
+snapshots diarios * * Flujos * *: Solicitudes → Propuestas → Asignaciones → Fichajes → Aprobaciones * * APIs * *: REST / api / v1 /,
+paginación estándar,
+idempotencia,
+webhooks configurables * * Testing * *: aislamiento cross - tenant obligatorio,
+testing móvil obligatorio * * Archivos * *: S3 - compatible,
+URLs firmadas,
+validación MIME / size * * Observabilidad * *: logs estructurados,
+request - id,
+métricas,
+alertas ---
+* * ÚLTIMA ACTUALIZACIÓN * *: Basado en docs / Workee_kickoff_v_1.md v2 + Reglas extendidas * * OBJETIVO * *: Desarrollo consistente,
+seguro y escalable del SaaS multitenant

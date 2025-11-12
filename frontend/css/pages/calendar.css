@@ -1,0 +1,125 @@
+/**
+ * Estilos para Calendario
+ * ITCSS Layer: Pages
+ * BEM: Compatibilidad con FullCalendar (clases externas)
+ */
+
+/* FullCalendar personalización */
+#calendar {
+    font-family: var(--font-family-base);
+}
+
+.fc-event {
+    cursor: pointer;
+    border-radius: var(--border-radius);
+    padding: var(--spacing-xs) var(--spacing-xs);
+    font-size: var(--font-size-sm);
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition-base);
+    border: none !important;
+}
+
+.fc-event:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+}
+
+.fc-event-title {
+    font-weight: var(--font-weight-bold);
+    margin-bottom: var(--spacing-xs);
+}
+
+.fc-event-time {
+    font-size: var(--font-size-xs);
+    opacity: var(--opacity-hover);
+}
+
+.fc-event-group {
+    font-size: 0.7rem; /* Tamaño muy específico de FullCalendar */
+    opacity: var(--opacity-overlay);
+    margin-top: var(--spacing-xs);
+}
+
+.fc-daygrid-event {
+    white-space: normal;
+    word-wrap: break-word;
+}
+
+.fc-timegrid-event {
+    border-radius: var(--border-radius);
+}
+
+/* Colores de estado - Usando variables CSS */
+.fc-event-planned {
+    background-color: var(--color-secondary);
+    border-color: var(--color-secondary);
+}
+
+.fc-event-assigned {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+}
+
+.fc-event-in_progress {
+    background-color: var(--color-warning);
+    border-color: var(--color-warning);
+    color: var(--color-text);
+}
+
+.fc-event-done {
+    background-color: var(--color-success);
+    border-color: var(--color-success);
+}
+
+.fc-event-canceled {
+    background-color: var(--color-danger);
+    border-color: var(--color-danger);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .fc-header-toolbar {
+        flex-direction: column;
+        gap: var(--spacing-xs);
+    }
+    
+    .fc-toolbar-chunk {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--spacing-xs);
+    }
+    
+    .fc-button {
+        font-size: var(--font-size-sm);
+        padding: var(--spacing-xs) var(--spacing-xs);
+    }
+    
+    .fc-event-title {
+        font-size: var(--font-size-xs);
+    }
+    
+    .fc-event-time {
+        font-size: 0.65rem; /* Tamaño muy específico de FullCalendar */
+    }
+}
+
+/* Modal de turno */
+#modal-shift .modal-body {
+    max-height: var(--modal-body-max-height);
+    overflow-y: auto;
+}
+
+#shift-conflicts ul,
+#shift-warnings ul {
+    margin-bottom: 0;
+    padding-left: var(--spacing-lg);
+}
+
+/* Filtros */
+.filter-card {
+    background: var(--color-bg-light);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-md);
+}
+
+/* .page-actions movido a 05-objects/_layout.css (ITCSS Layer 05) */

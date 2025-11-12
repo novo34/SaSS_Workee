@@ -1,0 +1,226 @@
+/**
+ * Floating Action Button (FAB) - Workee
+ * 
+ * Estilos para componente FAB en móvil
+ * MOB-139: Implementar Floating Action Button para acción principal
+ */
+
+/* FAB Container */
+.fab {
+    position: fixed;
+    width: 56px;
+    height: 56px;
+    border-radius: var(--border-radius-circle);
+    background: var(--gradient-button-primary);
+    color: var(--color-text-inverse);
+    border: none;
+    box-shadow: var(--shadow-lg);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: var(--z-fixed);
+    transition: var(--transition-base);
+    opacity: 0;
+    transform: scale(0);
+    pointer-events: none;
+    padding: 0;
+    overflow: visible;
+}
+
+/* MOB-139: Posiciones */
+.fab--bottom-right {
+    bottom: var(--spacing-lg);
+    right: var(--spacing-lg);
+}
+
+.fab--bottom-left {
+    bottom: var(--spacing-lg);
+    left: var(--spacing-lg);
+}
+
+.fab--bottom-center {
+    bottom: var(--spacing-lg);
+    left: 50%;
+    transform: translateX(-50%) scale(0);
+}
+
+/* MOB-139: Estado visible */
+.fab--show {
+    opacity: 1;
+    transform: scale(1);
+    pointer-events: auto;
+}
+
+.fab--bottom-center.fab--show {
+    transform: translateX(-50%) scale(1);
+}
+
+/* MOB-139: Estado oculto (scroll) */
+.fab--hidden {
+    opacity: 0;
+    transform: scale(0);
+    pointer-events: none;
+}
+
+.fab--bottom-center.fab--hidden {
+    transform: translateX(-50%) scale(0);
+}
+
+/* Hover effect */
+.fab:hover {
+    transform: scale(1.1);
+    box-shadow: var(--shadow-xl);
+}
+
+.fab--bottom-center:hover {
+    transform: translateX(-50%) scale(1.1);
+}
+
+/* Active state */
+.fab:active {
+    transform: scale(0.95);
+}
+
+.fab--bottom-center:active {
+    transform: translateX(-50%) scale(0.95);
+}
+
+/* Focus visible */
+.fab:focus-visible {
+    outline: var(--outline-width) solid var(--color-primary);
+    outline-offset: var(--outline-offset);
+    box-shadow: var(--shadow-xl), 0 0 0 3px rgba(var(--color-primary-rgb), 0.2);
+}
+
+/* Icono */
+.fab__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    line-height: 1;
+}
+
+.fab__icon svg {
+    width: 24px;
+    height: 24px;
+    stroke-width: 2.5;
+}
+
+/* Badge */
+.fab__badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 var(--spacing-xs);
+    background: var(--color-danger);
+    color: var(--color-text-inverse);
+    border-radius: var(--border-radius-pill);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-sm);
+    border: 2px solid var(--color-bg);
+    line-height: 1;
+}
+
+/* Label (opcional, para FAB extendido) */
+.fab__label {
+    position: absolute;
+    right: calc(100% + var(--spacing-sm));
+    white-space: nowrap;
+    background: var(--color-text);
+    color: var(--color-text-inverse);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--border-radius);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    opacity: 0;
+    pointer-events: none;
+    transition: var(--transition-base);
+    box-shadow: var(--shadow-md);
+}
+
+.fab:hover .fab__label {
+    opacity: 1;
+}
+
+/* MOB-139: Solo en móvil */
+@media (min-width: 992px) {
+    .fab {
+        display: none !important;
+    }
+}
+
+/* Respetar prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+    .fab,
+    .fab__label {
+        transition: none;
+    }
+    
+    .fab--show,
+    .fab--hidden {
+        transform: scale(1);
+    }
+    
+    .fab--bottom-center.fab--show,
+    .fab--bottom-center.fab--hidden {
+        transform: translateX(-50%) scale(1);
+    }
+}
+
+/* Variantes de tamaño (opcional) */
+.fab--small {
+    width: 48px;
+    height: 48px;
+}
+
+.fab--small .fab__icon {
+    width: 20px;
+    height: 20px;
+}
+
+.fab--small .fab__icon svg {
+    width: 20px;
+    height: 20px;
+}
+
+.fab--large {
+    width: 64px;
+    height: 64px;
+}
+
+.fab--large .fab__icon {
+    width: 28px;
+    height: 28px;
+}
+
+.fab--large .fab__icon svg {
+    width: 28px;
+    height: 28px;
+}
+
+/* Variantes de color (opcional) */
+.fab--primary {
+    background: var(--gradient-button-primary);
+}
+
+.fab--success {
+    background: linear-gradient(135deg, var(--color-success) 0%, var(--color-success-dark) 100%);
+}
+
+.fab--danger {
+    background: linear-gradient(135deg, var(--color-danger) 0%, var(--color-danger-dark) 100%);
+}
+
+.fab--warning {
+    background: linear-gradient(135deg, var(--color-warning) 0%, var(--color-warning-dark) 100%);
+}
+

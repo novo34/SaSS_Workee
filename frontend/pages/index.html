@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workee - Inicio</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/frontend/css/main.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">Workee</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/login">Iniciar Sesión</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/onboarding">Registrarse</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container text-center">
+            <h1 class="display-4 mb-4">Workee SaaS</h1>
+            <p class="lead mb-4">Sistema multitenant para conectar Empresas y Temporeras</p>
+            <div class="d-flex gap-3 justify-content-center flex-wrap">
+                <a href="/onboarding" class="btn-modern btn-modern--primary btn-modern--lg">Comenzar</a>
+                <a href="/login" class="btn-modern btn-modern--ghost btn-modern--lg">Iniciar Sesión</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="py-5">
+        <div class="container">
+            <h2 class="text-center mb-5">Funcionalidades</h2>
+            <div class="row g-4">
+                <div class="col-12 col-md-4">
+                    <div class="card feature-card h-100">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Gestión de Tenants</h5>
+                            <p class="card-text">Crea y gestiona empresas y temporeras de forma segura</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-4">
+                    <div class="card feature-card h-100">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Relaciones Empresa ↔ Temporera</h5>
+                            <p class="card-text">Conecta empresas con temporeras y gestiona vínculos</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-4">
+                    <div class="card feature-card h-100">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Configuración Flexible</h5>
+                            <p class="card-text">Personaliza fichaje, aprobaciones y notificaciones</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Links -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <h3 class="text-center mb-4">Accesos Rápidos</h3>
+            <div class="row g-3 justify-content-center">
+                <div class="col-12 col-md-3">
+                    <a href="/onboarding" class="btn-modern btn-modern--primary w-100 btn-modern--lg">Onboarding</a>
+                </div>
+                <div class="col-12 col-md-3">
+                    <a href="/login" class="btn-modern btn-modern--ghost w-100 btn-modern--lg">Login</a>
+                </div>
+                <div class="col-12 col-md-3">
+                    <a href="/owner/dashboard" class="btn-modern btn-modern--ghost w-100 btn-modern--lg">Dashboard Owner</a>
+                </div>
+                <div class="col-12 col-md-3">
+                    <a href="/settings" class="btn-modern btn-modern--ghost w-100 btn-modern--lg">Configuración</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+

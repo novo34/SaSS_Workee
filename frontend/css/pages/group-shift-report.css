@@ -1,0 +1,31 @@
+/**
+ * Estilos para Parte del Líder
+ * ITCSS Layer: Pages
+ */
+
+#members-table {
+    font-size: var(--font-size-base);
+}
+
+#members-table th {
+    background-color: var(--color-bg-light);
+    font-weight: var(--font-weight-semibold);
+}
+
+#members-table td {
+    vertical-align: middle;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    #members-table {
+        font-size: var(--font-size-sm);
+    }
+    
+    #members-table th,
+    #members-table td {
+        padding: var(--spacing-xs);
+    }
+    
+    /* .page-actions movido a 05-objects/_layout.css (ITCSS Layer 05) */
+}

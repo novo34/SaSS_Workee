@@ -1,0 +1,451 @@
+/**
+ * Sistema de Diseño Corporativo - Workee
+ * 
+ * OBLIGATORIO: Este archivo DEBE ser importado en TODAS las páginas HTML
+ * NUNCA hardcodear colores directamente, SIEMPRE usar variables CSS
+ */
+
+/* ============================================
+   VARIABLES CSS - COLORES CORPORATIVOS
+   ============================================ */
+:root {
+    /* Colores primarios */
+    --color-primary: #0066cc;
+    --color-primary-dark: #0052a3;
+    --color-primary-light: #3385d6;
+    --color-primary-rgb: 0, 102, 204;
+    
+    /* Colores secundarios */
+    --color-secondary: #6c757d;
+    --color-secondary-dark: #5a6268;
+    --color-secondary-light: #868e96;
+    --color-secondary-rgb: 108, 117, 125;
+    
+    /* Colores de estado */
+    --color-success: #28a745;
+    --color-success-dark: #218838;
+    --color-success-light: #34ce57;
+    --color-success-rgb: 40, 167, 69;
+    
+    --color-warning: #ffc107;
+    --color-warning-dark: #e0a800;
+    --color-warning-light: #ffcd39;
+    --color-warning-rgb: 255, 193, 7;
+    
+    --color-danger: #dc3545;
+    --color-danger-dark: #c82333;
+    --color-danger-light: #e4606d;
+    --color-danger-rgb: 220, 53, 69;
+    
+    --color-info: #17a2b8;
+    --color-info-dark: #138496;
+    --color-info-light: #3ab0c3;
+    --color-info-rgb: 23, 162, 184;
+    
+    /* Colores neutros */
+    --color-text: #212529;
+    --color-text-muted: #6c757d;
+    --color-text-light: #868e96;
+    --color-text-inverse: #ffffff;
+    --color-text-inverse-rgb: 255, 255, 255;
+    
+    --color-bg: #ffffff;
+    --color-bg-rgb: 255, 255, 255;
+    --color-bg-light: #f8f9fa;
+    --color-bg-dark: #e9ecef;
+    --color-bg-darker: #dee2e6;
+    
+    --color-border: #dee2e6;
+    --color-border-light: #e9ecef;
+    --color-border-dark: #ced4da;
+    
+    /* Colores del gradiente hero (definidos como variables para evitar hardcodeo) */
+    --color-hero-start: #667eea;
+    --color-hero-end: #764ba2;
+    
+    /* Gradientes corporativos */
+    --gradient-primary: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+    --gradient-primary-subtle: linear-gradient(135deg, rgba(var(--color-primary-rgb), 0.9) 0%, rgba(var(--color-primary-rgb), 0.95) 100%);
+    --gradient-hero: linear-gradient(135deg, var(--color-hero-start) 0%, var(--color-hero-end) 100%);
+    
+    /* Gradientes sutiles para efectos modernos */
+    --gradient-button-primary: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 50%, var(--color-primary-dark) 100%);
+    --gradient-card-subtle: linear-gradient(135deg, var(--color-bg) 0%, var(--color-bg-light) 100%);
+    
+    /* Colores específicos por tenant (opcional, para futuro) */
+    --tenant-primary: var(--color-primary);
+    --tenant-accent: var(--color-secondary);
+}
+
+/* ============================================
+   VARIABLES CSS - TIPOGRAFÍA
+   ============================================ */
+:root {
+    --font-family-base: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --font-family-heading: var(--font-family-base);
+    --font-family-monospace: "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    
+    --font-size-xs: 0.75rem;
+    --font-size-base: 1rem;
+    --font-size-sm: 0.875rem;
+    --font-size-lg: 1.125rem;
+    --font-size-xl: 1.25rem;
+    --font-size-xxl: 1.5rem;
+    --font-size-xxxl: 2rem;
+    
+    --font-weight-normal: 400;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+    
+    --line-height-base: 1.5;
+    --line-height-sm: 1.25;
+    --line-height-lg: 1.75;
+}
+
+/* ============================================
+   VARIABLES CSS - ESPACIADO
+   ============================================ */
+:root {
+    --spacing-xs: 0.25rem;   /* 4px */
+    --spacing-sm: 0.5rem;    /* 8px */
+    --spacing-md: 1rem;      /* 16px */
+    --spacing-lg: 1.5rem;    /* 24px */
+    --spacing-xl: 2rem;      /* 32px */
+    --spacing-xxl: 3rem;     /* 48px */
+    --spacing-xxxl: 4rem;    /* 64px */
+}
+
+/* ============================================
+   VARIABLES CSS - BORDES Y SOMBRAS
+   ============================================ */
+:root {
+    --border-radius: 0.375rem;
+    --border-radius-sm: 0.25rem;
+    --border-radius-lg: 0.5rem;
+    --border-radius-xl: 0.75rem;
+    --border-radius-pill: 50rem;
+    --border-radius-circle: 50%;
+    
+    --border-width: 1px;
+    --border-width-thick: 2px;
+    --border-width-thicker: 3px;
+    
+    /* Sombras mejoradas (Design Tokens) */
+    --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+    --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.15);
+    --shadow-inner: inset 0 2px 4px rgba(0, 0, 0, 0.06);
+    
+    /* Sombras para neumorphism ligero (efectos modernos) */
+    --shadow-neumorphism-light: 4px 4px 8px rgba(0, 0, 0, 0.08), -4px -4px 8px rgba(255, 255, 255, 0.8);
+    --shadow-neumorphism-light-hover: 6px 6px 12px rgba(0, 0, 0, 0.1), -6px -6px 12px rgba(255, 255, 255, 0.9);
+    --shadow-neumorphism-inset: inset 2px 2px 4px rgba(0, 0, 0, 0.06), inset -2px -2px 4px rgba(255, 255, 255, 0.7);
+    
+    /* Sombras legacy (mantener para compatibilidad) */
+    --box-shadow-sm: var(--shadow-sm);
+    --box-shadow: var(--shadow-md);
+    --box-shadow-lg: var(--shadow-lg);
+    --box-shadow-hover: var(--shadow-md);
+}
+
+/* ============================================
+   VARIABLES CSS - TRANSICIONES (Design Tokens)
+   ============================================ */
+:root {
+    --transition-fast: 150ms ease;
+    --transition-base: 250ms ease;
+    --transition-slow: 350ms ease;
+    --transition-all: all var(--transition-base);
+    
+    /* Efectos modernos - Glassmorphism y Backdrop */
+    --backdrop-blur-sm: blur(2px);
+    --backdrop-blur-md: blur(4px);
+    --backdrop-blur-lg: blur(8px);
+    --backdrop-blur-xl: blur(12px);
+    --backdrop-opacity: 0.5;
+    --backdrop-opacity-light: 0.3;
+    --backdrop-opacity-dark: 0.7;
+    
+    /* Opacidades para backgrounds semitransparentes */
+    --opacity-bg-header: 0.95;
+    --opacity-bg-header-scrolled: 0.98;
+    --opacity-shimmer-white: 0.2;
+    --opacity-shimmer-white-light: 0.3;
+    --opacity-shimmer-white-medium: 0.4;
+    --opacity-shadow-text: 0.2;
+    --opacity-shadow-light: 0.1;
+    --opacity-ripple-white: 0.3;
+    
+    /* Neumorphism (ligero, no exagerado) */
+    --neumorphism-bg: var(--color-bg-light);
+    --neumorphism-border-radius: var(--border-radius-lg);
+}
+
+/* ============================================
+   VARIABLES CSS - Z-INDEX (Design Tokens - Sistema de Capas)
+   ============================================ */
+:root {
+    --z-base: 1;
+    --z-dropdown: 1000;
+    --z-sticky: 1020;
+    --z-fixed: 1030;
+    --z-modal-backdrop: 1040;
+    --z-modal: 1050;
+    --z-popover: 1060;
+    --z-tooltip: 1070;
+}
+
+/* ============================================
+   VARIABLES CSS - OPACIDAD (Design Tokens)
+   ============================================ */
+:root {
+    --opacity-disabled: 0.6;
+    --opacity-hover: 0.8;
+    --opacity-overlay: 0.5;
+    --opacity-spinner-bg: 0.9;
+}
+
+/* ============================================
+   VARIABLES CSS - LAYOUT (Design Tokens)
+   ============================================ */
+:root {
+    --sidebar-width: 260px;
+    --sidebar-collapsed-width: 80px;
+    --header-height: 64px;
+    --content-padding: var(--spacing-lg);
+    --card-padding: var(--spacing-md);
+    
+    /* Dimensiones de componentes UI */
+    --icon-size-sm: 20px;
+    --icon-size-md: 24px;
+    --icon-size-lg: 36px;
+    --icon-size-xl: 40px;
+    
+    --avatar-size-sm: 32px;
+    --avatar-size-md: 36px;
+    --avatar-size-lg: 48px;
+    
+    --badge-size-sm: 18px;
+    --badge-size-md: 20px;
+    
+    --touch-target-min: 44px;
+    
+    /* Scrollbar */
+    --scrollbar-width: 6px;
+    --scrollbar-thumb-radius: 3px;
+    
+    /* Letter spacing */
+    --letter-spacing-tight: 0.5px;
+    --letter-spacing-normal: 0;
+    --letter-spacing-wide: 1px;
+    
+    /* Search bar */
+    --search-width: 300px;
+    --search-width-mobile: 200px;
+    --search-icon-offset: 40px;
+    
+    /* Badge positioning */
+    --badge-offset: 6px;
+    
+    /* Hero section */
+    --hero-min-height: 70vh;
+    --feature-card-min-height: 200px;
+    
+    /* Login card */
+    --login-card-max-width: 400px;
+    
+    /* Transform values */
+    --transform-hover-y: -2px;
+    --transform-hover-y-large: -5px;
+    
+    /* Component dimensions */
+    --toast-container-max-width: 400px;
+    --toast-min-width: 300px;
+    --toast-constructive-min-width: 350px;
+    --toast-constructive-max-width: 500px;
+    --empty-state-min-height: 300px;
+    --empty-state-max-width: 400px;
+    --empty-state-icon-size: 4rem;
+    --empty-state-icon-size-mobile: 3rem;
+    --empty-state-action-min-width: 150px;
+    
+    /* Border widths */
+    --border-width-thick: 2px;
+    --border-width-thicker: 3px;
+    
+    /* Outline */
+    --outline-width: 2px;
+    --outline-offset: 2px;
+    
+    /* Page-specific dimensions */
+    --group-members-container-min-height: 200px;
+    --group-members-container-min-height-mobile: 150px;
+    --candidates-list-max-height: 600px;
+    --candidates-list-max-height-mobile: 400px;
+    --modal-body-max-height: 70vh;
+    --calendar-ot-min-height: 600px;
+    --calendar-ot-min-height-mobile: 400px;
+    --work-order-daily-report-max-width: 1200px;
+    --plan-card-min-height: 200px;
+    --step-content-min-height: 300px;
+    --step-content-min-height-desktop: 400px;
+    --onboarding-card-max-width: 600px;
+    --progress-onboarding-height: 8px;
+    --form-check-lg-min-height: 60px;
+    --form-check-input-size: 24px;
+    --form-check-input-size-lg: 48px;
+    --form-control-lg-min-height: 48px;
+    --btn-lg-min-width: 120px;
+    --btn-lg-min-height: 48px;
+    --btn-sm-min-height: 36px;
+    --progress-border-radius: 10px;
+    
+    /* Dashboard Grid */
+    --dashboard-grid-gap: var(--spacing-md);
+    --dashboard-grid-gap-mobile: var(--spacing-sm);
+    --dashboard-kpi-min-width: 250px;
+    --dashboard-card-min-width: 300px;
+}
+
+/* ============================================
+   VARIABLES CSS - BREAKPOINTS
+   ============================================ */
+:root {
+    --breakpoint-xs: 0;
+    --breakpoint-sm: 576px;
+    --breakpoint-md: 768px;
+    --breakpoint-lg: 992px;
+    --breakpoint-xl: 1200px;
+    --breakpoint-xxl: 1400px;
+}
+
+/* ============================================
+   INTEGRACIÓN CON BOOTSTRAP 5
+   ============================================ */
+:root {
+    /* Sobrescribir variables de Bootstrap con nuestras variables corporativas */
+    --bs-primary: var(--color-primary);
+    --bs-primary-rgb: var(--color-primary-rgb);
+    --bs-secondary: var(--color-secondary);
+    --bs-secondary-rgb: var(--color-secondary-rgb);
+    --bs-success: var(--color-success);
+    --bs-success-rgb: var(--color-success-rgb);
+    --bs-warning: var(--color-warning);
+    --bs-warning-rgb: var(--color-warning-rgb);
+    --bs-danger: var(--color-danger);
+    --bs-danger-rgb: var(--color-danger-rgb);
+    --bs-info: var(--color-info);
+    --bs-info-rgb: var(--color-info-rgb);
+    
+    --bs-body-color: var(--color-text);
+    --bs-body-bg: var(--color-bg);
+    --bs-border-color: var(--color-border);
+}
+
+/* ============================================
+   CLASES UTILITARIAS PERSONALIZADAS
+   ============================================ */
+
+/* Gradiente hero */
+.bg-gradient-hero {
+    background: var(--gradient-hero);
+}
+
+/* Nota: Clases utilitarias corporativas (.text-corporate, .bg-corporate, .btn-corporate, etc.)
+   fueron eliminadas porque no se usaban en el código. Si se necesitan en el futuro,
+   pueden recrearse usando las utilidades CSS existentes (u-text-primary, u-bg-primary, etc.)
+   o agregarse como clases utilitarias en 07-utilities/ si se requiere funcionalidad específica.
+*/
+
+/* ============================================
+   ESTILOS BASE GLOBALES
+   ============================================ */
+
+body {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-base);
+    color: var(--color-text);
+    background-color: var(--color-bg);
+}
+
+/* Headings y Links movidos a 04-elements/_typography.css (ITCSS Layer 04) */
+
+/* Botones táctiles (mobile-first) */
+.btn {
+    min-height: 44px;
+    min-width: 44px;
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: var(--font-size-base);
+    border-radius: var(--border-radius);
+    transition: var(--transition-all);
+}
+
+.btn-lg {
+    min-height: 48px;
+    min-width: 120px;
+    padding: var(--spacing-md) var(--spacing-lg);
+    font-size: var(--font-size-lg);
+}
+
+/* Inputs táctiles (mobile-first) */
+.form-control,
+.form-select {
+    min-height: 44px;
+    font-size: var(--font-size-base);
+    border-color: var(--color-border);
+    border-radius: var(--border-radius);
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--color-primary);
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+/* Cards */
+.card {
+    border-color: var(--color-border);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--box-shadow-sm);
+}
+
+.card-header {
+    background-color: var(--color-bg-light);
+    border-bottom: var(--border-width-thick) solid var(--color-border);
+}
+
+/* Navbar */
+.navbar-dark.bg-primary {
+    background-color: var(--color-primary) !important;
+}
+
+/* Focus visible para accesibilidad */
+:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+/* ============================================
+   RESPONSIVE - MOBILE FIRST
+   ============================================ */
+
+/* Ajustes para móvil */
+@media (max-width: 767px) {
+    body {
+        font-size: var(--font-size-sm);
+    }
+    /* h1, h2, h3, h4, h5 movidos a 04-elements/_typography.css y 06-components/_visual-hierarchy.css (ITCSS Layers 04 y 06) */
+}
+
+/* Ajustes para desktop */
+@media (min-width: 768px) {
+    body {
+        font-size: var(--font-size-base);
+    }
+}
+

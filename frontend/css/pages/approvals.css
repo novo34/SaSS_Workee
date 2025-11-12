@@ -1,0 +1,45 @@
+/**
+ * Estilos para Panel de Aprobaciones
+ * ITCSS Layer: Pages
+ */
+
+#pending-count {
+    font-size: var(--font-size-base);
+    padding: var(--spacing-xs) var(--spacing-md);
+}
+
+#bulk-actions {
+    background-color: var(--color-bg-light);
+}
+
+.table th {
+    background-color: var(--color-bg-light);
+    font-weight: var(--font-weight-semibold);
+}
+
+.table td {
+    vertical-align: middle;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .table {
+        font-size: var(--font-size-sm);
+    }
+    
+    .table th,
+    .table td {
+        padding: var(--spacing-xs);
+    }
+    
+    /* .page-actions movido a 05-objects/_layout.css (ITCSS Layer 05) */
+    
+    #bulk-actions .d-flex {
+        flex-direction: column;
+        gap: var(--spacing-xs);
+    }
+    
+    #bulk-actions .btn {
+        width: 100%;
+    }
+}

@@ -1,0 +1,238 @@
+/**
+ * Dashboard Mobile Optimizations - Workee
+ * 
+ * Estilos específicos para optimizar dashboards en móvil
+ * MOB-141: Optimizar Dashboards para Móvil
+ */
+
+/* ============================================
+   KPI CARDS - MÓVIL
+   ============================================ */
+
+/* MOB-141: KPI Cards en 1 columna en móvil (ya implementado en _dashboard-grid.css, verificar) */
+@media (max-width: 767px) {
+    .kpi-card {
+        padding: var(--spacing-md);
+    }
+    
+    .kpi-card__value {
+        font-size: var(--font-size-xxl);
+    }
+    
+    .kpi-card__label {
+        font-size: var(--font-size-sm);
+    }
+    
+    .kpi-card__icon {
+        width: var(--icon-size-md);
+        height: var(--icon-size-md);
+    }
+}
+
+/* ============================================
+   GRÁFICOS - SCROLL HORIZONTAL
+   ============================================ */
+
+/* MOB-141: Gráficos con scroll horizontal o versión simplificada */
+.dashboard-chart-container {
+    position: relative;
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-border) transparent;
+}
+
+.dashboard-chart-container::-webkit-scrollbar {
+    height: 6px;
+}
+
+.dashboard-chart-container::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.dashboard-chart-container::-webkit-scrollbar-thumb {
+    background: var(--color-border);
+    border-radius: var(--border-radius);
+}
+
+.dashboard-chart-container::-webkit-scrollbar-thumb:hover {
+    background: var(--color-border-dark);
+}
+
+.dashboard-chart {
+    min-width: 100%;
+    min-height: 250px;
+}
+
+/* En móvil, gráficos más pequeños */
+@media (max-width: 767px) {
+    .dashboard-chart {
+        min-width: 600px; /* Ancho mínimo para scroll horizontal */
+        min-height: 200px;
+    }
+    
+    .dashboard-chart-container {
+        margin: 0 calc(-1 * var(--spacing-md));
+        padding: 0 var(--spacing-md);
+    }
+}
+
+/* Versión simplificada de gráfico (opcional) */
+.dashboard-chart--simplified {
+    min-width: 100%;
+}
+
+@media (max-width: 767px) {
+    .dashboard-chart--simplified {
+        min-width: 100%;
+    }
+}
+
+/* ============================================
+   FILTROS - BOTTOM SHEET O DRAWER
+   ============================================ */
+
+/* MOB-141: Filtros en bottom sheet o drawer colapsable */
+.dashboard-filters {
+    margin-bottom: var(--spacing-lg);
+}
+
+.dashboard-filters__toggle {
+    display: none; /* Oculto en desktop */
+}
+
+.dashboard-filters__content {
+    display: block;
+}
+
+/* En móvil, filtros en bottom sheet */
+@media (max-width: 767px) {
+    .dashboard-filters {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: var(--z-modal);
+        background: var(--color-bg);
+        border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
+        box-shadow: var(--shadow-xl);
+        max-height: 80vh;
+        overflow-y: auto;
+        transform: translateY(100%);
+        transition: transform var(--transition-base);
+    }
+    
+    .dashboard-filters--open {
+        transform: translateY(0);
+    }
+    
+    .dashboard-filters__toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        padding: var(--spacing-md);
+        background: var(--color-bg-light);
+        border: var(--border-width) solid var(--color-border-light);
+        border-radius: var(--border-radius-lg);
+        margin-bottom: var(--spacing-md);
+        cursor: pointer;
+        transition: var(--transition-base);
+    }
+    
+    .dashboard-filters__toggle:hover {
+        background: var(--color-bg-dark);
+        border-color: var(--color-primary);
+    }
+    
+    .dashboard-filters__content {
+        display: none;
+        padding: var(--spacing-lg);
+    }
+    
+    .dashboard-filters--open .dashboard-filters__content {
+        display: block;
+    }
+    
+    /* Overlay para cerrar filtros */
+    .dashboard-filters-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, var(--opacity-overlay));
+        z-index: calc(var(--z-modal) - 1);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity var(--transition-base);
+    }
+    
+    .dashboard-filters-overlay--show {
+        opacity: 1;
+        pointer-events: auto;
+    }
+}
+
+/* ============================================
+   QUICK ACTIONS - MÓVIL
+   ============================================ */
+
+/* MOB-141: Quick actions adaptados para móvil (ya implementado en _quick-actions.css, verificar) */
+@media (max-width: 767px) {
+    .quick-action-card__shortcut {
+        display: none; /* Ocultar atajos de teclado en móvil */
+    }
+}
+
+/* ============================================
+   LAZY LOADING - SKELETON SCREENS
+   ============================================ */
+
+/* MOB-141: Skeleton screens para datos secundarios */
+.dashboard-lazy-section {
+    min-height: 200px;
+}
+
+.dashboard-lazy-section--loading {
+    position: relative;
+    overflow: hidden;
+}
+
+.dashboard-lazy-section--loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, var(--opacity-shimmer-white)),
+        transparent
+    );
+    animation: dashboard-shimmer 1.5s infinite;
+}
+
+@keyframes dashboard-shimmer {
+    0% {
+        left: -100%;
+    }
+    100% {
+        left: 100%;
+    }
+}
+
+/* Respetar prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+    .dashboard-filters,
+    .dashboard-filters-overlay,
+    .dashboard-lazy-section--loading::after {
+        transition: none;
+        animation: none;
+    }
+}
+

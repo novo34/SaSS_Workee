@@ -1,0 +1,108 @@
+/**
+ * Filtros Sticky para Dashboards - Workee
+ * 
+ * ITCSS Layer 06: Components
+ * Filtros que se mantienen visibles al hacer scroll (sticky) en móvil
+ * BEM: .filters-sticky (block), .filters-sticky__* (elements)
+ */
+
+/* ============================================
+   FILTROS STICKY
+   ============================================ */
+.filters-sticky {
+    position: sticky;
+    top: var(--header-height);
+    z-index: var(--z-sticky);
+    background: var(--color-bg);
+    padding: var(--spacing-md) 0;
+    margin-bottom: var(--spacing-lg);
+    border-bottom: var(--border-width) solid var(--color-border-light);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, var(--opacity-shadow-light));
+    transition: var(--transition-base);
+}
+
+/* Cuando el usuario hace scroll, agregar sombra más pronunciada */
+.filters-sticky--scrolled {
+    box-shadow: var(--shadow-md);
+    border-bottom-color: var(--color-border);
+}
+
+/* Contenedor de filtros */
+.filters-sticky__container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-md);
+    align-items: flex-end;
+}
+
+/* Botón para mostrar/ocultar filtros en móvil */
+.filters-sticky__toggle {
+    display: none; /* Oculto en desktop */
+    width: 100%;
+    margin-bottom: var(--spacing-md);
+}
+
+.filters-sticky__toggle-icon {
+    transition: transform var(--transition-base);
+}
+
+.filters-sticky__toggle[aria-expanded="true"] .filters-sticky__toggle-icon {
+    transform: rotate(180deg);
+}
+
+/* Contenedor de filtros colapsable */
+.filters-sticky__content {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-md);
+    align-items: flex-end;
+}
+
+/* En móvil, los filtros pueden estar colapsados */
+@media (max-width: 767px) {
+    .filters-sticky__toggle {
+        display: block;
+    }
+    
+    .filters-sticky__content {
+        display: none;
+    }
+    
+    .filters-sticky__content--expanded {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .filters-sticky__content > * {
+        width: 100%;
+    }
+}
+
+/* Desktop: siempre visible */
+@media (min-width: 768px) {
+    .filters-sticky__toggle {
+        display: none;
+    }
+    
+    .filters-sticky__content {
+        display: flex;
+    }
+}
+
+/* ============================================
+   ACCESIBILIDAD
+   ============================================ */
+.filters-sticky__toggle:focus-visible {
+    outline: var(--outline-width) solid var(--color-primary);
+    outline-offset: var(--outline-offset);
+}
+
+/* Respetar prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+    .filters-sticky,
+    .filters-sticky__toggle-icon {
+        transition: none;
+    }
+}
+

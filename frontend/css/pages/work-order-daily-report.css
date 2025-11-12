@@ -1,0 +1,74 @@
+/**
+ * Estilos para Parte Diario de Orden de Trabajo
+ * ITCSS Layer: Pages
+ * BEM: .work-order-daily-report (block)
+ */
+
+.work-order-daily-report {
+    max-width: var(--work-order-daily-report-max-width);
+    margin: 0 auto;
+}
+
+.page-header {
+    margin-bottom: var(--spacing-xl);
+}
+
+.page-title {
+    font-size: var(--font-size-xxxl);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text);
+    margin-bottom: 0;
+}
+
+/* .page-actions movido a 05-objects/_layout.css (ITCSS Layer 05) */
+
+#form-report {
+    padding: var(--spacing-md) 0;
+}
+
+#members-table {
+    margin-top: var(--spacing-md);
+}
+
+#members-table thead th {
+    background-color: var(--color-bg-light);
+    font-weight: var(--font-weight-semibold);
+    border-bottom: var(--border-width-thick) solid var(--color-border);
+}
+
+#members-table tbody td {
+    vertical-align: middle;
+}
+
+.badge {
+    padding: var(--spacing-xs) var(--spacing-xs);
+    font-size: var(--font-size-sm);
+}
+
+.modal-body .form-label {
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text);
+    margin-bottom: var(--spacing-xs);
+}
+
+#member-employee-container,
+#member-worker-container {
+    margin-bottom: var(--spacing-md);
+}
+
+@media (max-width: 768px) {
+    .page-header {
+        flex-direction: column;
+        gap: var(--spacing-md);
+    }
+    
+    /* .page-actions movido a 05-objects/_layout.css (ITCSS Layer 05) */
+    
+    #members-table {
+        font-size: var(--font-size-sm);
+    }
+    
+    .table-responsive {
+        overflow-x: auto;
+    }
+}

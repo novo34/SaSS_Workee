@@ -1,0 +1,203 @@
+/**
+ * Componente ProgressBar Moderno
+ * ITCSS Layer 06 - Components
+ */
+
+.progress-bar-container {
+    width: 100%;
+}
+
+.progress-bar-container--sm {
+    font-size: var(--font-size-sm);
+}
+
+.progress-bar-container--md {
+    font-size: var(--font-size-base);
+}
+
+.progress-bar-container--lg {
+    font-size: var(--font-size-lg);
+}
+
+.progress-bar-modern {
+    height: var(--spacing-md);
+    background-color: var(--color-bg-light);
+    border-radius: var(--border-radius-pill);
+    overflow: hidden;
+    box-shadow: var(--shadow-inner);
+    position: relative;
+}
+
+.progress-bar-modern--sm {
+    height: var(--spacing-sm);
+}
+
+.progress-bar-modern--lg {
+    height: var(--spacing-lg);
+}
+
+.progress-bar-modern__bar {
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        var(--color-primary),
+        var(--color-primary-light)
+    );
+    border-radius: var(--border-radius-pill);
+    transition: width var(--transition-base);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.progress-bar-modern__bar--animated::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(var(--color-text-inverse-rgb), var(--opacity-shimmer-white-light)),
+        transparent
+    );
+    animation: progress-shimmer 2s infinite;
+}
+
+@keyframes progress-shimmer {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+.progress-bar-modern__bar--success {
+    background: linear-gradient(
+        90deg,
+        var(--color-success),
+        var(--color-success-light)
+    );
+}
+
+.progress-bar-modern__bar--warning {
+    background: linear-gradient(
+        90deg,
+        var(--color-warning),
+        var(--color-warning-light)
+    );
+}
+
+.progress-bar-modern__bar--danger {
+    background: linear-gradient(
+        90deg,
+        var(--color-danger),
+        var(--color-danger-light)
+    );
+}
+
+.progress-bar-modern__bar--info {
+    background: linear-gradient(
+        90deg,
+        var(--color-info),
+        var(--color-info-light)
+    );
+}
+
+.progress-bar-modern__percentage {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-inverse);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, var(--opacity-shadow-text));
+    z-index: 1;
+    position: relative;
+}
+
+.progress-bar-modern__steps {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-sm);
+    position: relative;
+}
+
+.progress-bar-modern__steps::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-color: var(--color-border);
+    z-index: 0;
+    transform: translateY(-50%);
+}
+
+.progress-bar-modern__step {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background-color: var(--color-bg);
+    border: 2px solid var(--color-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 1;
+    transition: var(--transition-all);
+    cursor: pointer;
+}
+
+.progress-bar-modern__step--active {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+    color: var(--color-text-inverse);
+}
+
+.progress-bar-modern__step--current {
+    box-shadow: 0 0 0 4px rgba(var(--color-primary-rgb), 0.2);
+    transform: scale(1.1);
+}
+
+.progress-bar-modern__step-number {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+}
+
+.progress-bar-modern__labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: var(--spacing-xs);
+    font-size: var(--font-size-xs);
+}
+
+.progress-bar-modern__label {
+    color: var(--color-text-muted);
+    transition: var(--transition-base);
+    text-align: center;
+    flex: 1;
+}
+
+.progress-bar-modern__label--active {
+    color: var(--color-primary);
+    font-weight: var(--font-weight-medium);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .progress-bar-modern__bar {
+        transition: none;
+    }
+    
+    .progress-bar-modern__bar--animated::after {
+        animation: none;
+    }
+    
+    .progress-bar-modern__step {
+        transition: none;
+    }
+}
+

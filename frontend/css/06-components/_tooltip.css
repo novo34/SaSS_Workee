@@ -1,0 +1,82 @@
+/**
+ * Componente Tooltip Moderno
+ * ITCSS Layer 06 - Components
+ */
+
+.tooltip-modern {
+    position: absolute;
+    z-index: var(--z-tooltip);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    background-color: var(--color-text);
+    color: var(--color-text-inverse);
+    border-radius: var(--border-radius);
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-base);
+    max-width: 250px;
+    box-shadow: var(--shadow-lg);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--transition-base), transform var(--transition-base);
+    transform: translateY(-4px);
+}
+
+.tooltip-modern--show {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+}
+
+.tooltip-modern__arrow {
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-style: solid;
+}
+
+.tooltip-modern--top .tooltip-modern__arrow {
+    bottom: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 6px 6px 0 6px;
+    border-color: var(--color-text) transparent transparent transparent;
+}
+
+.tooltip-modern--bottom .tooltip-modern__arrow {
+    top: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 0 6px 6px 6px;
+    border-color: transparent transparent var(--color-text) transparent;
+}
+
+.tooltip-modern--left .tooltip-modern__arrow {
+    right: -6px;
+    top: 50%;
+    transform: translateY(-50%);
+    border-width: 6px 0 6px 6px;
+    border-color: transparent transparent transparent var(--color-text);
+}
+
+.tooltip-modern--right .tooltip-modern__arrow {
+    left: -6px;
+    top: 50%;
+    transform: translateY(-50%);
+    border-width: 6px 6px 6px 0;
+    border-color: transparent var(--color-text) transparent transparent;
+}
+
+.tooltip-modern__content {
+    white-space: nowrap;
+}
+
+.tooltip-modern__content--multiline {
+    white-space: normal;
+    max-width: 250px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .tooltip-modern {
+        transition: opacity var(--transition-fast);
+    }
+}
+

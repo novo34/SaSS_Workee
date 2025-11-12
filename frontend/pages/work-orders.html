@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workee - Órdenes de Trabajo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/frontend/css/main.css">
+    <link rel="stylesheet" href="/frontend/css/components/components.css">
+    <link rel="stylesheet" href="/frontend/css/work-orders.css">
+</head>
+<body>
+    <!-- El sidebar y header se inyectan automáticamente por index.php -->
+    
+    <main id="main-content" class="container-fluid" role="main">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title" data-i18n="work_orders.list_title">Órdenes de Trabajo</h1>
+            <div class="page-actions">
+                <button class="btn-modern btn-modern--primary" id="btn-new-work-order">
+                    <svg class="btn-modern__icon btn-modern__icon--left" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                    </svg>
+                    <span data-i18n="work_orders.new_order">Nueva Orden</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Filtros -->
+        <div class="card-modern mb-3">
+            <div class="card-modern__body">
+                <div class="row g-3">
+                    <div class="col-12 col-md-3">
+                        <div class="form-modern__group">
+                            <label class="form-modern__label" data-i18n="work_orders.filter_status">Estado</label>
+                            <select class="form-modern__select" id="filter-status">
+                                <option value="" data-i18n="work_orders.all_statuses">Todos</option>
+                                <option value="draft" data-i18n="work_orders.status_draft">Borrador</option>
+                                <option value="planned" data-i18n="work_orders.status_planned">Planificada</option>
+                                <option value="in_progress" data-i18n="work_orders.status_in_progress">En curso</option>
+                                <option value="on_hold" data-i18n="work_orders.status_on_hold">En pausa</option>
+                                <option value="completed" data-i18n="work_orders.status_completed">Completada</option>
+                                <option value="canceled" data-i18n="work_orders.status_canceled">Cancelada</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-3">
+                        <div class="form-modern__group">
+                            <label class="form-modern__label" data-i18n="work_orders.filter_from">Desde</label>
+                            <input type="date" class="form-modern__input" id="filter-from">
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-3">
+                        <div class="form-modern__group">
+                            <label class="form-modern__label" data-i18n="work_orders.filter_to">Hasta</label>
+                            <input type="date" class="form-modern__input" id="filter-to">
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-3">
+                        <div class="form-modern__group">
+                            <label class="form-modern__label" data-i18n="work_orders.filter_search">Buscar</label>
+                            <input type="text" class="form-modern__input" id="filter-search" placeholder="Código, título...">
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <button class="btn-modern btn-modern--primary" id="btn-apply-filters">
+                            <svg class="btn-modern__icon btn-modern__icon--left" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path>
+                            </svg>
+                            <span data-i18n="common.apply_filters">Aplicar Filtros</span>
+                        </button>
+                        <button class="btn-modern btn-modern--ghost" id="btn-clear-filters">
+                            <svg class="btn-modern__icon btn-modern__icon--left" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                            <span data-i18n="common.clear_filters">Limpiar</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lista de Órdenes -->
+        <div class="card-modern">
+            <div class="card-modern__body">
+                <div id="work-orders-container">
+                    <div class="text-center py-5" id="loading-spinner-container">
+                        <!-- LoadingSpinner se inicializa aquí -->
+                    </div>
+                </div>
+
+                <!-- Paginación manejada por DataTable -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/frontend/js/core/components-loader.js"></script>
+    <script src="/frontend/js/layout.js"></script>
+    <script src="/frontend/js/work-orders.js"></script>
+</body>
+</html>
+

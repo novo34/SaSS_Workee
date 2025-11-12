@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workee - Constructor de Grupos</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/frontend/css/main.css">
+    <link rel="stylesheet" href="/frontend/css/pages/group-builder.css">
+</head>
+<body>
+    <!-- El sidebar y header se inyectan automáticamente por index.php -->
+    
+    <main id="main-content" class="container-fluid" role="main">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title" data-i18n="groups.builder_title">Constructor de Grupos</h1>
+            <div class="page-actions">
+                <button class="btn-modern btn-modern--ghost" id="btn-load-group">
+                    <svg class="btn-modern__icon btn-modern__icon--left" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>
+                    </svg>
+                    <span data-i18n="groups.load_group">Cargar Grupo</span>
+                </button>
+                <button class="btn-modern btn-modern--primary" id="btn-save-group">
+                    <svg class="btn-modern__icon btn-modern__icon--left" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path>
+                    </svg>
+                    <span data-i18n="groups.save_group">Guardar Grupo</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="row g-3">
+            <!-- Panel Principal - Grupo -->
+            <div class="col-12 col-lg-8">
+                <div class="card-modern">
+                    <div class="card-modern__header">
+                        <h5 class="card-modern__title" data-i18n="groups.group_info">Información del Grupo</h5>
+                    </div>
+                    <div class="card-modern__body">
+                        <form class="form-modern" id="form-group">
+                            <input type="hidden" id="group-id">
+                            
+                            <div class="row g-3">
+                                <div class="col-12 col-md-6">
+                                    <div class="form-modern__group">
+                                        <label class="form-modern__label" data-i18n="groups.group_name">Nombre del Grupo</label>
+                                        <input type="text" class="form-modern__input" id="group-name" required>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-12 col-md-6">
+                                    <div class="form-modern__group">
+                                        <label class="form-modern__label" data-i18n="groups.group_leader">Líder del Grupo</label>
+                                        <select class="form-modern__select" id="group-leader">
+                                            <option value="" data-i18n="groups.select_leader">Seleccionar líder</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-12 col-md-6">
+                                    <div class="form-modern__group">
+                                        <label class="form-modern__label" data-i18n="groups.group_project">Proyecto</label>
+                                        <select class="form-modern__select" id="group-project">
+                                            <option value="" data-i18n="groups.no_project">Sin proyecto</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-12">
+                                    <div class="form-modern__group">
+                                        <label class="form-modern__label" data-i18n="groups.group_notes">Notas</label>
+                                        <textarea class="form-modern__textarea" id="group-notes" rows="3"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Miembros del Grupo -->
+                <div class="card-modern mt-3">
+                    <div class="card-modern__header d-flex justify-content-between align-items-center">
+                        <h5 class="card-modern__title" data-i18n="groups.members">Miembros del Grupo</h5>
+                        <span class="badge-modern badge-modern--primary" id="member-count">0</span>
+                    </div>
+                    <div class="card-modern__body">
+                        <div id="group-members" class="group-members-container">
+                            <div class="empty-state text-center py-5">
+                                <i class="bi bi-people empty-state-icon"></i>
+                                <p class="text-muted mt-3" data-i18n="groups.no_members">Arrastra trabajadores aquí para agregarlos al grupo</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar - Candidatos -->
+            <div class="col-12 col-lg-4">
+                <!-- Filtros -->
+                <div class="card-modern mb-3">
+                    <div class="card-modern__header">
+                        <h6 class="card-modern__title" data-i18n="groups.filters">Filtros</h6>
+                    </div>
+                    <div class="card-modern__body">
+                        <div class="form-modern__group">
+                            <label class="form-modern__label" data-i18n="groups.filter_type">Tipo</label>
+                            <select class="form-modern__select" id="filter-candidate-type">
+                                <option value="" data-i18n="groups.filter_all_types">Todos</option>
+                                <option value="own_employee" data-i18n="groups.employee_own">Empleados Propios</option>
+                                <option value="agency_worker" data-i18n="groups.worker_agency">Trabajadores Temporeros</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-modern__group">
+                            <label class="form-modern__label" data-i18n="groups.filter_skills">Skills</label>
+                            <input type="text" class="form-modern__input" id="filter-skills" placeholder="Ej: Construcción, Albañilería">
+                        </div>
+                        
+                        <div class="form-modern__group">
+                            <label class="form-modern__label" data-i18n="groups.filter_search">Buscar</label>
+                            <input type="text" class="form-modern__input" id="filter-search" placeholder="Nombre, código...">
+                        </div>
+                        
+                        <button class="btn-modern btn-modern--ghost w-100" id="btn-clear-filters">
+                            <svg class="btn-modern__icon btn-modern__icon--left" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                            <span data-i18n="groups.clear_filters">Limpiar</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Lista de Candidatos -->
+                <div class="card-modern">
+                    <div class="card-modern__header d-flex justify-content-between align-items-center">
+                        <h6 class="card-modern__title" data-i18n="groups.candidates">Candidatos</h6>
+                        <span class="badge-modern badge-modern--secondary" id="candidate-count">0</span>
+                    </div>
+                    <div class="card-modern__body">
+                        <div id="candidates-list" class="candidates-list">
+                            <div class="text-center py-3" id="loading-spinner-container">
+                                <!-- LoadingSpinner se inicializa aquí -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Confirmar Guardar -->
+    <div class="modal fade" id="modal-save-group" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" data-i18n="groups.save_group">Guardar Grupo</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p data-i18n="groups.save_confirmation">¿Estás seguro de que deseas guardar este grupo?</p>
+                    <ul id="save-summary"></ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-modern btn-modern--secondary" data-bs-dismiss="modal" data-i18n="common.cancel">Cancelar</button>
+                    <button type="button" class="btn-modern btn-modern--primary" id="btn-confirm-save" data-i18n="common.save">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    <script src="/frontend/js/core/components-loader.js"></script>
+    <script src="/frontend/js/layout.js"></script>
+    <script src="/frontend/js/group-builder.js"></script>
+</body>
+</html>
+

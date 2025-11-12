@@ -1,0 +1,407 @@
+/**
+ * Animaciones Mobile Optimizations - Workee
+ * 
+ * Estilos específicos para optimizar animaciones en móvil
+ * MOB-145: Optimizar Animaciones para Móvil
+ */
+
+/* ============================================
+   TRANSICIONES MÁS RÁPIDAS EN MÓVIL
+   ============================================ */
+
+/* MOB-145: Animaciones más rápidas en móvil (150-200ms vs 250ms desktop) */
+@media (max-width: 767px) {
+    /* Override de variables de transición para móvil */
+    :root {
+        --transition-fast-mobile: 150ms ease;
+        --transition-base-mobile: 180ms ease;
+        --transition-slow-mobile: 200ms ease;
+    }
+    
+    /* Aplicar transiciones rápidas a elementos comunes */
+    *,
+    *::before,
+    *::after {
+        transition-duration: var(--transition-base-mobile) !important;
+    }
+    
+    /* Excepciones: mantener transiciones específicas más rápidas */
+    .btn,
+    .btn-modern,
+    button {
+        transition-duration: var(--transition-fast-mobile) !important;
+    }
+    
+    .card-modern,
+    .card {
+        transition-duration: var(--transition-base-mobile) !important;
+    }
+    
+    .nav-link,
+    .sidebar-nav .nav-link {
+        transition-duration: var(--transition-fast-mobile) !important;
+    }
+    
+    .form-modern__input,
+    .form-control,
+    input,
+    textarea,
+    select {
+        transition-duration: var(--transition-fast-mobile) !important;
+    }
+    
+    /* Modales y bottom sheets con transiciones rápidas */
+    .modal-content,
+    .bottom-sheet {
+        transition-duration: var(--transition-base-mobile) !important;
+    }
+    
+    /* Toast notifications con transiciones rápidas */
+    .toast {
+        transition-duration: var(--transition-fast-mobile) !important;
+    }
+    
+    /* FAB con transiciones rápidas */
+    .fab,
+    .fab-container {
+        transition-duration: var(--transition-fast-mobile) !important;
+    }
+    
+    /* Pull to refresh con transiciones rápidas */
+    .pull-to-refresh-indicator {
+        transition-duration: var(--transition-fast-mobile) !important;
+    }
+}
+
+/* ============================================
+   USAR TRANSFORM Y OPACITY PARA MEJOR PERFORMANCE
+   ============================================ */
+
+/* MOB-145: Usar transform y opacity para animaciones (mejor performance) */
+@media (max-width: 767px) {
+    /* Hover effects solo con transform y opacity */
+    .btn:hover,
+    .btn-modern:hover,
+    button:hover {
+        transform: translateY(-1px);
+        opacity: var(--opacity-hover);
+        /* NO usar background-color, color, box-shadow en hover (menos performante) */
+    }
+    
+    .card-modern:hover {
+        transform: translateY(-2px);
+        opacity: 0.95;
+        /* NO usar box-shadow en hover (menos performante) */
+    }
+    
+    .nav-link:hover,
+    .sidebar-nav .nav-link:hover {
+        transform: translateX(2px);
+        opacity: var(--opacity-hover);
+        /* NO usar background-color en hover (menos performante) */
+    }
+    
+    /* Focus effects solo con transform y opacity */
+    .form-modern__input:focus,
+    .form-control:focus,
+    input:focus,
+    textarea:focus,
+    select:focus {
+        transform: scale(1.01);
+        opacity: 1;
+        /* NO usar border-color, box-shadow en focus (menos performante) */
+    }
+    
+    /* Active states solo con transform y opacity */
+    .btn:active,
+    .btn-modern:active,
+    button:active {
+        transform: translateY(0);
+        opacity: 0.9;
+    }
+    
+    /* Loading states solo con opacity */
+    .loading-spinner,
+    .spinner {
+        opacity: 0.8;
+        /* NO usar animaciones complejas */
+    }
+    
+    /* Skeleton screens solo con opacity */
+    .skeleton,
+    .skeleton-screen {
+        opacity: 0.6;
+        /* NO usar animaciones complejas */
+    }
+}
+
+/* ============================================
+   EVITAR ANIMACIONES PESADAS EN SCROLL
+   ============================================ */
+
+/* MOB-145: Evitar animaciones pesadas que afecten scroll performance */
+@media (max-width: 767px) {
+    /* Desactivar animaciones en elementos que se scrollan */
+    .data-table__container,
+    .data-table__body,
+    .table-container {
+        /* NO usar animaciones en tablas durante scroll */
+        will-change: auto;
+    }
+    
+    /* Desactivar animaciones en listas largas durante scroll */
+    .list-group,
+    .list-container {
+        /* NO usar animaciones en listas durante scroll */
+        will-change: auto;
+    }
+    
+    /* Desactivar animaciones en cards durante scroll */
+    .dashboard-grid,
+    .card-grid {
+        /* NO usar animaciones en grids durante scroll */
+        will-change: auto;
+    }
+    
+    /* Solo animar elementos fuera del viewport */
+    .card-modern,
+    .kpi-card {
+        /* Usar will-change solo cuando sea necesario */
+        will-change: transform, opacity;
+    }
+    
+    /* Remover will-change después de la animación */
+    .card-modern:hover,
+    .kpi-card:hover {
+        will-change: auto;
+    }
+}
+
+/* ============================================
+   OPTIMIZAR KEYFRAMES PARA MÓVIL
+   ============================================ */
+
+/* MOB-145: Optimizar keyframes para móvil (más rápidos, menos frames) */
+@media (max-width: 767px) {
+    /* Spinner más rápido */
+    @keyframes spin-mobile {
+        from {
+            transform: rotate(0deg);
+        }
+        to {
+            transform: rotate(360deg);
+        }
+    }
+    
+    /* Fade in más rápido */
+    @keyframes fade-in-mobile {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+    
+    /* Slide up más rápido */
+    @keyframes slide-up-mobile {
+        from {
+            transform: translateY(20px);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+    
+    /* Pulse más rápido */
+    @keyframes pulse-mobile {
+        0%, 100% {
+            opacity: 1;
+            transform: scale(1);
+        }
+        50% {
+            opacity: 0.8;
+            transform: scale(1.05);
+        }
+    }
+    
+    /* Aplicar keyframes optimizados */
+    .loading-spinner,
+    .spinner {
+        animation: spin-mobile 0.5s linear infinite;
+    }
+    
+    .fade-in {
+        animation: fade-in-mobile 150ms ease-in;
+    }
+    
+    .slide-up {
+        animation: slide-up-mobile 180ms ease-out;
+    }
+    
+    .pulse {
+        animation: pulse-mobile 1s ease-in-out infinite;
+    }
+}
+
+/* ============================================
+   RESPETAR PREFERS-REDUCED-MOTION
+   ============================================ */
+
+/* MOB-145: Respetar prefers-reduced-motion (ya implementado, verificar y mejorar) */
+@media (prefers-reduced-motion: reduce) {
+    /* Desactivar todas las transiciones */
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+    
+    /* Desactivar animaciones específicas */
+    .loading-spinner,
+    .spinner,
+    .pull-to-refresh-indicator__spinner--refreshing {
+        animation: none !important;
+    }
+    
+    /* Desactivar transform en hover/focus */
+    .btn:hover,
+    .btn-modern:hover,
+    .card-modern:hover,
+    .nav-link:hover {
+        transform: none !important;
+    }
+    
+    /* Desactivar opacity changes */
+    .btn:hover,
+    .btn-modern:hover {
+        opacity: 1 !important;
+    }
+    
+    /* Mantener solo cambios esenciales de color */
+    .btn:hover,
+    .btn-modern:hover {
+        background-color: var(--color-primary-light);
+    }
+    
+    .card-modern:hover {
+        box-shadow: var(--shadow-sm);
+    }
+}
+
+/* ============================================
+   OPTIMIZACIONES ADICIONALES PARA MÓVIL
+   ============================================ */
+
+@media (max-width: 767px) {
+    /* Usar GPU acceleration solo cuando sea necesario */
+    .card-modern,
+    .kpi-card,
+    .btn-modern,
+    .fab {
+        /* Solo activar GPU acceleration en hover/active */
+        transform: translateZ(0);
+        backface-visibility: hidden;
+        perspective: 1000px;
+    }
+    
+    /* Desactivar GPU acceleration cuando no sea necesario */
+    .card-modern:not(:hover):not(:active),
+    .kpi-card:not(:hover):not(:active),
+    .btn-modern:not(:hover):not(:active) {
+        transform: none;
+        will-change: auto;
+    }
+    
+    /* Optimizar scroll performance */
+    .data-table__container,
+    .modal-body,
+    .bottom-sheet__body {
+        /* Usar contain para mejor scroll performance */
+        contain: layout style paint;
+        /* Usar transform para scroll suave */
+        transform: translateZ(0);
+    }
+    
+    /* Desactivar animaciones en elementos fuera del viewport */
+    .card-modern:not(.is-visible),
+    .kpi-card:not(.is-visible) {
+        /* No animar elementos no visibles */
+        transition: none;
+        animation: none;
+    }
+}
+
+/* ============================================
+   ANIMACIONES ESPECÍFICAS OPTIMIZADAS
+   ============================================ */
+
+@media (max-width: 767px) {
+    /* Toast slide in más rápido */
+    @keyframes toast-slide-in-mobile {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+    
+    .toast {
+        animation: toast-slide-in-mobile 150ms ease-out;
+    }
+    
+    /* Modal fade in más rápido */
+    @keyframes modal-fade-in-mobile {
+        from {
+            opacity: 0;
+            transform: scale(0.95);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+    
+    .modal-content {
+        animation: modal-fade-in-mobile 180ms ease-out;
+    }
+    
+    /* Bottom sheet slide up más rápido */
+    @keyframes bottom-sheet-slide-up-mobile {
+        from {
+            transform: translateY(100%);
+        }
+        to {
+            transform: translateY(0);
+        }
+    }
+    
+    .bottom-sheet {
+        animation: bottom-sheet-slide-up-mobile 200ms ease-out;
+    }
+    
+    /* FAB fade in más rápido */
+    @keyframes fab-fade-in-mobile {
+        from {
+            opacity: 0;
+            transform: scale(0.8);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+    
+    .fab--show {
+        animation: fab-fade-in-mobile 150ms ease-out;
+    }
+}
+

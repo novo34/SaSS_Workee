@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workee - Reportes</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/frontend/css/main.css">
+    <link rel="stylesheet" href="/frontend/css/components/components.css">
+</head>
+<body>
+    <!-- El sidebar y header se inyectan automáticamente por index.php -->
+    
+    <div class="container-fluid">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title" data-i18n="reports.title">Reportes</h1>
+        </div>
+
+        <!-- Filtros -->
+        <div class="card-modern mb-4">
+            <div class="card-modern__header">
+                <h5 class="card-modern__title" data-i18n="reports.filters">Filtros</h5>
+            </div>
+            <div class="card-modern__body">
+                <form id="reportFiltersForm" class="row g-3">
+                    <!-- Tipo de Reporte -->
+                    <div class="col-md-3">
+                        <label for="reportType" class="form-label" data-i18n="reports.report_type">Tipo de Reporte</label>
+                        <select class="form-select" id="reportType" name="type" required>
+                            <option value="hours" data-i18n="reports.hours_report">Reporte de Horas</option>
+                            <option value="planning" data-i18n="reports.planning_report">Reporte de Planificación</option>
+                            <option value="company-agency" data-i18n="reports.company_agency_report">Reporte Empresa↔Temporera</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Fecha Desde -->
+                    <div class="col-md-3">
+                        <label for="dateFrom" class="form-label" data-i18n="reports.date_from">Fecha Desde</label>
+                        <input type="date" class="form-control" id="dateFrom" name="from" required>
+                    </div>
+                    
+                    <!-- Fecha Hasta -->
+                    <div class="col-md-3">
+                        <label for="dateTo" class="form-label" data-i18n="reports.date_to">Fecha Hasta</label>
+                        <input type="date" class="form-control" id="dateTo" name="to" required>
+                    </div>
+                    
+                    <!-- Filtros adicionales (se muestran según tipo) -->
+                    <div class="col-md-3" id="additionalFiltersContainer">
+                        <!-- Se llenan dinámicamente según tipo de reporte -->
+                    </div>
+                    
+                    <!-- Botones -->
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-modern btn-modern--primary" data-i18n="reports.generate">Generar Reporte</button>
+                        <button type="button" class="btn btn-modern btn-modern--secondary" id="exportBtn" style="display: none;" data-i18n="reports.export_csv">Exportar CSV</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Resumen -->
+        <div id="reportSummary" class="dashboard-grid dashboard-grid--kpi mb-4" style="display: none;">
+            <!-- Se llena dinámicamente con KPIs del reporte -->
+        </div>
+
+        <!-- Tabla de Resultados -->
+        <div class="card-modern">
+            <div class="card-modern__header">
+                <h5 class="card-modern__title" data-i18n="reports.results">Resultados</h5>
+            </div>
+            <div class="card-modern__body">
+                <div id="reportsTableContainer">
+                    <div class="empty-state">
+                        <div class="empty-state__icon">
+                            <i class="bi bi-graph-up"></i>
+                        </div>
+                        <div class="empty-state__title" data-i18n="reports.no_data">No hay datos</div>
+                        <div class="empty-state__message" data-i18n="reports.select_filters">Selecciona los filtros y genera un reporte</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/frontend/js/core/api.js"></script>
+    <script src="/frontend/js/components/data-table.js"></script>
+    <script src="/frontend/js/components/toast.js"></script>
+    <script src="/frontend/js/components/empty-state.js"></script>
+    <script src="/frontend/js/layout.js"></script>
+    <script src="/frontend/js/reports.js"></script>
+</body>
+</html>
+

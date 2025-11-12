@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workee - Configuración</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/frontend/css/main.css">
+    <link rel="stylesheet" href="/frontend/css/pages/settings.css">
+</head>
+<body>
+    <!-- El sidebar y header se inyectan automáticamente por index.php -->
+    
+    <main id="main-content" class="container-fluid" role="main">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title" data-i18n="settings.title">Configuración</h1>
+        </div>
+
+        <!-- Tabs -->
+        <ul class="nav nav-tabs mb-4" id="settingsTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="tab-general" data-bs-toggle="tab" data-bs-target="#panel-general" type="button">
+                    General
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="tab-timeclock" data-bs-toggle="tab" data-bs-target="#panel-timeclock" type="button">
+                    Fichaje
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="tab-approvals" data-bs-toggle="tab" data-bs-target="#panel-approvals" type="button">
+                    Aprobaciones
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="tab-notifications" data-bs-toggle="tab" data-bs-target="#panel-notifications" type="button">
+                    Notificaciones
+                </button>
+            </li>
+        </ul>
+
+        <!-- Tab Panels -->
+        <div class="tab-content" id="settingsTabContent">
+            <!-- Panel General -->
+            <div class="tab-pane fade show active" id="panel-general" role="tabpanel">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Configuración General</h5>
+                    </div>
+                    <div class="card-body">
+                        <form class="form-modern" id="form-general">
+                            <div class="row g-3">
+                                <div class="col-12 col-md-6">
+                                    <div class="form-modern__group">
+                                        <label for="setting-timezone" class="form-modern__label">
+                                            Zona Horaria
+                                            <span class="icon icon-sm icon--muted ms-1" 
+                                                  data-tooltip="settings.timezone_tooltip" 
+                                                  data-tooltip-position="right"
+                                                  data-icon="info"
+                                                  role="button"
+                                                  tabindex="0"
+                                                  aria-label="Información sobre zona horaria"></span>
+                                        </label>
+                                        <select class="form-modern__select" id="setting-timezone">
+                                            <option value="Europe/Zurich">Europa/Zúrich (CET)</option>
+                                            <option value="Europe/Madrid">Europa/Madrid (CET)</option>
+                                            <option value="Europe/Berlin">Europa/Berlín (CET)</option>
+                                            <option value="Europe/Paris">Europa/París (CET)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <div class="form-modern__group">
+                                        <label for="setting-locale" class="form-modern__label">Idioma</label>
+                                        <select class="form-modern__select" id="setting-locale">
+                                            <option value="es">Español</option>
+                                            <option value="de">Deutsch</option>
+                                            <option value="fr">Français</option>
+                                            <option value="it">Italiano</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <div class="form-modern__group">
+                                        <label for="setting-currency" class="form-modern__label">Moneda</label>
+                                        <select class="form-modern__select" id="setting-currency">
+                                            <option value="CHF">CHF - Franco Suizo</option>
+                                            <option value="EUR">EUR - Euro</option>
+                                            <option value="USD">USD - Dólar</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-4">
+                                <button type="submit" class="btn-modern btn-modern--primary btn-modern--lg">
+                                    <span data-i18n="common.save">Guardar</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panel Fichaje -->
+            <div class="tab-pane fade" id="panel-timeclock" role="tabpanel">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Configuración de Fichaje</h5>
+                    </div>
+                    <div class="card-body">
+                        <form class="form-modern" id="form-timeclock">
+                            <div class="form-modern__group">
+                                <div class="form-modern__check">
+                                    <input class="form-modern__check-input" type="checkbox" id="timeclock-required">
+                                    <label class="form-modern__check-label" for="timeclock-required">
+                                        Fichaje obligatorio
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-modern__group">
+                                <label for="timeclock-tolerance" class="form-modern__label">Tolerancia de llegada/salida (minutos)</label>
+                                <input type="number" class="form-modern__input" id="timeclock-tolerance" value="5" min="0" max="60">
+                            </div>
+                            <div class="form-modern__group">
+                                <label for="timeclock-min-break" class="form-modern__label">Pausa mínima requerida (minutos)</label>
+                                <input type="number" class="form-modern__input" id="timeclock-min-break" value="30" min="0">
+                            </div>
+                            <div class="form-modern__group">
+                                <label for="timeclock-rounding" class="form-modern__label">Redondeo (minutos)</label>
+                                <select class="form-modern__select" id="timeclock-rounding">
+                                    <option value="0">Sin redondeo</option>
+                                    <option value="5">5 minutos</option>
+                                    <option value="15" selected>15 minutos</option>
+                                    <option value="30">30 minutos</option>
+                                </select>
+                            </div>
+                            <div class="mt-4">
+                                <button type="submit" class="btn-modern btn-modern--primary btn-modern--lg">
+                                    <span data-i18n="common.save">Guardar</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panel Aprobaciones -->
+            <div class="tab-pane fade" id="panel-approvals" role="tabpanel">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Configuración de Aprobaciones</h5>
+                    </div>
+                    <div class="card-body">
+                        <form class="form-modern" id="form-approvals">
+                            <div class="form-modern__group">
+                                <label for="approval-stages" class="form-modern__label">Número de etapas de aprobación</label>
+                                <select class="form-modern__select" id="approval-stages">
+                                    <option value="1">1 etapa (Solo Empresa)</option>
+                                    <option value="2">2 etapas (Empresa + Temporera)</option>
+                                </select>
+                            </div>
+                            <div class="form-modern__group">
+                                <div class="form-modern__check">
+                                    <input class="form-modern__check-input" type="checkbox" id="approval-co-approval">
+                                    <label class="form-modern__check-label" for="approval-co-approval">
+                                        Requerir co-aprobación de Temporera
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-modern__group">
+                                <label for="approval-auto-threshold" class="form-modern__label">Auto-aprobación bajo umbral (horas)</label>
+                                <input type="number" class="form-modern__input" id="approval-auto-threshold" value="8" min="0">
+                                <div class="form-modern__feedback form-modern__feedback--help">
+                                    Si las horas son menores a este valor, se aprueban automáticamente
+                                </div>
+                            </div>
+                            <div class="mt-4">
+                                <button type="submit" class="btn-modern btn-modern--primary btn-modern--lg">
+                                    <span data-i18n="common.save">Guardar</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panel Notificaciones -->
+            <div class="tab-pane fade" id="panel-notifications" role="tabpanel">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Configuración de Notificaciones</h5>
+                    </div>
+                    <div class="card-body">
+                        <form class="form-modern" id="form-notifications">
+                            <div class="form-modern__group">
+                                <div class="form-modern__check">
+                                    <input class="form-modern__check-input" type="checkbox" id="notif-email" checked>
+                                    <label class="form-modern__check-label" for="notif-email">
+                                        Notificaciones por Email
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-modern__group">
+                                <div class="form-modern__check">
+                                    <input class="form-modern__check-input" type="checkbox" id="notif-sms">
+                                    <label class="form-modern__check-label" for="notif-sms">
+                                        Notificaciones por SMS
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-modern__group">
+                                <div class="form-modern__check">
+                                    <input class="form-modern__check-input" type="checkbox" id="notif-whatsapp">
+                                    <label class="form-modern__check-label" for="notif-whatsapp">
+                                        Notificaciones por WhatsApp
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="row g-3">
+                                <div class="col-12 col-md-6">
+                                    <div class="form-modern__group">
+                                        <label for="notif-quiet-start" class="form-modern__label">Inicio horas silenciosas</label>
+                                        <input type="time" class="form-modern__input" id="notif-quiet-start" value="22:00">
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <div class="form-modern__group">
+                                        <label for="notif-quiet-end" class="form-modern__label">Fin horas silenciosas</label>
+                                        <input type="time" class="form-modern__input" id="notif-quiet-end" value="07:00">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-4">
+                                <button type="submit" class="btn-modern btn-modern--primary btn-modern--lg">
+                                    <span data-i18n="common.save">Guardar</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/frontend/js/core/components-loader.js"></script>
+    <script src="/frontend/js/layout.js"></script>
+    <script type="module" src="/frontend/js/settings.js"></script>
+</body>
+</html>
+

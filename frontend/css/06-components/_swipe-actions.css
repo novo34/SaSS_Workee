@@ -1,0 +1,119 @@
+/**
+ * Swipe Actions - Workee
+ * 
+ * Estilos para acciones rápidas en filas de tabla mediante swipe gestures
+ * MOB-137: Swipe left/right para acciones rápidas en listas
+ */
+
+/* Contenedor de acciones swipe */
+.swipe-actions {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.swipe-actions--left-visible {
+    justify-content: flex-end;
+}
+
+.swipe-actions--right-visible {
+    justify-content: flex-start;
+}
+
+/* Botones de acción swipe */
+.swipe-action {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 80px;
+    height: 100%;
+    padding: var(--spacing-sm);
+    border: none;
+    color: var(--color-text-inverse);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+    cursor: pointer;
+    transition: var(--transition-base);
+    pointer-events: auto;
+    gap: var(--spacing-xs);
+}
+
+.swipe-action--left {
+    background-color: var(--color-danger);
+    border-left: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.swipe-action--right {
+    background-color: var(--color-primary);
+    border-right: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.swipe-action--primary {
+    background-color: var(--color-primary);
+}
+
+.swipe-action--danger {
+    background-color: var(--color-danger);
+}
+
+.swipe-action--success {
+    background-color: var(--color-success);
+}
+
+.swipe-action--warning {
+    background-color: var(--color-warning);
+}
+
+.swipe-action:hover {
+    opacity: var(--opacity-hover);
+    transform: scale(1.05);
+}
+
+.swipe-action:active {
+    transform: scale(0.95);
+}
+
+/* Icono de acción */
+.swipe-action__icon {
+    font-size: var(--font-size-lg);
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* MOB-137: Estilos para iconos SVG en swipe actions */
+.swipe-action__icon svg {
+    width: 20px;
+    height: 20px;
+    stroke-width: 2;
+}
+
+/* Label de acción */
+.swipe-action__label {
+    font-size: var(--font-size-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+}
+
+/* MOB-137: Solo en móvil */
+@media (min-width: 992px) {
+    .swipe-actions {
+        display: none !important;
+    }
+    
+    .data-table__row {
+        overflow: visible;
+    }
+}
+

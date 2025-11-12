@@ -1,0 +1,23 @@
+/**
+ * Estilos para Calendario de Órdenes de Trabajo
+ * ITCSS Layer: Pages
+ */
+
+#calendar-ot {
+    min-height: var(--calendar-ot-min-height);
+}
+
+.fc-event-subtitle {
+    font-size: 0.85em; /* Tamaño específico de FullCalendar */
+    opacity: var(--opacity-hover);
+    margin-top: var(--spacing-xs);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    /* .page-actions movido a 05-objects/_layout.css (ITCSS Layer 05) */
+    
+    #calendar-ot {
+        min-height: var(--calendar-ot-min-height-mobile);
+    }
+}

@@ -1,0 +1,419 @@
+/**
+ * Texto y Contraste Mobile Optimizations - Workee
+ * 
+ * Estilos específicos para optimizar texto y contraste en móvil
+ * MOB-144: Optimizar Texto y Contraste para Móvil
+ */
+
+/* ============================================
+   TEXTO MÍNIMO 16PX EN MÓVIL
+   ============================================ */
+
+/* MOB-144: Texto mínimo 16px para texto normal (evitar zoom automático en iOS) */
+@media (max-width: 767px) {
+    /* Asegurar que todo el texto normal tenga mínimo 16px */
+    body,
+    p,
+    span,
+    div,
+    label,
+    .text,
+    .text-normal {
+        font-size: clamp(16px, var(--font-size-base), 18px) !important;
+        min-font-size: 16px; /* Fallback para navegadores que no soportan clamp */
+    }
+    
+    /* Texto pequeño pero legible */
+    small,
+    .small,
+    .text-small,
+    .text-muted,
+    .form-modern__feedback,
+    .invalid-feedback,
+    .help-text {
+        font-size: clamp(14px, var(--font-size-sm), 16px) !important;
+    }
+    
+    /* Texto extra pequeño solo si es absolutamente necesario */
+    .text-xs,
+    .text-extra-small {
+        font-size: clamp(12px, var(--font-size-xs), 14px) !important;
+    }
+    
+    /* Títulos con tamaños responsivos */
+    h1 {
+        font-size: clamp(24px, var(--font-size-xxxl), 32px) !important;
+    }
+    
+    h2 {
+        font-size: clamp(20px, var(--font-size-xxl), 28px) !important;
+    }
+    
+    h3 {
+        font-size: clamp(18px, var(--font-size-xl), 24px) !important;
+    }
+    
+    h4 {
+        font-size: clamp(16px, var(--font-size-lg), 20px) !important;
+    }
+    
+    h5 {
+        font-size: clamp(16px, var(--font-size-md), 18px) !important;
+    }
+    
+    h6 {
+        font-size: clamp(14px, var(--font-size-base), 16px) !important;
+    }
+    
+    /* Botones con texto legible */
+    .btn,
+    .btn-modern,
+    button {
+        font-size: clamp(16px, var(--font-size-base), 18px) !important;
+    }
+    
+    /* Links con texto legible */
+    a {
+        font-size: clamp(16px, var(--font-size-base), 18px) !important;
+    }
+    
+    /* Navegación con texto legible */
+    .nav-link,
+    .sidebar-nav .nav-link {
+        font-size: clamp(16px, var(--font-size-base), 18px) !important;
+    }
+    
+    /* Breadcrumbs con texto legible */
+    .breadcrumb-nav__link {
+        font-size: clamp(14px, var(--font-size-sm), 16px) !important;
+    }
+    
+    /* Tablas con texto legible */
+    .data-table__cell,
+    .table td,
+    .table th {
+        font-size: clamp(14px, var(--font-size-sm), 16px) !important;
+    }
+    
+    /* Cards con texto legible */
+    .card-modern__title,
+    .card-modern__body {
+        font-size: clamp(16px, var(--font-size-base), 18px) !important;
+    }
+    
+    /* KPI Cards con valores grandes pero legibles */
+    .kpi-card__value {
+        font-size: clamp(24px, var(--font-size-xxxl), 32px) !important;
+    }
+    
+    .kpi-card__label {
+        font-size: clamp(12px, var(--font-size-xs), 14px) !important;
+    }
+}
+
+/* ============================================
+   CONTRASTE WCAG AA/AAA
+   ============================================ */
+
+/* MOB-144: Verificar contraste WCAG AA (preferiblemente AAA) en móvil */
+@media (max-width: 767px) {
+    /* Asegurar contraste mínimo WCAG AA (4.5:1 para texto normal) */
+    body,
+    p,
+    span,
+    div,
+    label,
+    .text,
+    .text-normal {
+        color: var(--color-text);
+        /* --color-text debe tener contraste mínimo 4.5:1 con --color-bg */
+    }
+    
+    /* Texto muted con contraste suficiente (al menos 3:1 para texto grande) */
+    .text-muted,
+    small,
+    .small {
+        color: var(--color-text-muted);
+        /* --color-text-muted debe tener contraste mínimo 3:1 con --color-bg */
+    }
+    
+    /* Links con contraste mejorado en móvil */
+    a {
+        color: var(--color-primary);
+        /* --color-primary debe tener contraste mínimo 4.5:1 con --color-bg */
+    }
+    
+    a:hover,
+    a:focus-visible {
+        color: var(--color-primary-dark);
+        /* Contraste mejorado en hover/focus */
+        text-decoration: underline;
+    }
+    
+    /* Botones con contraste mejorado */
+    .btn-modern--primary,
+    .btn-primary {
+        background-color: var(--color-primary);
+        color: var(--color-text-inverse);
+        /* Contraste mínimo 4.5:1 entre texto y fondo */
+    }
+    
+    .btn-modern--secondary,
+    .btn-secondary {
+        background-color: var(--color-secondary);
+        color: var(--color-text-inverse);
+        border-color: var(--color-secondary);
+    }
+    
+    /* Badges con contraste mejorado */
+    .badge-modern,
+    .badge {
+        color: var(--color-text-inverse);
+        /* Contraste mínimo 4.5:1 entre texto y fondo del badge */
+    }
+    
+    /* Inputs con contraste mejorado */
+    .form-modern__input,
+    .form-control,
+    input,
+    textarea,
+    select {
+        color: var(--color-text);
+        background-color: var(--color-bg);
+        border-color: var(--color-border);
+        /* Contraste mínimo 3:1 para bordes */
+    }
+    
+    .form-modern__input:focus,
+    .form-control:focus,
+    input:focus,
+    textarea:focus,
+    select:focus {
+        border-color: var(--color-primary);
+        /* Contraste mejorado en focus */
+    }
+    
+    /* Labels con contraste mejorado */
+    .form-modern__label,
+    label {
+        color: var(--color-text);
+        font-weight: var(--font-weight-medium);
+        /* Contraste mínimo 4.5:1 */
+    }
+    
+    /* Mensajes de error con contraste mejorado */
+    .form-modern__feedback--error,
+    .invalid-feedback,
+    .text-danger {
+        color: var(--color-danger);
+        /* Contraste mínimo 4.5:1 */
+    }
+    
+    /* Mensajes de éxito con contraste mejorado */
+    .form-modern__feedback--success,
+    .text-success {
+        color: var(--color-success);
+        /* Contraste mínimo 4.5:1 */
+    }
+}
+
+/* ============================================
+   ESPACIADO MÍNIMO 8PX ENTRE ELEMENTOS TÁCTILES
+   ============================================ */
+
+/* MOB-144: Espaciado mínimo 8px entre elementos táctiles (verificar en todas las páginas) */
+@media (max-width: 767px) {
+    /* Botones con espaciado adecuado */
+    .btn,
+    .btn-modern,
+    button {
+        margin: var(--spacing-xs); /* 4px mínimo, pero preferiblemente más */
+        min-height: 44px; /* Ya implementado en MOB-142 */
+    }
+    
+    /* Botones en grupos con espaciado */
+    .btn-group,
+    .button-group {
+        gap: var(--spacing-sm); /* 8px mínimo */
+    }
+    
+    /* Links en navegación con espaciado */
+    .nav-link,
+    .sidebar-nav .nav-link {
+        margin-bottom: var(--spacing-xs); /* 4px mínimo */
+        padding: var(--spacing-sm) var(--spacing-md); /* 8px vertical, 16px horizontal */
+    }
+    
+    /* Items de lista con espaciado */
+    .list-group-item,
+    .data-table__row {
+        padding: var(--spacing-sm) var(--spacing-md); /* 8px vertical, 16px horizontal */
+        margin-bottom: var(--spacing-xs); /* 4px mínimo */
+    }
+    
+    /* Cards con espaciado */
+    .card-modern,
+    .card {
+        margin-bottom: var(--spacing-md); /* 16px mínimo */
+    }
+    
+    /* Form groups con espaciado */
+    .form-modern__group,
+    .form-group {
+        margin-bottom: var(--spacing-md); /* 16px mínimo */
+    }
+    
+    /* Inputs con espaciado interno */
+    .form-modern__input,
+    .form-control,
+    input,
+    textarea,
+    select {
+        padding: var(--spacing-sm) var(--spacing-md); /* 8px vertical, 16px horizontal */
+        margin-bottom: var(--spacing-xs); /* 4px mínimo entre inputs */
+    }
+    
+    /* Checkboxes y radios con espaciado */
+    .form-modern__check,
+    .form-check {
+        margin-bottom: var(--spacing-sm); /* 8px mínimo */
+        padding: var(--spacing-xs); /* 4px mínimo interno */
+    }
+    
+    /* Quick actions con espaciado */
+    .quick-action-card,
+    .quick-action {
+        margin: var(--spacing-xs); /* 4px mínimo */
+        padding: var(--spacing-sm); /* 8px mínimo interno */
+    }
+    
+    /* KPI Cards con espaciado */
+    .kpi-card {
+        margin-bottom: var(--spacing-md); /* 16px mínimo */
+        padding: var(--spacing-md); /* 16px mínimo interno */
+    }
+    
+    /* FAB con espaciado del borde */
+    .fab-container {
+        bottom: var(--spacing-md); /* 16px del borde */
+        right: var(--spacing-md); /* 16px del borde */
+    }
+    
+    /* Sticky buttons con espaciado */
+    .form-actions-mobile {
+        padding: var(--spacing-md); /* 16px mínimo */
+        gap: var(--spacing-sm); /* 8px entre botones */
+    }
+}
+
+/* ============================================
+   TAMAÑOS DE FUENTE RESPONSIVOS CON CLAMP()
+   ============================================ */
+
+/* MOB-144: Tamaños de fuente responsivos con clamp() donde aplique */
+@media (max-width: 767px) {
+    /* Títulos fluidos */
+    h1 {
+        font-size: clamp(24px, 5vw, 32px);
+    }
+    
+    h2 {
+        font-size: clamp(20px, 4vw, 28px);
+    }
+    
+    h3 {
+        font-size: clamp(18px, 3.5vw, 24px);
+    }
+    
+    h4 {
+        font-size: clamp(16px, 3vw, 20px);
+    }
+    
+    /* Texto base fluido */
+    body {
+        font-size: clamp(16px, 2.5vw, 18px);
+    }
+    
+    /* KPI Cards con valores fluidos */
+    .kpi-card__value {
+        font-size: clamp(24px, 6vw, 32px);
+    }
+    
+    /* Botones con texto fluido */
+    .btn-modern--lg,
+    .btn-lg {
+        font-size: clamp(16px, 3vw, 18px);
+    }
+    
+    /* Modales con títulos fluidos */
+    .modal-title {
+        font-size: clamp(18px, 4vw, 24px);
+    }
+}
+
+/* ============================================
+   MEJORAS ADICIONALES DE LEGIBILIDAD
+   ============================================ */
+
+@media (max-width: 767px) {
+    /* Mejorar line-height para legibilidad */
+    body,
+    p {
+        line-height: 1.6; /* Mayor que 1.5 para mejor legibilidad en móvil */
+    }
+    
+    /* Mejorar letter-spacing para títulos */
+    h1, h2, h3 {
+        letter-spacing: -0.02em; /* Ligera reducción para mejor legibilidad */
+    }
+    
+    /* Mejorar word-spacing para texto largo */
+    p,
+    .text-long {
+        word-spacing: 0.1em;
+    }
+}
+
+/* ============================================
+   ALTO CONTRASTE (PREFERS-CONTRAST)
+   ============================================ */
+
+/* MOB-144: Mejorar contraste cuando el usuario prefiere alto contraste */
+@media (max-width: 767px) and (prefers-contrast: more) {
+    /* Aumentar contraste de texto */
+    body,
+    p,
+    span,
+    div {
+        color: #000000; /* Negro puro para máximo contraste */
+    }
+    
+    .text-muted {
+        color: #333333; /* Gris oscuro en lugar de gris claro */
+    }
+    
+    /* Aumentar contraste de bordes */
+    .form-modern__input,
+    .form-control,
+    input,
+    textarea,
+    select {
+        border-width: 2px;
+        border-color: #000000;
+    }
+    
+    /* Aumentar contraste de botones */
+    .btn-modern--primary,
+    .btn-primary {
+        background-color: #000000;
+        color: #ffffff;
+        border: 2px solid #000000;
+    }
+    
+    /* Aumentar contraste de links */
+    a {
+        color: #0000ff; /* Azul puro para máximo contraste */
+        text-decoration: underline;
+    }
+}
+

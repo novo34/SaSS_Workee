@@ -1,0 +1,81 @@
+/**
+ * Estados de Botones - Workee
+ * 
+ * ITCSS Layer 06: Components
+ * Estilos para estados visuales de botones (loading, success, error)
+ * BEM: .btn--loading, .btn--success, .btn--error (modifiers)
+ */
+
+/* Estado de carga */
+.btn--loading {
+    position: relative;
+    pointer-events: none;
+    opacity: var(--opacity-disabled);
+}
+
+.btn--loading .spinner-border-sm {
+    width: 1rem;
+    height: 1rem;
+    border-width: 0.15em;
+}
+
+/* Estado de éxito */
+.btn--success {
+    background-color: var(--color-success) !important;
+    border-color: var(--color-success) !important;
+    color: var(--color-text-inverse) !important;
+}
+
+.btn--success:hover {
+    background-color: var(--color-success-dark) !important;
+    border-color: var(--color-success-dark) !important;
+}
+
+.btn-success-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.2em;
+    height: 1.2em;
+    font-weight: var(--font-weight-bold);
+    font-size: 1.1em;
+}
+
+/* Estado de error */
+.btn--error {
+    background-color: var(--color-danger) !important;
+    border-color: var(--color-danger) !important;
+    color: var(--color-text-inverse) !important;
+}
+
+.btn--error:hover {
+    background-color: var(--color-danger-dark) !important;
+    border-color: var(--color-danger-dark) !important;
+}
+
+.btn-error-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.2em;
+    height: 1.2em;
+    font-weight: var(--font-weight-bold);
+    font-size: 1.1em;
+}
+
+/* Animaciones de transición */
+.btn--loading,
+.btn--success,
+.btn--error {
+    transition: var(--transition-all);
+}
+
+/* Respetar prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+    .btn--loading,
+    .btn--success,
+    .btn--error {
+        transition: none;
+    }
+}
+

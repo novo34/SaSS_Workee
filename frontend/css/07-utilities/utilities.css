@@ -1,0 +1,19 @@
+/**
+ * Utilidades CSS - Workee
+ * 
+ * ITCSS Layer 07: Utilities
+ * Archivo maestro que importa todas las utilidades
+ */
+
+@import url('_spacing.css');
+@import url('_text.css');
+@import url('_display.css');
+@import url('_sizing.css');
+@import url('_border.css');
+@import url('_background.css');
+@import url('_shadow.css');
+@import url('_opacity.css');
+@import url('_cursor.css');
+@import url('_user-select.css');
+@import url('_custom-containers.css');
+

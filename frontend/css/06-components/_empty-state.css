@@ -1,0 +1,139 @@
+/**
+ * Estilos para Componente EmptyState Moderno - Workee
+ * BEM: .empty-state (block), .empty-state__* (elements), .empty-state--* (modifiers)
+ * ITCSS Layer 06: Components
+ * 
+ * Empty states modernos con iconos grandes y coloridos, mensajes claros y botones prominentes
+ */
+
+.empty-state {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: var(--empty-state-min-height);
+    padding: var(--spacing-xl);
+    text-align: center;
+    position: relative;
+}
+
+.empty-state__content {
+    max-width: var(--empty-state-max-width);
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+/* Iconos grandes y coloridos */
+.empty-state__icon {
+    font-size: var(--empty-state-icon-size);
+    margin-bottom: var(--spacing-sm);
+    opacity: 1;
+    color: var(--color-primary);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: calc(var(--empty-state-icon-size) * 1.2);
+    height: calc(var(--empty-state-icon-size) * 1.2);
+    background: rgba(var(--color-primary-rgb), 0.1);
+    border-radius: var(--border-radius-circle);
+    padding: var(--spacing-md);
+    transition: var(--transition-base);
+}
+
+.empty-state__icon svg {
+    width: var(--empty-state-icon-size);
+    height: var(--empty-state-icon-size);
+    fill: var(--color-primary);
+}
+
+/* Variantes de color para iconos */
+.empty-state--success .empty-state__icon {
+    color: var(--color-success);
+    background: rgba(var(--color-success-rgb), 0.1);
+}
+
+.empty-state--success .empty-state__icon svg {
+    fill: var(--color-success);
+}
+
+.empty-state--warning .empty-state__icon {
+    color: var(--color-warning);
+    background: rgba(var(--color-warning-rgb), 0.1);
+}
+
+.empty-state--warning .empty-state__icon svg {
+    fill: var(--color-warning);
+}
+
+.empty-state--info .empty-state__icon {
+    color: var(--color-info);
+    background: rgba(var(--color-info-rgb), 0.1);
+}
+
+.empty-state--info .empty-state__icon svg {
+    fill: var(--color-info);
+}
+
+/* Título destacado */
+.empty-state__title {
+    font-size: var(--font-size-xxl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text);
+    margin-bottom: var(--spacing-xs);
+    line-height: var(--line-height-tight);
+}
+
+/* Mensaje claro y accionable */
+.empty-state__message {
+    font-size: var(--font-size-base);
+    color: var(--color-text-muted);
+    margin-bottom: var(--spacing-lg);
+    line-height: var(--line-height-base);
+    max-width: 500px;
+}
+
+/* Botón de acción prominente */
+.empty-state__action {
+    min-width: var(--empty-state-action-min-width);
+    margin-top: var(--spacing-sm);
+}
+
+/* Hover effect en el contenedor */
+.empty-state:hover .empty-state__icon {
+    transform: scale(1.1);
+    box-shadow: var(--shadow-sm);
+}
+
+/* Responsive - Mobile */
+@media (max-width: 768px) {
+    .empty-state {
+        min-height: 200px;
+        padding: var(--spacing-lg);
+    }
+    
+    .empty-state__content {
+        gap: var(--spacing-sm);
+    }
+    
+    .empty-state__icon {
+        font-size: var(--empty-state-icon-size-mobile);
+        width: calc(var(--empty-state-icon-size-mobile) * 1.2);
+        height: calc(var(--empty-state-icon-size-mobile) * 1.2);
+        padding: var(--spacing-sm);
+    }
+    
+    .empty-state__icon svg {
+        width: var(--empty-state-icon-size-mobile);
+        height: var(--empty-state-icon-size-mobile);
+    }
+    
+    .empty-state__title {
+        font-size: var(--font-size-xl);
+    }
+    
+    .empty-state__message {
+        font-size: var(--font-size-sm);
+    }
+}

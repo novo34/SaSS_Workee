@@ -1,0 +1,209 @@
+/**
+ * Bottom Sheet - Workee
+ * 
+ * Estilos para componente Bottom Sheet en móvil
+ * MOB-138: Optimizar modales para móvil con bottom sheet o fullscreen
+ */
+
+/* Backdrop con blur mejorado */
+.bottom-sheet-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, var(--backdrop-opacity));
+    backdrop-filter: var(--backdrop-blur-lg);
+    -webkit-backdrop-filter: var(--backdrop-blur-lg);
+    z-index: var(--z-modal-backdrop);
+    opacity: 0;
+    transition: opacity var(--transition-base), backdrop-filter var(--transition-base);
+    pointer-events: none;
+}
+
+.bottom-sheet-backdrop.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Mejora para navegadores que no soportan backdrop-filter */
+@supports not (backdrop-filter: blur(8px)) {
+    .bottom-sheet-backdrop {
+        background-color: rgba(0, 0, 0, var(--backdrop-opacity-dark));
+    }
+}
+
+/* Bottom Sheet Container */
+.bottom-sheet {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: var(--z-modal);
+    max-height: 90vh;
+    transform: translateY(100%);
+    transition: transform var(--transition-slow) ease-out;
+    pointer-events: none;
+}
+
+.bottom-sheet.show {
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+/* Bottom Sheet Fullscreen */
+.bottom-sheet--fullscreen {
+    top: 0;
+    max-height: 100vh;
+    border-radius: 0;
+}
+
+.bottom-sheet--fullscreen .bottom-sheet__content {
+    height: 100vh;
+    border-radius: 0;
+}
+
+/* Contenido del Bottom Sheet */
+.bottom-sheet__content {
+    background: var(--color-bg);
+    border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
+    box-shadow: var(--shadow-xl);
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+}
+
+.bottom-sheet--fullscreen .bottom-sheet__content {
+    max-height: 100vh;
+}
+
+/* Handle para arrastrar (solo en bottom sheet, no en fullscreen) */
+.bottom-sheet__handle {
+    width: 40px;
+    height: 4px;
+    background: var(--color-border);
+    border-radius: var(--border-radius-pill);
+    margin: var(--spacing-sm) auto;
+    cursor: grab;
+    flex-shrink: 0;
+}
+
+.bottom-sheet__handle:active {
+    cursor: grabbing;
+}
+
+.bottom-sheet--fullscreen .bottom-sheet__handle {
+    display: none;
+}
+
+/* Header del Bottom Sheet */
+.bottom-sheet__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--spacing-lg);
+    border-bottom: var(--border-width-thick) solid var(--color-border-light);
+    background: linear-gradient(to bottom, var(--color-bg-light), var(--color-bg));
+    flex-shrink: 0;
+    gap: var(--spacing-md);
+}
+
+.bottom-sheet__title {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text);
+    margin: 0;
+    line-height: var(--line-height-sm);
+    flex: 1;
+}
+
+.bottom-sheet__close {
+    background: none;
+    border: none;
+    font-size: var(--font-size-xxl);
+    color: var(--color-text-muted);
+    cursor: pointer;
+    padding: var(--spacing-xs);
+    line-height: 1;
+    opacity: 0.6;
+    transition: var(--transition-base);
+    border-radius: var(--border-radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+}
+
+.bottom-sheet__close:hover {
+    opacity: 1;
+    background-color: var(--color-bg-light);
+    transform: scale(1.1);
+    color: var(--color-text);
+}
+
+.bottom-sheet__close:focus-visible {
+    outline: var(--outline-width) solid var(--color-primary);
+    outline-offset: var(--outline-offset);
+}
+
+/* Body del Bottom Sheet */
+.bottom-sheet__body {
+    padding: var(--spacing-lg);
+    overflow-y: auto;
+    flex: 1;
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling en iOS */
+}
+
+.bottom-sheet__body::-webkit-scrollbar {
+    width: var(--scrollbar-width);
+}
+
+.bottom-sheet__body::-webkit-scrollbar-track {
+    background: var(--color-bg-light);
+}
+
+.bottom-sheet__body::-webkit-scrollbar-thumb {
+    background: var(--color-border);
+    border-radius: var(--scrollbar-thumb-radius);
+}
+
+.bottom-sheet__body::-webkit-scrollbar-thumb:hover {
+    background: var(--color-text-muted);
+}
+
+/* Footer del Bottom Sheet */
+.bottom-sheet__footer {
+    padding: var(--spacing-lg);
+    border-top: var(--border-width-thick) solid var(--color-border-light);
+    background: linear-gradient(to top, var(--color-bg-light), var(--color-bg));
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--spacing-sm);
+    flex-wrap: wrap;
+    flex-shrink: 0;
+}
+
+.bottom-sheet__footer .btn {
+    min-width: 100px;
+}
+
+/* MOB-138: Solo en móvil */
+@media (min-width: 992px) {
+    .bottom-sheet,
+    .bottom-sheet-backdrop {
+        display: none !important;
+    }
+}
+
+/* Respetar prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+    .bottom-sheet,
+    .bottom-sheet-backdrop {
+        transition: none;
+    }
+}
+

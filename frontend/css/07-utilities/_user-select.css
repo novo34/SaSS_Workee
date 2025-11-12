@@ -1,0 +1,16 @@
+/**
+ * Utilidades de User Select - Workee
+ * 
+ * ITCSS Layer 07: Utilities
+ * Clases utilitarias para user-select
+ * Prefijo: .u-select-*
+ */
+
+/* ============================================
+   USER SELECT
+   ============================================ */
+.u-select-none { user-select: none !important; }
+.u-select-text { user-select: text !important; }
+.u-select-all { user-select: all !important; }
+.u-select-auto { user-select: auto !important; }
+

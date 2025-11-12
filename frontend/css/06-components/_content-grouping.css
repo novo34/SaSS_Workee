@@ -1,0 +1,100 @@
+/**
+ * Agrupación Lógica de Contenido - Workee
+ * 
+ * ITCSS Layer 06: Components
+ * Estilos para agrupar funciones relacionadas lógicamente
+ * BEM: .content-group (block), .content-group__* (elements)
+ */
+
+/* ============================================
+   CONTENT GROUP - Agrupación Lógica
+   ============================================ */
+.content-group {
+    margin-bottom: var(--spacing-xl);
+    padding: var(--spacing-lg);
+    background: var(--color-bg);
+    border: var(--border-width) solid var(--color-border-light);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-sm);
+}
+
+.content-group:last-child {
+    margin-bottom: 0;
+}
+
+.content-group__header {
+    margin-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-md);
+    border-bottom: var(--border-width) solid var(--color-border-light);
+}
+
+.content-group__title {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text);
+    margin-bottom: var(--spacing-xs);
+}
+
+.content-group__subtitle {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    margin-top: var(--spacing-xs);
+}
+
+.content-group__description {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    line-height: var(--line-height-base);
+    margin-top: var(--spacing-sm);
+}
+
+.content-group__body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+/* Agrupación en grid */
+.content-group--grid {
+    display: grid;
+    gap: var(--spacing-md);
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+/* Agrupación en lista */
+.content-group--list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.content-group--list .content-group__item {
+    padding: var(--spacing-sm) var(--spacing-md);
+    border: var(--border-width) solid var(--color-border-light);
+    border-radius: var(--border-radius);
+    background: var(--color-bg-light);
+    transition: var(--transition-all);
+}
+
+.content-group--list .content-group__item:hover {
+    border-color: var(--color-primary-light);
+    box-shadow: var(--shadow-sm);
+    transform: translateY(var(--transform-hover-y));
+}
+
+/* Separadores visuales entre grupos */
+.content-group + .content-group {
+    margin-top: var(--spacing-xl);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .content-group {
+        padding: var(--spacing-md);
+    }
+    
+    .content-group--grid {
+        grid-template-columns: 1fr;
+    }
+}
+

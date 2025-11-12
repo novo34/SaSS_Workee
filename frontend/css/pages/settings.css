@@ -1,0 +1,78 @@
+/**
+ * Estilos para Panel de Configuración
+ * ITCSS Layer: Pages
+ * Mobile-first design
+ */
+
+/* Tabs móviles */
+.nav-tabs {
+    flex-wrap: wrap;
+    border-bottom: var(--border-width-thick) solid var(--color-border);
+}
+
+.nav-tabs .nav-link {
+    min-height: var(--touch-target-min);
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: var(--font-size-base);
+}
+
+@media (min-width: 768px) {
+    .nav-tabs .nav-link {
+        padding: var(--spacing-md) var(--spacing-lg);
+        font-size: var(--font-size-base);
+    }
+}
+
+/* Form switches grandes */
+.form-check-switch {
+    min-height: var(--touch-target-min);
+    display: flex;
+    align-items: center;
+}
+
+.form-check-input {
+    width: var(--form-check-input-size-lg);
+    height: var(--form-check-input-size);
+    margin-right: var(--spacing-sm);
+}
+
+/* Inputs táctiles */
+.form-control,
+.form-select {
+    min-height: var(--touch-target-min);
+    font-size: var(--font-size-base);
+}
+
+/* Botones */
+.btn-lg {
+    min-height: var(--btn-lg-min-height);
+    min-width: var(--btn-lg-min-width);
+}
+
+/* Cards */
+.card {
+    margin-bottom: var(--spacing-lg);
+}
+
+.card-header {
+    background-color: var(--color-bg-light);
+    border-bottom: var(--border-width-thick) solid var(--color-border);
+    padding: var(--spacing-md) var(--spacing-lg);
+}
+
+@media (max-width: 767px) {
+    .card-header {
+        padding: var(--spacing-sm) var(--spacing-md);
+    }
+    
+    .card-header h5 {
+        font-size: var(--font-size-base);
+    }
+}
+
+/* Espaciado en móvil */
+@media (max-width: 767px) {
+    .row.g-3 > * {
+        margin-bottom: var(--spacing-sm);
+    }
+}

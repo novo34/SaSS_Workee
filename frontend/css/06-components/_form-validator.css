@@ -1,0 +1,28 @@
+/**
+ * Estilos para Componente FormValidator
+ * BEM: Compatibilidad con Bootstrap (is-invalid, invalid-feedback)
+ * ITCSS Layer 06: Components
+ * 
+ * Los estilos principales usan clases de Bootstrap (is-invalid, invalid-feedback)
+ * Este archivo solo contiene estilos adicionales si son necesarios
+ */
+
+/* Animación suave para errores usando tokens */
+.is-invalid {
+    transition: border-color var(--transition-fast);
+}
+
+.invalid-feedback {
+    animation: fadeIn var(--transition-fast);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(var(--transform-hover-y-large));
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

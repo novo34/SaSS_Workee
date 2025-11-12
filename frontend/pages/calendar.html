@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workee - Calendario</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.css">
+    <link rel="stylesheet" href="/frontend/css/main.css">
+    <link rel="stylesheet" href="/frontend/css/pages/calendar.css">
+    <link rel="stylesheet" href="/frontend/css/components/components.css">
+    <link rel="stylesheet" href="/frontend/css/calendar.css">
+</head>
+<body>
+    <!-- El sidebar y header se inyectan automáticamente por index.php -->
+    
+    <main id="main-content" class="container-fluid" role="main">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title" data-i18n="calendar.title">Calendario</h1>
+            <div class="page-actions">
+                <button class="btn-modern btn-modern--primary" id="btn-new-shift">
+                    <svg class="btn-modern__icon btn-modern__icon--left" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                    </svg>
+                    <span data-i18n="calendar.new_shift">Nuevo Turno</span>
+                </button>
+                <button class="btn-modern btn-modern--ghost" id="btn-create-request">
+                    <svg class="btn-modern__icon btn-modern__icon--left" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                    <span data-i18n="calendar.create_request">Crear Solicitud</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Filtros -->
+        <div class="card-modern mb-4">
+            <div class="card-modern__body">
+                <div class="row g-3">
+                    <div class="col-12 col-md-3">
+                        <div class="form-modern__group">
+                            <label class="form-modern__label" data-i18n="calendar.filter_group">Grupo</label>
+                            <select class="form-modern__select" id="filter-group">
+                                <option value="" data-i18n="calendar.filter_all_groups">Todos los grupos</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-3">
+                        <div class="form-modern__group">
+                            <label class="form-modern__label" data-i18n="calendar.filter_status">Estado</label>
+                            <select class="form-modern__select" id="filter-status">
+                                <option value="" data-i18n="calendar.filter_all_status">Todos</option>
+                                <option value="planned" data-i18n="calendar.status_planned">Planificado</option>
+                                <option value="assigned" data-i18n="calendar.status_assigned">Asignado</option>
+                                <option value="in_progress" data-i18n="calendar.status_in_progress">En curso</option>
+                                <option value="done" data-i18n="calendar.status_done">Completado</option>
+                                <option value="canceled" data-i18n="calendar.status_canceled">Cancelado</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-3">
+                        <div class="form-modern__group">
+                            <label class="form-modern__label" data-i18n="calendar.filter_view">Vista</label>
+                            <select class="form-modern__select" id="filter-view">
+                                <option value="dayGridMonth" data-i18n="calendar.view_month">Mes</option>
+                                <option value="timeGridWeek" data-i18n="calendar.view_week">Semana</option>
+                                <option value="timeGridDay" data-i18n="calendar.view_day">Día</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-3 d-flex align-items-end">
+                        <button class="btn-modern btn-modern--ghost w-100" id="btn-clear-filters">
+                            <svg class="btn-modern__icon btn-modern__icon--left" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                            <span data-i18n="calendar.clear_filters">Limpiar</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Calendario -->
+        <div class="card-modern">
+            <div class="card-modern__body">
+                <div id="calendar"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Nuevo/Editar Turno -->
+    <div class="modal fade" id="modal-shift" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal-shift-title" data-i18n="calendar.new_shift">Nuevo Turno</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form class="form-modern" id="form-shift">
+                        <input type="hidden" id="shift-id">
+                        
+                        <div class="row g-3">
+                            <div class="col-12 col-md-6">
+                                <div class="form-modern__group">
+                                    <label class="form-modern__label" data-i18n="calendar.shift_start">Inicio</label>
+                                    <input type="datetime-local" class="form-modern__input" id="shift-start" required>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="form-modern__group">
+                                    <label class="form-modern__label" data-i18n="calendar.shift_end">Fin</label>
+                                    <input type="datetime-local" class="form-modern__input" id="shift-end" required>
+                                </div>
+                            </div>
+                            
+                            <div class="col-12 col-md-6">
+                                <div class="form-modern__group">
+                                    <label class="form-modern__label" data-i18n="calendar.shift_group">Grupo</label>
+                                    <select class="form-modern__select" id="shift-group">
+                                        <option value="" data-i18n="calendar.no_group">Sin grupo</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="col-12 col-md-6">
+                                <div class="form-modern__group">
+                                    <label class="form-modern__label" data-i18n="calendar.shift_employee_type">Tipo de Empleado</label>
+                                    <select class="form-modern__select" id="shift-employee-type" required>
+                                        <option value="own_employee" data-i18n="calendar.employee_own">Empleado Propio</option>
+                                        <option value="agency_worker" data-i18n="calendar.employee_agency">Trabajador Temporero</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="col-12 col-md-6" id="container-own-employee">
+                                <div class="form-modern__group">
+                                    <label class="form-modern__label" data-i18n="calendar.shift_employee">Empleado</label>
+                                    <select class="form-modern__select" id="shift-own-employee">
+                                        <option value="" data-i18n="calendar.select_employee">Seleccionar empleado</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="col-12 col-md-6 d-none" id="container-agency-worker">
+                                <div class="form-modern__group">
+                                    <label class="form-modern__label" data-i18n="calendar.shift_worker">Trabajador</label>
+                                    <select class="form-modern__select" id="shift-agency-worker">
+                                        <option value="" data-i18n="calendar.select_worker">Seleccionar trabajador</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="col-12 col-md-6">
+                                <div class="form-modern__group">
+                                    <label class="form-modern__label" data-i18n="calendar.shift_location">Ubicación</label>
+                                    <input type="text" class="form-modern__input" id="shift-location">
+                                </div>
+                            </div>
+                            
+                            <div class="col-12 col-md-6">
+                                <div class="form-modern__group">
+                                    <label class="form-modern__label" data-i18n="calendar.shift_status">Estado</label>
+                                    <select class="form-modern__select" id="shift-status">
+                                        <option value="planned" data-i18n="calendar.status_planned">Planificado</option>
+                                        <option value="assigned" data-i18n="calendar.status_assigned">Asignado</option>
+                                        <option value="in_progress" data-i18n="calendar.status_in_progress">En curso</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div id="shift-conflicts" class="alert alert-warning mt-3 d-none">
+                            <strong data-i18n="calendar.conflicts_detected">Conflictos detectados:</strong>
+                            <ul id="conflicts-list"></ul>
+                        </div>
+                        
+                        <div id="shift-warnings" class="alert alert-info mt-3 d-none">
+                            <strong data-i18n="calendar.warnings">Advertencias:</strong>
+                            <ul id="warnings-list"></ul>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-modern btn-modern--secondary" data-bs-dismiss="modal" data-i18n="common.cancel">Cancelar</button>
+                    <button type="button" class="btn-modern btn-modern--primary" id="btn-save-shift" data-i18n="common.save">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
+    <script src="/frontend/js/core/components-loader.js"></script>
+    <script src="/frontend/js/layout.js"></script>
+    <script src="/frontend/js/calendar.js"></script>
+    <script src="/frontend/js/calendar-request-builder.js"></script>
+</body>
+</html>
+

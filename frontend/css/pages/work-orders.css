@@ -1,0 +1,33 @@
+/**
+ * Estilos para Listado de Órdenes de Trabajo
+ * ITCSS Layer: Pages
+ * BEM: .work-order-card (block)
+ */
+
+.work-order-card {
+    transition: transform var(--transition-base), box-shadow var(--transition-base);
+}
+
+.work-order-card:hover {
+    transform: translateY(var(--transform-hover-y));
+    box-shadow: var(--shadow-md);
+}
+
+.work-order-card .card-body {
+    padding: var(--spacing-lg);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    /* .page-actions movido a 05-objects/_layout.css (ITCSS Layer 05) */
+    
+    .work-order-card .btn-group {
+        width: 100%;
+        flex-direction: column;
+    }
+    
+    .work-order-card .btn-group .btn {
+        width: 100%;
+        margin-bottom: var(--spacing-xs);
+    }
+}

@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workee - Editor de Orden de Trabajo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/frontend/css/main.css">
+    <link rel="stylesheet" href="/frontend/css/pages/work-orders-edit.css">
+    <link rel="stylesheet" href="/frontend/css/components/components.css">
+    <link rel="stylesheet" href="/frontend/css/work-orders-edit.css">
+</head>
+<body>
+    <!-- El sidebar y header se inyectan automáticamente por index.php -->
+    
+    <main id="main-content" class="container-fluid" role="main">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title" data-i18n="work_orders.editor_title">Editor de Orden de Trabajo</h1>
+            <div class="page-actions">
+                <button class="btn-modern btn-modern--ghost" id="btn-cancel">
+                    <svg class="btn-modern__icon btn-modern__icon--left" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                    <span data-i18n="common.cancel">Cancelar</span>
+                </button>
+                <button class="btn-modern btn-modern--primary" id="btn-save">
+                    <svg class="btn-modern__icon btn-modern__icon--left" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path>
+                    </svg>
+                    <span data-i18n="common.save">Guardar</span>
+                </button>
+            </div>
+        </div>
+
+        <form class="form-modern" id="form-work-order">
+            <input type="hidden" id="work-order-id">
+            
+            <div class="row g-3">
+                <!-- Columna Principal -->
+                <div class="col-12 col-lg-8">
+                    <!-- Información Básica -->
+                    <div class="card-modern mb-3">
+                        <div class="card-modern__header">
+                            <h5 class="card-modern__title" data-i18n="work_orders.basic_info">Información Básica</h5>
+                        </div>
+                        <div class="card-modern__body">
+                            <div class="row g-3">
+                                <div class="col-12 col-md-6">
+                                    <div class="form-modern__group">
+                                        <label class="form-modern__label" data-i18n="work_orders.code">Código</label>
+                                        <input type="text" class="form-modern__input" id="wo-code" readonly>
+                                        <div class="form-modern__feedback form-modern__feedback--help">
+                                            <small data-i18n="work_orders.code_auto">Se genera automáticamente</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <div class="form-modern__group">
+                                        <label class="form-modern__label" data-i18n="work_orders.status">Estado</label>
+                                        <select class="form-modern__select" id="wo-status">
+                                            <option value="draft" data-i18n="work_orders.status_draft">Borrador</option>
+                                            <option value="planned" data-i18n="work_orders.status_planned">Planificada</option>
+                                            <option value="in_progress" data-i18n="work_orders.status_in_progress">En curso</option>
+                                            <option value="on_hold" data-i18n="work_orders.status_on_hold">En pausa</option>
+                                            <option value="completed" data-i18n="work_orders.status_completed">Completada</option>
+                                            <option value="canceled" data-i18n="work_orders.status_canceled">Cancelada</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-modern__group">
+                                        <label class="form-modern__label" data-i18n="work_orders.title">Título <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-modern__input" id="wo-title" required>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <div class="form-modern__group">
+                                        <label class="form-modern__label" data-i18n="work_orders.client">Cliente</label>
+                                        <select class="form-modern__select" id="wo-client">
+                                            <option value="" data-i18n="work_orders.no_client">Sin cliente</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <div class="form-modern__group">
+                                        <label class="form-modern__label" data-i18n="work_orders.project">Proyecto</label>
+                                        <select class="form-modern__select" id="wo-project">
+                                            <option value="" data-i18n="work_orders.no_project">Sin proyecto</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-modern__group">
+                                        <label class="form-modern__label" data-i18n="work_orders.location">Ubicación</label>
+                                        <input type="text" class="form-modern__input" id="wo-location">
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <div class="form-modern__group">
+                                        <label class="form-modern__label" data-i18n="work_orders.start_planned">Inicio Planificado</label>
+                                        <input type="date" class="form-modern__input" id="wo-start-planned">
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <div class="form-modern__group">
+                                        <label class="form-modern__label" data-i18n="work_orders.end_planned">Fin Planificado</label>
+                                        <input type="date" class="form-modern__input" id="wo-end-planned">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Alcance -->
+                    <div class="card-modern mb-3">
+                        <div class="card-modern__header">
+                            <h5 class="mb-0" data-i18n="work_orders.scope">Alcance</h5>
+                        </div>
+                        <div class="card-modern__body">
+                            <div class="form-modern__group">
+                                <label class="form-modern__label" data-i18n="work_orders.scope_text">Descripción del Alcance</label>
+                                <textarea class="form-modern__textarea" id="wo-scope-text" rows="6" placeholder="Describe el alcance del trabajo..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tareas -->
+                    <div class="card-modern mb-3">
+                        <div class="card-modern__header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0" data-i18n="work_orders.tasks">Tareas</h5>
+                            <button type="button" class="btn-modern btn-modern--primary btn-modern--sm" id="btn-add-task">
+                                <svg class="btn-modern__icon btn-modern__icon--left" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                </svg>
+                                <span data-i18n="work_orders.add_task">Agregar Tarea</span>
+                            </button>
+                        </div>
+                        <div class="card-modern__body">
+                            <div id="tasks-container">
+                                <div class="text-center py-3 text-muted" data-i18n="work_orders.no_tasks">No hay tareas. Haz clic en "Agregar Tarea" para comenzar.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Checklist -->
+                    <div class="card-modern mb-3">
+                        <div class="card-modern__header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0" data-i18n="work_orders.checklist">Checklist</h5>
+                            <button type="button" class="btn-modern btn-modern--primary btn-modern--sm" id="btn-add-checklist">
+                                <svg class="btn-modern__icon btn-modern__icon--left" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                </svg>
+                                <span data-i18n="work_orders.add_checklist_item">Agregar Item</span>
+                            </button>
+                        </div>
+                        <div class="card-modern__body">
+                            <div id="checklist-container">
+                                <div class="text-center py-3 text-muted" data-i18n="work_orders.no_checklist">No hay items en el checklist.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Materiales -->
+                    <div class="card-modern mb-3">
+                        <div class="card-modern__header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0" data-i18n="work_orders.materials">Materiales</h5>
+                            <button type="button" class="btn-modern btn-modern--primary btn-modern--sm" id="btn-add-material">
+                                <svg class="btn-modern__icon btn-modern__icon--left" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                </svg>
+                                <span data-i18n="work_orders.add_material">Agregar Material</span>
+                            </button>
+                        </div>
+                        <div class="card-modern__body">
+                            <div id="materials-container">
+                                <div class="text-center py-3 text-muted" data-i18n="work_orders.no_materials">No hay materiales.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar -->
+                <div class="col-12 col-lg-4">
+                    <!-- Notas de Seguridad -->
+                    <div class="card-modern mb-3">
+                        <div class="card-modern__header">
+                            <h6 class="card-modern__title" data-i18n="work_orders.safety_notes">Notas de Seguridad</h6>
+                        </div>
+                        <div class="card-modern__body">
+                            <div class="form-modern__group">
+                                <label class="form-modern__label visually-hidden" data-i18n="work_orders.safety_notes">Notas de Seguridad</label>
+                                <textarea class="form-modern__textarea" id="wo-safety-notes" rows="6" placeholder="Indicaciones de seguridad, riesgos, EPIs necesarios..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Adjuntos -->
+                    <div class="card-modern mb-3">
+                        <div class="card-modern__header">
+                            <h6 class="card-modern__title" data-i18n="work_orders.attachments">Adjuntos</h6>
+                        </div>
+                        <div class="card-modern__body">
+                            <div id="attachments-container">
+                                <div class="text-center py-3 text-muted small" data-i18n="work_orders.no_attachments">No hay adjuntos</div>
+                            </div>
+                            <button type="button" class="btn-modern btn-modern--ghost btn-modern--sm w-100 mt-2" id="btn-add-attachment">
+                                <svg class="btn-modern__icon btn-modern__icon--left" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path>
+                                </svg>
+                                <span data-i18n="work_orders.add_attachment">Agregar Adjunto</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Información Adicional -->
+                    <div class="card-modern">
+                        <div class="card-modern__header">
+                            <h6 class="card-modern__title" data-i18n="work_orders.additional_info">Información Adicional</h6>
+                        </div>
+                        <div class="card-modern__body">
+                            <div class="mb-2">
+                                <small class="text-muted" data-i18n="work_orders.created_at">Creada:</small>
+                                <div id="wo-created-at">-</div>
+                            </div>
+                            <div class="mb-2">
+                                <small class="text-muted" data-i18n="work_orders.updated_at">Actualizada:</small>
+                                <div id="wo-updated-at">-</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Modal: Agregar/Editar Tarea -->
+    <div class="modal fade" id="modal-task" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal-task-title" data-i18n="work_orders.add_task">Agregar Tarea</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form class="form-modern" id="form-task">
+                        <input type="hidden" id="task-id">
+                        <div class="form-modern__group">
+                            <label class="form-modern__label" data-i18n="work_orders.task_name">Nombre <span class="text-danger">*</span></label>
+                            <input type="text" class="form-modern__input" id="task-name" required>
+                        </div>
+                        <div class="form-modern__group">
+                            <label class="form-modern__label" data-i18n="work_orders.task_description">Descripción</label>
+                            <textarea class="form-modern__textarea" id="task-description" rows="3"></textarea>
+                        </div>
+                        <div class="form-modern__group">
+                            <label class="form-modern__label" for="task-estimated-hours">
+                                <span data-i18n="work_orders.task_estimated_hours">Horas Estimadas</span>
+                                <span class="icon icon-sm icon--muted ms-1" 
+                                      data-tooltip="work_orders.estimated_hours_tooltip" 
+                                      data-tooltip-position="right"
+                                      data-icon="info"
+                                      role="button"
+                                      tabindex="0"
+                                      aria-label="Información sobre horas estimadas"></span>
+                            </label>
+                            <input type="number" class="form-modern__input" id="task-estimated-hours" step="0.5" min="0">
+                        </div>
+                        <div class="form-modern__group">
+                            <label class="form-modern__label" for="task-required-skills">
+                                <span data-i18n="work_orders.task_required_skills">Skills Requeridas</span>
+                                <span class="icon icon-sm icon--muted ms-1" 
+                                      data-tooltip="work_orders.required_skills_tooltip" 
+                                      data-tooltip-position="right"
+                                      data-icon="info"
+                                      role="button"
+                                      tabindex="0"
+                                      aria-label="Información sobre skills requeridas"></span>
+                            </label>
+                            <input type="text" class="form-modern__input" id="task-required-skills" placeholder="Ej: Construcción, Albañilería (separadas por comas)">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-modern btn-modern--secondary" data-bs-dismiss="modal" data-i18n="common.cancel">Cancelar</button>
+                    <button type="button" class="btn-modern btn-modern--primary" id="btn-save-task" data-i18n="common.save">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Agregar Item Checklist -->
+    <div class="modal fade" id="modal-checklist" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" data-i18n="work_orders.add_checklist_item">Agregar Item al Checklist</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form class="form-modern" id="form-checklist">
+                        <input type="hidden" id="checklist-item-id">
+                        <div class="form-modern__group">
+                            <label class="form-modern__label" data-i18n="work_orders.checklist_item">Item <span class="text-danger">*</span></label>
+                            <input type="text" class="form-modern__input" id="checklist-item" required>
+                        </div>
+                        <div class="form-modern__group">
+                            <div class="form-modern__check">
+                                <input class="form-modern__check-input" type="checkbox" id="checklist-is-required" checked>
+                                <label class="form-modern__check-label" for="checklist-is-required" data-i18n="work_orders.checklist_required">Requerido</label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-modern btn-modern--secondary" data-bs-dismiss="modal" data-i18n="common.cancel">Cancelar</button>
+                    <button type="button" class="btn-modern btn-modern--primary" id="btn-save-checklist" data-i18n="common.save">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Agregar/Editar Material -->
+    <div class="modal fade" id="modal-material" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal-material-title" data-i18n="work_orders.add_material">Agregar Material</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form class="form-modern" id="form-material">
+                        <input type="hidden" id="material-id">
+                        <div class="form-modern__group">
+                            <label class="form-modern__label" data-i18n="work_orders.material_name">Nombre <span class="text-danger">*</span></label>
+                            <input type="text" class="form-modern__input" id="material-name" required>
+                        </div>
+                        <div class="form-modern__group">
+                            <label class="form-modern__label" data-i18n="work_orders.material_unit">Unidad</label>
+                            <input type="text" class="form-modern__input" id="material-unit" placeholder="Ej: kg, m², unidades">
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-modern__group">
+                                    <label class="form-modern__label" data-i18n="work_orders.material_qty_planned">Cantidad Planificada</label>
+                                    <input type="number" class="form-modern__input" id="material-qty-planned" step="0.01" min="0">
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-modern__group">
+                                    <label class="form-modern__label" data-i18n="work_orders.material_qty_used">Cantidad Usada</label>
+                                    <input type="number" class="form-modern__input" id="material-qty-used" step="0.01" min="0">
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-modern btn-modern--secondary" data-bs-dismiss="modal" data-i18n="common.cancel">Cancelar</button>
+                    <button type="button" class="btn-modern btn-modern--primary" id="btn-save-material" data-i18n="common.save">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/frontend/js/core/components-loader.js"></script>
+    <script src="/frontend/js/layout.js"></script>
+    <script src="/frontend/js/work_orders_edit.js"></script>
+</body>
+</html>
+

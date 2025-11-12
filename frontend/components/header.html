@@ -1,0 +1,62 @@
+<!-- Header Component -->
+<header class="app-header">
+    <div class="header-left">
+        <!-- Sidebar Toggle (Desktop) -->
+        <button class="sidebar-collapse-toggle" id="sidebar-collapse-toggle" type="button" aria-label="Colapsar o expandir menú de navegación" aria-expanded="false" tabindex="0">
+            <span class="icon icon-md" data-icon="menu" aria-hidden="true"></span>
+        </button>
+        
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb-nav" id="breadcrumb-nav" aria-label="Breadcrumb">
+            <ol class="breadcrumb-nav__list">
+                <li class="breadcrumb-nav__item">
+                    <a href="/dashboard" class="breadcrumb-nav__link" data-i18n="nav.dashboard">Dashboard</a>
+                </li>
+                <li class="breadcrumb-nav__item breadcrumb-nav__item--current" aria-current="page">
+                    <span class="breadcrumb-nav__current" id="breadcrumb-current" data-i18n="nav.current_page">Página Actual</span>
+                </li>
+            </ol>
+        </nav>
+    </div>
+    
+    <div class="header-right">
+        <!-- Search -->
+        <div class="header-search">
+            <span class="search-icon">🔍</span>
+            <input type="text" placeholder="Buscar..." id="header-search-input" data-i18n-placeholder="nav.search_placeholder">
+        </div>
+        
+        <!-- Actions -->
+        <div class="header-actions">
+            <!-- Messages -->
+            <button class="header-action-btn" id="messages-btn" aria-label="Mensajes" aria-describedby="messages-badge">
+                <span aria-hidden="true">💬</span>
+                <span class="badge" id="messages-badge" style="display: none;" aria-label="Número de mensajes no leídos">0</span>
+            </button>
+            
+            <!-- Notifications -->
+            <button class="header-action-btn" id="notifications-btn" aria-label="Notificaciones" aria-describedby="notifications-badge">
+                <span aria-hidden="true">🔔</span>
+                <span class="badge" id="notifications-badge" style="display: none;" aria-label="Número de notificaciones no leídas">0</span>
+            </button>
+        </div>
+        
+        <!-- User Profile -->
+        <div class="user-profile">
+            <button class="user-profile-btn" id="user-profile-btn" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Menú de perfil de usuario" aria-haspopup="true">
+                <div class="user-avatar" id="user-avatar" aria-hidden="true">U</div>
+                <div class="user-info">
+                    <span class="user-name" id="user-name">Usuario</span>
+                    <span class="user-role" id="user-role">Rol</span>
+                </div>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="user-profile-btn">
+                <li><a class="dropdown-item" href="/profile" data-i18n="nav.my_profile">Mi Perfil</a></li>
+                <li><a class="dropdown-item" href="/settings" data-i18n="nav.settings">Configuración</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="#" onclick="logout(); return false;" data-i18n="nav.logout">Cerrar Sesión</a></li>
+            </ul>
+        </div>
+    </div>
+</header>
+

@@ -1,0 +1,152 @@
+/**
+ * Componente Achievements y Milestones
+ * ITCSS Layer 06 - Components
+ */
+
+/* Achievement Banner */
+.achievement-banner {
+    position: fixed;
+    top: var(--spacing-lg);
+    right: var(--spacing-lg);
+    z-index: var(--z-modal);
+    max-width: 400px;
+    background: var(--color-bg);
+    border: 2px solid var(--color-success);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-xl);
+    opacity: 0;
+    transform: translateX(100%);
+    transition: var(--transition-base);
+    pointer-events: none;
+}
+
+.achievement-banner--show {
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: auto;
+}
+
+.achievement-banner__content {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+}
+
+.achievement-banner__icon {
+    font-size: var(--font-size-xxl);
+    line-height: 1;
+}
+
+.achievement-banner__text {
+    flex: 1;
+}
+
+.achievement-banner__title {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text);
+    margin-bottom: var(--spacing-xs);
+}
+
+.achievement-banner__description {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+}
+
+.achievement-banner__close {
+    background: none;
+    border: none;
+    font-size: var(--font-size-xl);
+    color: var(--color-text-muted);
+    cursor: pointer;
+    padding: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--border-radius);
+    transition: var(--transition-base);
+}
+
+.achievement-banner__close:hover {
+    background-color: var(--color-bg-light);
+    color: var(--color-text);
+}
+
+/* Achievement Badge */
+.achievement-badge {
+    margin-right: var(--spacing-xs);
+    margin-bottom: var(--spacing-xs);
+}
+
+.achievement-badge__icon {
+    font-size: var(--font-size-sm);
+    margin-right: var(--spacing-xs);
+}
+
+.achievement-badge__title {
+    font-size: var(--font-size-xs);
+}
+
+/* Achievement Progress */
+.achievement-progress {
+    margin-bottom: var(--spacing-md);
+}
+
+.achievement-progress__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-sm);
+}
+
+.achievement-progress__title {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text);
+}
+
+.achievement-progress__value {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-primary);
+}
+
+.achievement-progress__bar {
+    margin-bottom: var(--spacing-xs);
+}
+
+.achievement-progress__milestones {
+    display: flex;
+    justify-content: space-between;
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+}
+
+.achievement-progress__milestone {
+    flex: 1;
+    text-align: center;
+}
+
+.achievement-progress__milestone--completed {
+    color: var(--color-success);
+    font-weight: var(--font-weight-semibold);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .achievement-banner {
+        transition: opacity var(--transition-fast);
+    }
+}
+
+@media (max-width: 768px) {
+    .achievement-banner {
+        top: var(--spacing-md);
+        right: var(--spacing-md);
+        left: var(--spacing-md);
+        max-width: none;
+    }
+}
+

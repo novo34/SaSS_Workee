@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workee - Relaciones Empresa ↔ Temporera</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/frontend/css/main.css">
+    <link rel="stylesheet" href="/frontend/css/pages/agency-links.css">
+</head>
+<body>
+    <!-- El sidebar y header se inyectan automáticamente por index.php -->
+    
+    <main id="main-content" class="container-fluid" role="main">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title" data-i18n="agency_links.title">Relaciones Empresa ↔ Temporera</h1>
+            <div class="page-actions">
+                <button class="btn-modern btn-modern--primary" id="btn-create-link" data-bs-toggle="modal" data-bs-target="#modalCreateLink">
+                    <svg class="btn-modern__icon btn-modern__icon--left" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                    </svg>
+                    <span data-i18n="agency_links.create">Crear Vínculo</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Filtros - Estilo WowDash -->
+        <div class="table-filters mb-4">
+            <div class="row g-3 align-items-end">
+                <div class="col-12 col-md-3">
+                    <div class="form-modern__group">
+                        <label for="filter-status" class="form-modern__label">Estado</label>
+                        <select class="form-modern__select" id="filter-status">
+                            <option value="">Todos</option>
+                            <option value="active">Activo</option>
+                            <option value="paused">Pausado</option>
+                            <option value="blocked">Bloqueado</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-12 col-md-4">
+                    <div class="form-modern__group">
+                        <label for="filter-search" class="form-modern__label">Buscar</label>
+                        <input type="text" class="form-modern__input" id="filter-search" placeholder="Nombre de tenant...">
+                    </div>
+                </div>
+                <div class="col-12 col-md-3">
+                    <button class="btn-modern btn-modern--ghost btn-modern--sm w-100" id="btn-filter">
+                        <svg class="btn-modern__icon btn-modern__icon--left" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path>
+                        </svg>
+                        <span data-i18n="common.filter">Filtrar</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lista de Vínculos con DataTable -->
+        <div id="links-container">
+            <!-- DataTable se inicializa aquí automáticamente -->
+        </div>
+    </div>
+    </div>
+
+    <!-- Modal Crear Vínculo Moderno -->
+    <div class="modal fade" id="modalCreateLink" tabindex="-1" aria-labelledby="modalCreateLinkLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalCreateLinkLabel" data-i18n="agency_links.create">Crear Vínculo</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form class="form-modern" id="form-create-link">
+                        <div class="row g-3">
+                            <div class="col-12 col-md-6">
+                                <div class="form-modern__group">
+                                    <label for="link-company-id" class="form-modern__label">Empresa *</label>
+                                    <select class="form-modern__select" id="link-company-id" required>
+                                        <option value="">Seleccionar empresa...</option>
+                                    </select>
+                                    <div class="form-modern__feedback form-modern__feedback--error"></div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="form-modern__group">
+                                    <label for="link-agency-id" class="form-modern__label">Temporera *</label>
+                                    <select class="form-modern__select" id="link-agency-id" required>
+                                        <option value="">Seleccionar temporera...</option>
+                                    </select>
+                                    <div class="form-modern__feedback form-modern__feedback--error"></div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-modern__group">
+                                    <label for="link-status" class="form-modern__label">Estado</label>
+                                    <select class="form-modern__select" id="link-status">
+                                        <option value="active">Activo</option>
+                                        <option value="paused">Pausado</option>
+                                        <option value="blocked">Bloqueado</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-modern btn-modern--secondary" data-bs-dismiss="modal" data-i18n="common.cancel">Cancelar</button>
+                    <button type="button" class="btn-modern btn-modern--primary" id="btn-submit-link" data-i18n="common.create">Crear</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/frontend/js/core/components-loader.js"></script>
+    <script src="/frontend/js/layout.js"></script>
+    <script type="module" src="/frontend/js/agency-company-links.js"></script>
+</body>
+</html>
+

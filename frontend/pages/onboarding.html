@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workee - Onboarding</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/frontend/css/main.css">
+    <link rel="stylesheet" href="/frontend/css/pages/onboarding.css">
+    <link rel="stylesheet" href="/frontend/css/components/components.css">
+    <link rel="stylesheet" href="/frontend/css/onboarding.css">
+</head>
+<body>
+    <div class="container-fluid min-vh-100 d-flex align-items-center justify-content-center bg-light">
+            <div class="card shadow-lg w-100 onboarding-card">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h4 class="mb-0" data-i18n="onboarding.title">Crear Nueva Organización</h4>
+                <button 
+                    type="button" 
+                    class="btn btn-sm btn-outline-light" 
+                    id="btn-skip"
+                    data-tooltip="onboarding.skip_tooltip"
+                    data-i18n="onboarding.skip"
+                >
+                    Omitir
+                </button>
+            </div>
+            <div class="card-body p-4">
+                <!-- Progress Bar Mejorado -->
+                <div class="mb-4" id="progress-bar-container"></div>
+
+                <!-- Step 1: Tipo de Organización -->
+                <div id="step-1" class="step-content">
+                    <h5 class="mb-3" data-i18n="onboarding.step_1_title">Tipo de Organización</h5>
+                    <div class="mb-3">
+                        <div class="form-modern__check form-modern__check--lg mb-3 p-3 border rounded card-modern card-modern--clickable" 
+                             data-tooltip="onboarding.org_type_empresa_tooltip"
+                             data-tooltip-position="right">
+                            <input class="form-modern__check-input" type="radio" name="org_type" id="org_empresa" value="empresa" checked>
+                            <label class="form-modern__check-label" for="org_empresa">
+                                <strong data-i18n="onboarding.org_type_empresa">Empresa</strong>
+                                <small class="d-block text-muted" data-i18n="onboarding.org_type_empresa_desc">Planificas trabajo y gestionas empleados propios y temporeros</small>
+                            </label>
+                        </div>
+                        <div class="form-modern__check form-modern__check--lg p-3 border rounded card-modern card-modern--clickable"
+                             data-tooltip="onboarding.org_type_temporera_tooltip"
+                             data-tooltip-position="right">
+                            <input class="form-modern__check-input" type="radio" name="org_type" id="org_temporera" value="temporera">
+                            <label class="form-modern__check-label" for="org_temporera">
+                                <strong data-i18n="onboarding.org_type_temporera">Temporera</strong>
+                                <small class="d-block text-muted" data-i18n="onboarding.org_type_temporera_desc">Suministras trabajadores a empresas</small>
+                            </label>
+                        </div>
+                    </div>
+                    <!-- Ejemplos de datos -->
+                    <div class="alert alert-info mt-3">
+                        <strong data-i18n="onboarding.examples_title">
+                            <span class="icon icon-sm icon--info me-1" data-icon="info"></span>
+                            Ejemplos:
+                        </strong>
+                        <ul class="mb-0 mt-2">
+                            <li data-i18n="onboarding.example_empresa">Empresa: "Construcciones ABC S.A." - Gestiona proyectos y necesita trabajadores temporeros</li>
+                            <li data-i18n="onboarding.example_temporera">Temporera: "Agencia Trabajo XYZ" - Suministra trabajadores a empresas</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Step 2: Información Básica -->
+                <div id="step-2" class="step-content d-none">
+                    <h5 class="mb-3" data-i18n="onboarding.step_2_title">Información Básica</h5>
+                    <div class="form-modern__group">
+                        <label for="name" class="form-modern__label" data-i18n="onboarding.field_org_name">Nombre de la Organización *</label>
+                        <input 
+                            type="text" 
+                            class="form-modern__input form-modern__input--lg" 
+                            id="name" 
+                            required
+                            data-tooltip="onboarding.field_org_name_tooltip"
+                            placeholder="Ej: Construcciones ABC S.A."
+                        >
+                        <div class="form-modern__feedback form-modern__feedback--error"></div>
+                    </div>
+                    <!-- Plantillas rápidas -->
+                    <div class="mb-3">
+                        <small class="text-muted d-block mb-2" data-i18n="onboarding.templates_title">Plantillas rápidas:</small>
+                        <div class="d-flex flex-wrap gap-2">
+                            <button type="button" class="btn btn-sm btn-outline-primary template-btn" data-template="empresa">
+                                <span data-i18n="onboarding.template_empresa">Empresa ejemplo</span>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-primary template-btn" data-template="temporera">
+                                <span data-i18n="onboarding.template_temporera">Temporera ejemplo</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-modern__group">
+                        <label for="timezone" class="form-modern__label" data-i18n="onboarding.field_timezone">Zona Horaria</label>
+                        <select class="form-modern__select form-modern__select--lg" id="timezone">
+                            <option value="Europe/Zurich" data-i18n="onboarding.timezone_zurich">Europa/Zúrich (CET)</option>
+                            <option value="Europe/Madrid" data-i18n="onboarding.timezone_madrid">Europa/Madrid (CET)</option>
+                            <option value="Europe/Berlin" data-i18n="onboarding.timezone_berlin">Europa/Berlín (CET)</option>
+                            <option value="Europe/Paris" data-i18n="onboarding.timezone_paris">Europa/París (CET)</option>
+                        </select>
+                    </div>
+                    <div class="form-modern__group">
+                        <label for="locale" class="form-modern__label" data-i18n="onboarding.field_locale">Idioma</label>
+                        <select class="form-modern__select form-modern__select--lg" id="locale">
+                            <option value="es" data-i18n="onboarding.locale_es">Español</option>
+                            <option value="de" data-i18n="onboarding.locale_de">Deutsch</option>
+                            <option value="fr" data-i18n="onboarding.locale_fr">Français</option>
+                            <option value="it" data-i18n="onboarding.locale_it">Italiano</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Step 3: Plan -->
+                <div id="step-3" class="step-content d-none">
+                    <h5 class="mb-3" data-i18n="onboarding.step_3_title">Selecciona tu Plan</h5>
+                    <div class="row g-3">
+                        <div class="col-12 col-md-4">
+                            <div class="card h-100 plan-card" data-plan="basic">
+                                <div class="card-body text-center">
+                                    <h5 class="card-title" data-i18n="onboarding.plan_basic">Basic</h5>
+                                    <h3 class="text-primary" data-i18n="onboarding.plan_basic_price">CHF 49/mes</h3>
+                                    <ul class="list-unstyled text-start mt-3">
+                                        <li>✓ <span data-i18n="onboarding.plan_basic_feature_1">Hasta 10 empleados</span></li>
+                                        <li>✓ <span data-i18n="onboarding.plan_basic_feature_2">Calendario básico</span></li>
+                                        <li>✓ <span data-i18n="onboarding.plan_basic_feature_3">Reportes básicos</span></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <div class="card h-100 plan-card border-primary" data-plan="pro">
+                                <div class="card-body text-center">
+                                    <span class="badge bg-primary mb-2" data-i18n="onboarding.plan_pro_recommended">Recomendado</span>
+                                    <h5 class="card-title" data-i18n="onboarding.plan_pro">Pro</h5>
+                                    <h3 class="text-primary" data-i18n="onboarding.plan_pro_price">CHF 99/mes</h3>
+                                    <ul class="list-unstyled text-start mt-3">
+                                        <li>✓ <span data-i18n="onboarding.plan_pro_feature_1">Hasta 50 empleados</span></li>
+                                        <li>✓ <span data-i18n="onboarding.plan_pro_feature_2">Calendario avanzado</span></li>
+                                        <li>✓ <span data-i18n="onboarding.plan_pro_feature_3">Reportes completos</span></li>
+                                        <li>✓ <span data-i18n="onboarding.plan_pro_feature_4">APIs públicas</span></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <div class="card h-100 plan-card" data-plan="enterprise">
+                                <div class="card-body text-center">
+                                    <h5 class="card-title" data-i18n="onboarding.plan_enterprise">Enterprise</h5>
+                                    <h3 class="text-primary" data-i18n="onboarding.plan_enterprise_price">Personalizado</h3>
+                                    <ul class="list-unstyled text-start mt-3">
+                                        <li>✓ <span data-i18n="onboarding.plan_enterprise_feature_1">Empleados ilimitados</span></li>
+                                        <li>✓ <span data-i18n="onboarding.plan_enterprise_feature_2">Todas las funciones</span></li>
+                                        <li>✓ <span data-i18n="onboarding.plan_enterprise_feature_3">Soporte prioritario</span></li>
+                                        <li>✓ <span data-i18n="onboarding.plan_enterprise_feature_4">SSO</span></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <input type="hidden" id="plan" value="basic">
+                </div>
+
+                <!-- Step 4: Resumen -->
+                <div id="step-4" class="step-content d-none">
+                    <h5 class="mb-3" data-i18n="onboarding.step_4_title">Resumen</h5>
+                    <div class="alert alert-info">
+                        <strong data-i18n="onboarding.summary_title">Revisa la información antes de continuar:</strong>
+                    </div>
+                    <table class="table table-borderless">
+                        <tr>
+                            <td><strong data-i18n="onboarding.summary_type">Tipo:</strong></td>
+                            <td id="summary-org-type">-</td>
+                        </tr>
+                        <tr>
+                            <td><strong data-i18n="onboarding.summary_name">Nombre:</strong></td>
+                            <td id="summary-name">-</td>
+                        </tr>
+                        <tr>
+                            <td><strong data-i18n="onboarding.summary_plan">Plan:</strong></td>
+                            <td id="summary-plan">-</td>
+                        </tr>
+                        <tr>
+                            <td><strong data-i18n="onboarding.summary_timezone">Zona Horaria:</strong></td>
+                            <td id="summary-timezone">-</td>
+                        </tr>
+                        <tr>
+                            <td><strong data-i18n="onboarding.summary_locale">Idioma:</strong></td>
+                            <td id="summary-locale">-</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!-- Botones de Navegación -->
+                <div class="d-flex justify-content-between mt-4">
+                    <button type="button" class="btn-modern btn-modern--ghost btn-modern--lg" id="btn-prev" style="display: none;">
+                        <svg class="btn-modern__icon btn-modern__icon--left" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                        </svg>
+                        <span data-i18n="common.previous">Anterior</span>
+                    </button>
+                    <button type="button" class="btn-modern btn-modern--primary btn-modern--lg ms-auto" id="btn-next">
+                        <span data-i18n="common.next">Siguiente</span>
+                        <svg class="btn-modern__icon btn-modern__icon--right" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </button>
+                    <button type="button" class="btn-modern btn-modern--success btn-modern--lg ms-auto d-none" id="btn-submit">
+                        <svg class="btn-modern__icon btn-modern__icon--left" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span data-i18n="common.create">Crear</span>
+                    </button>
+                </div>
+
+                <!-- Loading -->
+                <div id="loading" class="text-center mt-3 d-none">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden" data-i18n="onboarding.loading">Cargando...</span>
+                    </div>
+                </div>
+
+                <!-- Mensajes -->
+                <div id="alert-container" class="mt-3"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/frontend/js/core/components-loader.js"></script>
+    <script type="module" src="/frontend/js/onboarding.js"></script>
+</body>
+</html>
+

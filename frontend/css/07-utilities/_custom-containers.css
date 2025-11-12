@@ -1,0 +1,31 @@
+/**
+ * Contenedores Personalizados - Workee
+ * 
+ * ITCSS Layer 07: Utilities
+ * Estilos para contenedores específicos que reemplazan estilos inline
+ */
+
+/* Contenedor de lista de agencias (staffing-requests) */
+.agencies-list-container {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+/* Contenedor de lista de candidatos manuales (staffing-proposals) */
+.manual-candidates-list-container {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+/* Icono de empty state (group-builder) */
+.empty-state-icon {
+    font-size: var(--empty-state-icon-size);
+    opacity: var(--opacity-overlay);
+}
+
+@media (max-width: 768px) {
+    .empty-state-icon {
+        font-size: var(--empty-state-icon-size-mobile);
+    }
+}
+

@@ -1,0 +1,35 @@
+# Workee SaaS - Configuración Apache
+
+# Habilitar rewrite engine
+RewriteEngine On
+
+# Redirigir todo a index.php (router)
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php [QSA,L]
+
+# Permitir acceso directo a archivos estáticos
+<FilesMatch "\.(css|js|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$">
+    RewriteEngine Off
+</FilesMatch>
+
+# Headers de seguridad
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "DENY"
+    Header set X-XSS-Protection "1; mode=block"
+</IfModule>
+
+# Prevenir acceso a archivos sensibles
+<FilesMatch "^(\.env|\.git|composer\.(json|lock)|package\.json)$">
+    Require all denied
+</FilesMatch>
+
+# Configuración PHP
+<IfModule mod_php.c>
+    php_value upload_max_filesize 50M
+    php_value post_max_size 50M
+    php_value max_execution_time 300
+    php_value max_input_time 300
+</IfModule>
+

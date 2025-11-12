@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="employees.title">Empleados</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/frontend/css/01-settings/theme.css">
+    <link rel="stylesheet" href="/frontend/css/06-components/_data-table.css">
+    <link rel="stylesheet" href="/frontend/css/06-components/_modal.css">
+    <link rel="stylesheet" href="/frontend/css/06-components/_toast.css">
+    <link rel="stylesheet" href="/frontend/css/06-components/_empty-state.css">
+    <link rel="stylesheet" href="/frontend/css/06-components/_loading-spinner.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+</head>
+<body>
+    <div id="app-container">
+        <!-- Header y Sidebar se cargan dinámicamente -->
+        
+        <main id="main-content" class="main-content" role="main">
+            <div class="container-fluid py-4">
+                <!-- Breadcrumbs -->
+                <nav aria-label="breadcrumb" class="mb-4">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/dashboard">Dashboard</a></li>
+                        <li class="breadcrumb-item active" data-i18n="employees.title">Empleados</li>
+                    </ol>
+                </nav>
+                
+                <!-- Header con título y botón crear -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h1 class="h3 mb-0" data-i18n="employees.title">Empleados</h1>
+                    <button type="button" class="btn btn-primary" id="btn-create-employee" data-i18n="employees.create">
+                        <i class="bi bi-plus-circle me-2"></i>Crear Empleado
+                    </button>
+                </div>
+                
+                <!-- Filtros -->
+                <div class="card-modern mb-4">
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label for="filter-search" class="form-label" data-i18n="common.search">Buscar</label>
+                                <input type="text" class="form-control" id="filter-search" placeholder="Nombre, email, código...">
+                            </div>
+                            <div class="col-md-3">
+                                <label for="filter-active" class="form-label" data-i18n="employees.status">Estado</label>
+                                <select class="form-select" id="filter-active">
+                                    <option value="">Todos</option>
+                                    <option value="1" selected data-i18n="common.active">Activos</option>
+                                    <option value="0" data-i18n="common.inactive">Inactivos</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3 d-flex align-items-end">
+                                <button type="button" class="btn btn-secondary w-100" id="btn-reset-filters" data-i18n="common.reset_filters">
+                                    <i class="bi bi-x-circle me-2"></i>Limpiar Filtros
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tabla de empleados -->
+                <div class="card-modern">
+                    <div class="card-body">
+                        <div id="employees-table-container"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Modal Crear/Editar Empleado -->
+    <div class="modal fade" id="modal-employee" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal-employee-title" data-i18n="employees.create">Crear Empleado</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-employee">
+                        <input type="hidden" id="employee-id">
+                        
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="employee-first-name" class="form-label" data-i18n="employees.first_name">Nombre *</label>
+                                <input type="text" class="form-control" id="employee-first-name" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="employee-last-name" class="form-label" data-i18n="employees.last_name">Apellidos *</label>
+                                <input type="text" class="form-control" id="employee-last-name" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="employee-code" class="form-label" data-i18n="employees.code">Código</label>
+                                <input type="text" class="form-control" id="employee-code">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="employee-email" class="form-label" data-i18n="employees.email">Email</label>
+                                <input type="email" class="form-control" id="employee-email">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="employee-phone" class="form-label" data-i18n="employees.phone">Teléfono</label>
+                                <input type="tel" class="form-control" id="employee-phone">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="employee-active" class="form-label" data-i18n="employees.status">Estado</label>
+                                <select class="form-select" id="employee-active">
+                                    <option value="1" data-i18n="common.active">Activo</option>
+                                    <option value="0" data-i18n="common.inactive">Inactivo</option>
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <label for="employee-address" class="form-label" data-i18n="employees.address">Dirección</label>
+                                <textarea class="form-control" id="employee-address" rows="2"></textarea>
+                            </div>
+                            
+                            <!-- Skills -->
+                            <div class="col-12">
+                                <label class="form-label" data-i18n="employees.skills">Habilidades</label>
+                                <div id="skills-container" class="mb-2"></div>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="skill-input" placeholder="Agregar habilidad...">
+                                    <button type="button" class="btn btn-outline-secondary" id="btn-add-skill" data-i18n="common.add">Agregar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-i18n="common.cancel">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="btn-save-employee" data-i18n="common.save">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal Documentos -->
+    <div class="modal fade" id="modal-documents" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" data-i18n="employees.documents">Documentos</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="documents-employee-id">
+                    
+                    <!-- Lista de documentos -->
+                    <div id="documents-list" class="mb-3"></div>
+                    
+                    <!-- Subir documento -->
+                    <div class="card-modern">
+                        <div class="card-body">
+                            <h6 class="card-title" data-i18n="employees.upload_document">Subir Documento</h6>
+                            <form id="form-upload-document" enctype="multipart/form-data">
+                                <div class="mb-3">
+                                    <label for="document-name" class="form-label" data-i18n="employees.document_name">Nombre del Documento</label>
+                                    <input type="text" class="form-control" id="document-name" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="document-file" class="form-label" data-i18n="employees.file">Archivo</label>
+                                    <input type="file" class="form-control" id="document-file" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary" data-i18n="employees.upload">Subir</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-i18n="common.close">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/frontend/js/core/api.js"></script>
+    <script src="/frontend/js/core/auth.js"></script>
+    <script src="/frontend/js/components/data-table.js"></script>
+    <script src="/frontend/js/components/modal.js"></script>
+    <script src="/frontend/js/components/toast.js"></script>
+    <script src="/frontend/js/components/empty-state.js"></script>
+    <script src="/frontend/js/components/loading-spinner.js"></script>
+    <script src="/frontend/js/layout.js"></script>
+    <script src="/frontend/js/employees.js"></script>
+</body>
+</html>
+

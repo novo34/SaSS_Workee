@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workee - Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/frontend/css/main.css">
+</head>
+<body>
+    <!-- El sidebar y header se inyectan automáticamente por index.php -->
+    
+    <main id="main-content" class="container-fluid" role="main">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title" data-i18n="dashboard.title">Dashboard</h1>
+        </div>
+
+        <!-- Welcome Card -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card dashboard-card">
+                    <div class="card-body">
+                        <h5 class="card-title mb-3" data-i18n="dashboard.welcome">Bienvenido</h5>
+                        <p class="card-text mb-0" id="welcome-message">
+                            <span data-i18n="dashboard.loading_user">Cargando información del usuario...</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions Grid - CSS Grid con Cards Modernas -->
+        <div class="dashboard-grid dashboard-grid--kpi mb-4">
+            <!-- KPI Card Ejemplo -->
+            <div class="kpi-card">
+                <div class="kpi-card__header">
+                    <div>
+                        <div class="kpi-card__value" id="kpi-active-requests">0</div>
+                        <div class="kpi-card__label" data-i18n="dashboard.active_requests">Solicitudes Activas</div>
+                    </div>
+                    <svg class="kpi-card__icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                </div>
+                <div class="kpi-card__trend kpi-card__trend--up" id="kpi-requests-trend">
+                    <svg class="kpi-card__trend-icon" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+                    </svg>
+                    <span class="kpi-card__trend-value" data-i18n="dashboard.trend_up">+12%</span>
+                </div>
+            </div>
+            
+            <!-- Card Moderna - Quick Actions -->
+            <div class="card-modern card-modern--elevated">
+                <div class="card-modern__header">
+                    <div>
+                        <h3 class="card-modern__title" data-i18n="dashboard.quick_actions">Acciones Rápidas</h3>
+                    </div>
+                </div>
+                <div class="card-modern__body">
+                    <div class="quick-actions-grid">
+                        <a href="/staffing-requests?action=new" class="quick-action-card" data-action="new" data-tooltip="dashboard.quick_action_new_request" data-tooltip-position="top">
+                            <div class="quick-action-card__icon">
+                                <span class="icon icon-lg icon--primary" data-icon="request" aria-hidden="true"></span>
+                            </div>
+                            <div class="quick-action-card__title" data-i18n="dashboard.new_request">Nueva Solicitud</div>
+                            <div class="quick-action-card__shortcut"><kbd>Ctrl</kbd> + <kbd>N</kbd></div>
+                        </a>
+                        <a href="/calendar" class="quick-action-card" data-tooltip="dashboard.quick_action_calendar" data-tooltip-position="top">
+                            <div class="quick-action-card__icon">
+                                <span class="icon icon-lg icon--primary" data-icon="calendar" aria-hidden="true"></span>
+                            </div>
+                            <div class="quick-action-card__title" data-i18n="dashboard.view_calendar">Ver Calendario</div>
+                        </a>
+                        <a href="/group-builder" class="quick-action-card" data-tooltip="dashboard.quick_action_groups" data-tooltip-position="top">
+                            <div class="quick-action-card__icon">
+                                <span class="icon icon-lg icon--primary" data-icon="groups" aria-hidden="true"></span>
+                            </div>
+                            <div class="quick-action-card__title" data-i18n="dashboard.manage_groups">Gestionar Grupos</div>
+                        </a>
+                        <a href="/settings" class="quick-action-card" data-tooltip="dashboard.quick_action_settings" data-tooltip-position="top">
+                            <div class="quick-action-card__icon">
+                                <span class="icon icon-lg icon--primary" data-icon="settings" aria-hidden="true"></span>
+                            </div>
+                            <div class="quick-action-card__title" data-i18n="dashboard.settings">Configuración</div>
+                        </a>
+                    </div>
+                    <div class="mt-3 pt-3 border-top">
+                        <button class="btn-modern btn-modern--ghost btn-modern--sm w-100" id="btn-show-shortcuts" data-tooltip="dashboard.show_shortcuts_tooltip" data-tooltip-position="top">
+                            <i class="bi bi-keyboard"></i> <span data-i18n="dashboard.show_shortcuts">Ver Atajos de Teclado</span> <kbd>Ctrl</kbd> + <kbd>?</kbd>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- KPI Card - Información del Tenant -->
+            <div class="kpi-card kpi-card--info">
+                <div class="kpi-card__header">
+                    <div>
+                        <div class="kpi-card__label" data-i18n="dashboard.tenant_info">Información del Tenant</div>
+                    </div>
+                </div>
+                <div class="kpi-card__value" style="font-size: var(--font-size-lg);" id="tenant-info">
+                    <span data-i18n="dashboard.loading">Cargando...</span>
+                </div>
+            </div>
+            
+            <!-- Card Moderna - Actividad Reciente -->
+            <div class="card-modern">
+                <div class="card-modern__header">
+                    <h3 class="card-modern__title" data-i18n="dashboard.recent_activity">Actividad Reciente</h3>
+                </div>
+                <div class="card-modern__body">
+                    <p class="text-muted mb-0" data-i18n="dashboard.coming_soon">Próximamente</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Engagement Section -->
+        <div class="row mb-4">
+            <div class="col-12 col-md-6">
+                <!-- Logros y Milestones -->
+                <div class="card-modern">
+                    <div class="card-modern__header">
+                        <h3 class="card-modern__title" data-i18n="dashboard.achievements">Logros</h3>
+                    </div>
+                    <div class="card-modern__body">
+                        <div data-achievements-container>
+                            <span class="text-muted" data-i18n="dashboard.no_achievements">Aún no has obtenido logros</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-6">
+                <!-- Progreso de Tareas -->
+                <div class="card-modern">
+                    <div class="card-modern__header">
+                        <h3 class="card-modern__title" data-i18n="dashboard.task_progress">Progreso de Tareas</h3>
+                    </div>
+                    <div class="card-modern__body">
+                        <div id="task-progress-container"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/frontend/js/core/components-loader.js"></script>
+    <script src="/frontend/js/layout.js"></script>
+    <script type="module" src="/frontend/js/dashboard.js"></script>
+</body>
+</html>
+
+

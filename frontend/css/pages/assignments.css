@@ -1,0 +1,21 @@
+/**
+ * Estilos para Asignaciones
+ * ITCSS Layer: Pages
+ * BEM: .assignment-card (block)
+ */
+
+.assignment-card {
+    transition: transform var(--transition-base), box-shadow var(--transition-base);
+}
+
+.assignment-card:hover {
+    transform: translateY(var(--transform-hover-y));
+    box-shadow: var(--shadow-sm);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .assignment-card .row > div {
+        margin-bottom: var(--spacing-xs);
+    }
+}

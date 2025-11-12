@@ -1,0 +1,249 @@
+<!-- Sidebar Component -->
+<aside class="app-sidebar" id="main-navigation" role="navigation" aria-label="Navegación principal">
+    <!-- Skip link para accesibilidad - NAV-132 -->
+    <a href="#main-content" class="skip-link" tabindex="-1">Saltar a contenido principal</a>
+    <!-- Brand/Logo -->
+    <div class="sidebar-brand">
+        <a href="/dashboard" class="brand-text" aria-label="Ir a Dashboard - Workee">Workee</a>
+        <div class="brand-logo" aria-hidden="true">W</div>
+    </div>
+    
+    <!-- NAV-136: Búsqueda Integrada en Sidebar -->
+    <div class="sidebar-search" id="sidebar-search-container">
+        <div class="sidebar-search__wrapper">
+            <span class="sidebar-search__icon icon icon-sm" data-icon="search" aria-hidden="true"></span>
+            <input 
+                type="search" 
+                id="sidebar-search-input" 
+                class="sidebar-search__input" 
+                placeholder="Buscar en navegación..." 
+                aria-label="Buscar en navegación"
+                autocomplete="off"
+                data-i18n-placeholder="nav.search_placeholder">
+            <button 
+                type="button" 
+                class="sidebar-search__clear" 
+                id="sidebar-search-clear"
+                aria-label="Limpiar búsqueda"
+                style="display: none;">
+                <span class="icon icon-sm" data-icon="close" aria-hidden="true"></span>
+            </button>
+        </div>
+        <div class="sidebar-search__results" id="sidebar-search-results" role="listbox" aria-label="Resultados de búsqueda" style="display: none;"></div>
+    </div>
+    
+    <!-- Navigation -->
+    <nav class="sidebar-nav" id="sidebar-nav-main">
+        <!-- Dashboard Section -->
+        <div class="nav-section">
+            <div class="nav-item">
+                <a href="/dashboard" class="nav-link" data-page="dashboard" aria-label="Ir a Dashboard">
+                    <span class="nav-icon icon icon-md" data-icon="dashboard" aria-hidden="true"></span>
+                    <span class="nav-text" data-i18n="nav.dashboard">Dashboard</span>
+                </a>
+            </div>
+        </div>
+        
+        <!-- Main Section -->
+        <div class="nav-section">
+            <div class="nav-section-title" data-i18n="nav.main">Principal</div>
+            <div class="nav-item">
+                <a href="/agency-company-links" class="nav-link" data-page="agency-company-links" aria-label="Ir a Relaciones Empresa-Temporera">
+                    <span class="nav-icon icon icon-md" data-icon="link" aria-hidden="true"></span>
+                    <span class="nav-text" data-i18n="nav.relationships">Relaciones</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="/settings" class="nav-link" data-page="settings" aria-label="Ir a Configuración">
+                    <span class="nav-icon icon icon-md" data-icon="settings" aria-hidden="true"></span>
+                    <span class="nav-text" data-i18n="nav.settings">Configuración</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="/settings-notifications" class="nav-link" data-page="settings-notifications" aria-label="Ir a Preferencias de Notificaciones">
+                    <span class="nav-icon icon icon-md" data-icon="bell" aria-hidden="true"></span>
+                    <span class="nav-text" data-i18n="nav.notification_preferences">Notificaciones</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="/import-export" class="nav-link" data-page="import-export" aria-label="Ir a Importar/Exportar Datos">
+                    <span class="nav-icon icon icon-md" data-icon="download" aria-hidden="true"></span>
+                    <span class="nav-text" data-i18n="nav.import_export">Importar/Exportar</span>
+                </a>
+            </div>
+        </div>
+        
+        <!-- Empresa Section (solo para empresa_admin, planificador) -->
+        <div class="nav-section" id="empresa-section" style="display: none;" aria-hidden="true">
+            <!-- Los links dentro de esta sección tendrán tabindex="-1" cuando esté oculta -->
+            <div class="nav-section-title" data-i18n="nav.empresa">Empresa</div>
+            
+            <!-- Subsección: Planificación -->
+            <div class="nav-subsection" data-nav-group="planning">
+                <button class="nav-subsection-title nav-subsection-title--toggle" type="button" aria-expanded="true" aria-label="Expandir o colapsar sección Planificación" data-i18n="nav.planning" tabindex="-1" aria-hidden="true">
+                    <span class="nav-subsection-chevron icon icon-sm" data-icon="chevronDown" aria-hidden="true"></span>
+                    <span class="nav-subsection-title-text">Planificación</span>
+                </button>
+                <div class="nav-subsection-content">
+                <div class="nav-item">
+                    <a href="/calendar" class="nav-link" data-page="calendar" aria-label="Ir a Calendario de Turnos" tabindex="-1" aria-hidden="true">
+                        <span class="nav-icon icon icon-md" data-icon="calendar" aria-hidden="true"></span>
+                        <span class="nav-text" data-i18n="nav.calendar">Calendario</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="/staffing-requests" class="nav-link" data-page="staffing-requests" aria-label="Ir a Solicitudes de Personal" tabindex="-1" aria-hidden="true">
+                        <span class="nav-icon icon icon-md" data-icon="request" aria-hidden="true"></span>
+                        <span class="nav-text" data-i18n="nav.staffing_requests">Solicitudes de Personal</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="/group-builder" class="nav-link" data-page="group-builder" aria-label="Ir a Constructor de Grupos" tabindex="-1" aria-hidden="true">
+                        <span class="nav-icon icon icon-md" data-icon="groups" aria-hidden="true"></span>
+                        <span class="nav-text" data-i18n="nav.group_builder">Constructor de Grupos</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="/assignments" class="nav-link" data-page="assignments" aria-label="Ir a Asignaciones" tabindex="-1" aria-hidden="true">
+                        <span class="nav-icon icon icon-md" data-icon="pin" aria-hidden="true"></span>
+                        <span class="nav-text" data-i18n="nav.assignments">Asignaciones</span>
+                    </a>
+                </div>
+                </div>
+            </div>
+            
+            <!-- Subsección: Órdenes de Trabajo -->
+            <div class="nav-subsection" data-nav-group="work-orders">
+                <button class="nav-subsection-title nav-subsection-title--toggle" type="button" aria-expanded="true" aria-label="Expandir o colapsar sección Órdenes de Trabajo" data-i18n="nav.work_orders_section" tabindex="-1" aria-hidden="true">
+                    <span class="nav-subsection-chevron icon icon-sm" data-icon="chevronDown" aria-hidden="true"></span>
+                    <span class="nav-subsection-title-text">Órdenes de Trabajo</span>
+                </button>
+                <div class="nav-subsection-content">
+                <div class="nav-item">
+                    <a href="/work-orders" class="nav-link" data-page="work-orders" aria-label="Ir a Órdenes de Trabajo" tabindex="-1" aria-hidden="true">
+                        <span class="nav-icon icon icon-md" data-icon="document" aria-hidden="true"></span>
+                        <span class="nav-text" data-i18n="nav.work_orders">Órdenes de Trabajo</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="/work-orders-calendar" class="nav-link" data-page="work-orders-calendar" aria-label="Ir a Calendario de Órdenes de Trabajo" tabindex="-1" aria-hidden="true">
+                        <span class="nav-icon icon icon-md" data-icon="calendar" aria-hidden="true"></span>
+                        <span class="nav-text" data-i18n="nav.work_orders_calendar">Calendario OT</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="/work-order-daily-report" class="nav-link" data-page="work-order-daily-report" aria-label="Ir a Parte Diario de Órdenes de Trabajo" tabindex="-1" aria-hidden="true">
+                        <span class="nav-icon icon icon-md" data-icon="document" aria-hidden="true"></span>
+                        <span class="nav-text" data-i18n="nav.work_order_daily_report">Parte Diario OT</span>
+                    </a>
+                </div>
+                </div>
+            </div>
+            
+            <!-- Subsección: Reportes y Control -->
+            <div class="nav-subsection" data-nav-group="reports-control">
+                <button class="nav-subsection-title nav-subsection-title--toggle" type="button" aria-expanded="true" aria-label="Expandir o colapsar sección Reportes y Control" data-i18n="nav.reports_control" tabindex="-1" aria-hidden="true">
+                    <span class="nav-subsection-chevron icon icon-sm" data-icon="chevronDown" aria-hidden="true"></span>
+                    <span class="nav-subsection-title-text">Reportes y Control</span>
+                </button>
+                <div class="nav-subsection-content">
+                <div class="nav-item">
+                    <a href="/group-shift-report" class="nav-link" data-page="group-shift-report" aria-label="Ir a Parte del Líder" tabindex="-1" aria-hidden="true">
+                        <span class="nav-icon icon icon-md" data-icon="document" aria-hidden="true"></span>
+                        <span class="nav-text" data-i18n="nav.group_shift_report">Parte del Líder</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="/approvals" class="nav-link" data-page="approvals" aria-label="Ir a Aprobaciones" tabindex="-1" aria-hidden="true">
+                        <span class="nav-icon icon icon-md" data-icon="check" aria-hidden="true"></span>
+                        <span class="nav-text" data-i18n="nav.approvals">Aprobaciones</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="/disputes" class="nav-link" data-page="disputes" aria-label="Ir a Disputas" tabindex="-1" aria-hidden="true">
+                        <span class="nav-icon icon icon-md" data-icon="scale" aria-hidden="true"></span>
+                        <span class="nav-text" data-i18n="nav.disputes">Disputas</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="/reports" class="nav-link" data-page="reports" aria-label="Ir a Reportes" tabindex="-1" aria-hidden="true">
+                        <span class="nav-icon icon icon-md" data-icon="dashboard" aria-hidden="true"></span>
+                        <span class="nav-text" data-i18n="nav.reports">Reportes</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="/ratings" class="nav-link" data-page="ratings" aria-label="Ir a Valoraciones" tabindex="-1" aria-hidden="true">
+                        <span class="nav-icon icon icon-md" data-icon="star" aria-hidden="true"></span>
+                        <span class="nav-text" data-i18n="nav.ratings">Valoraciones</span>
+                    </a>
+                </div>
+                </div>
+            </div>
+            
+            <!-- Subsección: Recursos -->
+            <div class="nav-subsection" data-nav-group="resources">
+                <button class="nav-subsection-title nav-subsection-title--toggle" type="button" aria-expanded="true" aria-label="Expandir o colapsar sección Recursos" data-i18n="nav.resources" tabindex="-1" aria-hidden="true">
+                    <span class="nav-subsection-chevron icon icon-sm" data-icon="chevronDown" aria-hidden="true"></span>
+                    <span class="nav-subsection-title-text">Recursos</span>
+                </button>
+                <div class="nav-subsection-content">
+                <div class="nav-item">
+                    <a href="/employees" class="nav-link" data-page="employees" aria-label="Ir a Empleados" tabindex="-1" aria-hidden="true">
+                        <span class="nav-icon icon icon-md" data-icon="user" aria-hidden="true"></span>
+                        <span class="nav-text" data-i18n="nav.employees">Empleados</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="/time-clock" class="nav-link" data-page="time-clock" aria-label="Ir a Fichaje" tabindex="-1" aria-hidden="true">
+                        <span class="nav-icon icon icon-md" data-icon="clock" aria-hidden="true"></span>
+                        <span class="nav-text" data-i18n="nav.time_clock">Fichaje</span>
+                    </a>
+                </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Temporera Section (solo para temporera_admin, coordinador) -->
+        <div class="nav-section" id="temporera-section" style="display: none;" aria-hidden="true">
+            <div class="nav-section-title" data-i18n="nav.temporera">Temporera</div>
+            <div class="nav-item">
+                <a href="/staffing-proposals" class="nav-link" data-page="staffing-proposals" aria-label="Ir a Propuestas de Candidatos" tabindex="-1" aria-hidden="true">
+                    <span class="nav-icon icon icon-md" data-icon="briefcase" aria-hidden="true"></span>
+                    <span class="nav-text" data-i18n="nav.staffing_proposals">Propuestas de Candidatos</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="/agency-workers" class="nav-link" data-page="agency-workers" aria-label="Ir a Trabajadores Temporeros" tabindex="-1" aria-hidden="true">
+                    <span class="nav-icon icon icon-md" data-icon="users" aria-hidden="true"></span>
+                    <span class="nav-text" data-i18n="nav.agency_workers">Trabajadores</span>
+                </a>
+            </div>
+        </div>
+        
+        <!-- Owner Section (solo para owner_admin) -->
+        <div class="nav-section" id="owner-section" style="display: none;" aria-hidden="true">
+            <div class="nav-section-title" data-i18n="nav.owner">Owner</div>
+            <div class="nav-item">
+                <a href="/owner/dashboard" class="nav-link" data-page="owner-dashboard" aria-label="Ir a Dashboard Owner" tabindex="-1" aria-hidden="true">
+                    <span class="nav-icon icon icon-md" data-icon="crown" aria-hidden="true"></span>
+                    <span class="nav-text" data-i18n="nav.owner_dashboard">Dashboard Owner</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="/owner/billing" class="nav-link" data-page="owner-billing" aria-label="Ir a Billing Owner" tabindex="-1" aria-hidden="true">
+                    <span class="nav-icon icon icon-md" data-icon="money" aria-hidden="true"></span>
+                    <span class="nav-text" data-i18n="nav.owner_billing">Billing</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+</aside>
+
+<!-- Sidebar Overlay (mobile) -->
+<div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+<!-- Sidebar Toggle Button (mobile) -->
+<button class="sidebar-toggle" id="sidebar-toggle" aria-label="Abrir menú de navegación" aria-expanded="false" tabindex="-1">
+    <span class="icon icon-md" data-icon="menu" aria-hidden="true"></span>
+</button>
+

@@ -1,0 +1,319 @@
+/**
+ * Mobile Compliance - Workee
+ * 
+ * Reglas CSS obligatorias para cumplir requisitos móviles
+ * MOB-140, MOB-142, MOB-144: Touch targets 44px, Font sizes 16px
+ * 
+ * Este archivo DEBE aplicarse con alta especificidad para sobrescribir cualquier otro estilo
+ */
+
+/* ============================================
+   TOUCH TARGETS MÍNIMOS 44PX - MÓVIL
+   ============================================ */
+
+/* MOB-140: Asegurar que TODOS los elementos interactivos tengan mínimo 44x44px en móvil */
+@media (max-width: 991px) {
+    /* BOTONES - Todos los tipos de botones deben tener mínimo 44x44px */
+    button:not(input),
+    .btn,
+    .btn-modern,
+    .btn-primary,
+    .btn-secondary,
+    .btn-success,
+    .btn-danger,
+    .btn-warning,
+    .btn-info,
+    .btn-link,
+    .btn-outline-primary,
+    .btn-outline-secondary,
+    .btn-sm,
+    .btn-lg,
+    .btn-modern--sm,
+    .btn-modern--lg,
+    input[type="button"],
+    input[type="submit"],
+    input[type="reset"] {
+        min-height: 44px !important;
+        min-width: 44px !important;
+        box-sizing: border-box !important;
+        padding: var(--spacing-sm) var(--spacing-md) !important;
+    }
+    
+    /* INPUTS Y CONTROLES - Solo altura mínima, ancho flexible (100% en móvil) */
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="number"],
+    input[type="date"],
+    input[type="time"],
+    input[type="datetime-local"],
+    input[type="search"],
+    input[type="tel"],
+    input[type="url"],
+    input[type="file"],
+    select,
+    textarea,
+    .form-control,
+    .form-modern__input,
+    .form-modern__select,
+    .form-modern__textarea {
+        min-height: 44px !important;
+        /* NO forzar min-width - dejar que el responsive design funcione */
+        width: 100% !important; /* En móvil, inputs deben ocupar todo el ancho */
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+    }
+    
+    /* CHECKBOXES Y RADIOS - Tamaño fijo 44x44px */
+    input[type="checkbox"],
+    input[type="radio"] {
+        width: 44px !important;
+        height: 44px !important;
+        min-width: 44px !important;
+        min-height: 44px !important;
+        flex-shrink: 0 !important; /* No reducir tamaño */
+    }
+    
+    /* LINKS INTERACTIVOS - Solo si son botones o tienen role="button" */
+    a.btn,
+    a.button,
+    a[role="button"],
+    a[tabindex="0"]:not(.nav-link):not(.dropdown-item):not(.list-group-item) {
+        min-height: 44px !important;
+        min-width: 44px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: var(--spacing-sm) var(--spacing-md) !important;
+        box-sizing: border-box !important;
+    }
+    
+    /* Links normales - NO forzar tamaño, solo asegurar área de toque mínima con padding */
+    a[href]:not(.btn):not(.button):not([role="button"]):not(.nav-link):not(.dropdown-item):not(.list-group-item) {
+        padding: var(--spacing-xs) var(--spacing-sm) !important;
+        min-height: 44px !important;
+        display: inline-block !important; /* Mantener comportamiento normal de links */
+    }
+    
+    /* ELEMENTOS CON ROLE="BUTTON" O TABINDEX */
+    [role="button"]:not(button):not(.btn):not(.btn-modern):not(input):not(select):not(textarea),
+    [tabindex="0"]:not(button):not(.btn):not(.btn-modern):not(input):not(select):not(textarea):not(a) {
+        min-height: 44px !important;
+        min-width: 44px !important;
+        padding: var(--spacing-sm) var(--spacing-md) !important;
+        box-sizing: border-box !important;
+    }
+    
+    /* ICONOS INTERACTIVOS - Solo botones con iconos */
+    .icon-button,
+    .btn-icon,
+    button[aria-label]:not(.btn):not(.btn-modern),
+    button[title]:not(.btn):not(.btn-modern) {
+        min-width: 44px !important;
+        min-height: 44px !important;
+        width: 44px !important;
+        height: 44px !important;
+        padding: var(--spacing-sm) !important;
+        box-sizing: border-box !important;
+    }
+    
+    /* ITEMS DE NAVEGACIÓN */
+    .nav-link,
+    .sidebar-nav .nav-link,
+    .dropdown-item,
+    .list-group-item[role="button"],
+    .list-group-item-action {
+        min-height: 44px !important;
+        padding: var(--spacing-sm) var(--spacing-md) !important;
+    }
+    
+    /* Badges y tags interactivos */
+    .badge[role="button"],
+    .badge-modern[role="button"],
+    .tag[role="button"] {
+        min-height: 44px !important;
+        min-width: 44px !important;
+        padding: var(--spacing-sm) var(--spacing-md) !important;
+    }
+    
+    /* Tablas - celdas interactivas */
+    .data-table__row[role="button"],
+    .table tbody tr[role="button"],
+    td[role="button"],
+    th[role="button"] {
+        min-height: 44px !important;
+    }
+    
+    /* Cards interactivas */
+    .card[role="button"],
+    .card-modern[role="button"],
+    .card-clickable {
+        min-height: 44px !important;
+    }
+    
+    /* ASEGURAR QUE LOS CONTENEDORES RESPONSIVE FUNCIONEN */
+    .container,
+    .container-fluid,
+    .row,
+    .col,
+    [class*="col-"] {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+    }
+    
+    /* ASEGURAR QUE LOS ELEMENTOS NO ROMPAN EL LAYOUT */
+    /* Solo aplicar a elementos que puedan causar overflow */
+    img,
+    svg,
+    video,
+    iframe,
+    table {
+        max-width: 100% !important;
+        height: auto !important;
+    }
+    
+    /* ASEGURAR QUE LOS INPUTS SE ADAPTEN AL CONTENEDOR */
+    .form-group,
+    .form-modern__group,
+    .input-group {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+}
+
+/* ============================================
+   FONT SIZES MÍNIMOS 16PX - MÓVIL
+   ============================================ */
+
+/* MOB-144: Asegurar que TODO el texto tenga mínimo 16px en móvil (evitar zoom en iOS) */
+@media (max-width: 991px) {
+    /* REGLA GENERAL: Todos los elementos de texto deben tener mínimo 16px */
+    /* Esto cubre TODOS los elementos que el script de verificación detecta */
+    body,
+    html,
+    p,
+    span,
+    div,
+    label,
+    button,
+    a,
+    input,
+    textarea,
+    select,
+    .text,
+    .text-normal,
+    .text-base {
+        font-size: 16px !important;
+    }
+    
+    /* Excepciones explícitas para texto pequeño permitido */
+    .text-xs,
+    .text-extra-small,
+    .badge,
+    .badge-modern {
+        font-size: 12px !important; /* Permitido para badges y texto extra pequeño */
+    }
+    
+    .text-small,
+    .text-muted,
+    small,
+    .small {
+        font-size: 14px !important; /* Permitido para texto pequeño */
+    }
+    
+    /* Las reglas generales ya están definidas arriba para body, p, span, div, label, button, a, input, textarea, select */
+    /* No duplicar aquí - las excepciones ya están definidas arriba */
+    
+    /* Títulos - mantener proporción pero asegurar legibilidad */
+    h1 {
+        font-size: clamp(24px, 5vw, 32px) !important;
+    }
+    
+    h2 {
+        font-size: clamp(20px, 4vw, 28px) !important;
+    }
+    
+    h3 {
+        font-size: clamp(18px, 3.5vw, 24px) !important;
+    }
+    
+    h4 {
+        font-size: clamp(16px, 3vw, 20px) !important;
+    }
+    
+    h5 {
+        font-size: clamp(16px, 2.5vw, 18px) !important;
+    }
+    
+    h6 {
+        font-size: clamp(14px, 2vw, 16px) !important;
+    }
+    
+    /* Badges y tags - texto legible */
+    .badge,
+    .badge-modern,
+    .tag {
+        font-size: 14px !important;
+    }
+    
+    /* Tablas - texto legible */
+    .table,
+    .data-table__table,
+    .data-table__header,
+    .data-table__cell {
+        font-size: 16px !important;
+    }
+    
+    /* Cards - texto legible */
+    .card,
+    .card-modern,
+    .card-title,
+    .card-text {
+        font-size: 16px !important;
+    }
+    
+    /* Modales - texto legible */
+    .modal,
+    .modal-title,
+    .modal-body,
+    .modal-footer {
+        font-size: 16px !important;
+    }
+    
+    /* Breadcrumbs - texto legible (links y texto) */
+    .breadcrumb-nav,
+    .breadcrumb-nav__link,
+    .breadcrumb-nav__current {
+        font-size: 16px !important;
+    }
+    
+    /* Separador del breadcrumb puede ser más pequeño (es decorativo) */
+    .breadcrumb-nav__item:not(:last-child)::after {
+        font-size: 14px !important; /* Separador decorativo, puede ser más pequeño */
+    }
+}
+
+/* ============================================
+   EXCEPCIONES (solo para elementos no interactivos)
+   ============================================ */
+
+/* Permitir texto más pequeño solo en elementos no interactivos y específicos */
+@media (max-width: 991px) {
+    /* Iconos sin texto */
+    .icon-only,
+    i[class*="bi-"],
+    i[class*="fa-"],
+    svg.icon {
+        font-size: inherit !important; /* Heredar del contenedor */
+    }
+    
+    /* Elementos ocultos o sin contenido visible */
+    [hidden],
+    [aria-hidden="true"],
+    .sr-only,
+    .visually-hidden {
+        font-size: inherit !important;
+    }
+}
+

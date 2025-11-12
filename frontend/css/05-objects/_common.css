@@ -1,0 +1,79 @@
+/**
+ * Estilos Comunes - Workee
+ * 
+ * Estilos compartidos que usan variables del theme.css
+ * BEM: .hero-section, .feature-card, .login-card, .dashboard-card (blocks)
+ * ITCSS Layer 05: Objects
+ * Mobile-first design
+ */
+
+/* Hero Section */
+.hero-section {
+    min-height: var(--hero-min-height);
+    display: flex;
+    align-items: center;
+    background: var(--gradient-hero);
+    color: var(--color-text-inverse);
+}
+
+/* Feature Cards - BEM: .feature-card (block) */
+.feature-card {
+    transition: var(--transition-all);
+    min-height: var(--feature-card-min-height);
+}
+
+.feature-card:hover {
+    transform: translateY(var(--transform-hover-y-large));
+}
+
+/* Login Card - BEM: .login-card (block) */
+.login-card {
+    max-width: var(--login-card-max-width);
+    margin: 0 auto;
+}
+
+.login-background {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    background: var(--gradient-hero);
+}
+
+/* Dashboard Cards - BEM: .dashboard-card (block), .dashboard-card__* (elements) */
+.dashboard-card {
+    border: var(--border-width) solid var(--color-border-light);
+    border-radius: var(--border-radius-lg);
+    transition: var(--transition-all);
+    background-color: var(--color-bg);
+    box-shadow: var(--shadow-sm);
+    height: 100%;
+}
+
+.dashboard-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(var(--transform-hover-y));
+    border-color: var(--color-border);
+}
+
+/* Compatibilidad: mantener selectores anidados para HTML existente */
+.dashboard-card .card-body,
+.dashboard-card__body {
+    padding: var(--spacing-lg);
+}
+
+.dashboard-card .card-title,
+.dashboard-card__title {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text);
+    margin-bottom: var(--spacing-md);
+    line-height: 1.4;
+}
+
+.dashboard-card .card-text,
+.dashboard-card__text {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    line-height: var(--line-height-base);
+    margin-bottom: 0;
+}

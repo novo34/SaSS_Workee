@@ -1,0 +1,71 @@
+/**
+ * Componente Autocomplete
+ * ITCSS Layer 06 - Components
+ */
+
+.autocomplete-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: var(--z-dropdown);
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-lg);
+    max-height: 300px;
+    overflow-y: auto;
+    display: none;
+    margin-top: var(--spacing-xs);
+}
+
+.autocomplete-dropdown--show {
+    display: block;
+}
+
+.autocomplete-item {
+    padding: var(--spacing-sm) var(--spacing-md);
+    cursor: pointer;
+    transition: var(--transition-base);
+    border-bottom: 1px solid var(--color-border-light);
+}
+
+.autocomplete-item:last-child {
+    border-bottom: none;
+}
+
+.autocomplete-item:hover,
+.autocomplete-item--selected {
+    background-color: var(--color-bg-light);
+    color: var(--color-primary);
+}
+
+.autocomplete-item:focus {
+    outline: 2px solid var(--color-primary);
+    outline-offset: -2px;
+}
+
+/* Scrollbar personalizado */
+.autocomplete-dropdown::-webkit-scrollbar {
+    width: 8px;
+}
+
+.autocomplete-dropdown::-webkit-scrollbar-track {
+    background: var(--color-bg-light);
+}
+
+.autocomplete-dropdown::-webkit-scrollbar-thumb {
+    background: var(--color-border);
+    border-radius: var(--border-radius);
+}
+
+.autocomplete-dropdown::-webkit-scrollbar-thumb:hover {
+    background: var(--color-text-muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .autocomplete-item {
+        transition: none;
+    }
+}
+

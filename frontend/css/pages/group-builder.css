@@ -1,0 +1,111 @@
+/**
+ * Estilos para Constructor de Grupos
+ * ITCSS Layer: Pages
+ * BEM: .group-members-container, .member-item, .candidate-item (blocks)
+ */
+
+/* Contenedor de miembros */
+.group-members-container {
+    min-height: var(--group-members-container-min-height);
+    padding: var(--spacing-md);
+    border: var(--border-width-thick) dashed var(--color-border);
+    border-radius: var(--border-radius);
+    background: var(--color-bg-light);
+}
+
+/* Items de miembros y candidatos */
+.member-item,
+.candidate-item {
+    background: var(--color-bg);
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-sm);
+    margin-bottom: var(--spacing-xs);
+    cursor: move;
+    transition: var(--transition-all);
+}
+
+.member-item:hover,
+.candidate-item:hover {
+    box-shadow: var(--shadow-sm);
+    transform: translateY(var(--transform-hover-y));
+}
+
+.member-item.dragging,
+.candidate-item.dragging {
+    opacity: var(--opacity-disabled);
+}
+
+/* Handle de arrastre */
+.drag-handle {
+    cursor: grab;
+    color: var(--color-text-muted);
+    font-size: var(--font-size-lg);
+}
+
+.drag-handle:active {
+    cursor: grabbing;
+}
+
+/* Lista de candidatos */
+.candidates-list {
+    max-height: var(--candidates-list-max-height);
+    overflow-y: auto;
+}
+
+.candidate-item {
+    cursor: grab;
+}
+
+.candidate-item:active {
+    cursor: grabbing;
+}
+
+/* Empty state */
+.empty-state {
+    color: var(--color-text-muted);
+}
+
+/* Badges */
+.badge {
+    font-size: var(--font-size-xs);
+    padding: var(--spacing-xs) var(--spacing-xs);
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    .candidates-list {
+        max-height: var(--candidates-list-max-height-mobile);
+    }
+    
+    .group-members-container {
+        min-height: var(--group-members-container-min-height-mobile);
+    }
+}
+
+/* Animaciones */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(var(--transform-hover-y-large));
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.member-item,
+.candidate-item {
+    animation: slideIn var(--transition-base) ease-out;
+}
+
+/* Estados de drag */
+.sortable-ghost {
+    opacity: var(--opacity-overlay);
+    background: var(--color-primary-light);
+}
+
+.sortable-drag {
+    opacity: var(--opacity-hover);
+}

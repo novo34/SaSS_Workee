@@ -1,0 +1,19 @@
+/**
+ * Utilidades de Sombras - Workee
+ * 
+ * ITCSS Layer 07: Utilities
+ * Clases utilitarias para sombras usando design tokens
+ * Prefijo: .u-shadow-*
+ */
+
+/* ============================================
+   BOX SHADOW
+   ============================================ */
+.u-shadow-none { box-shadow: none !important; }
+.u-shadow-xs { box-shadow: var(--shadow-xs) !important; }
+.u-shadow-sm { box-shadow: var(--shadow-sm) !important; }
+.u-shadow-md { box-shadow: var(--shadow-md) !important; }
+.u-shadow-lg { box-shadow: var(--shadow-lg) !important; }
+.u-shadow-xl { box-shadow: var(--shadow-xl) !important; }
+.u-shadow-inner { box-shadow: var(--shadow-inner) !important; }
+

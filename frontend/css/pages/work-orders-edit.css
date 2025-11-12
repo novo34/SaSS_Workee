@@ -1,0 +1,35 @@
+/**
+ * Estilos para Editor de Orden de Trabajo
+ * ITCSS Layer: Pages
+ * BEM: .task-item, .material-item, .checklist-item, .attachment-item (blocks)
+ */
+
+.task-item,
+.material-item {
+    transition: transform var(--transition-base), box-shadow var(--transition-base);
+}
+
+.task-item:hover,
+.material-item:hover {
+    transform: translateY(var(--transform-hover-y));
+    box-shadow: var(--shadow-sm);
+}
+
+.checklist-item {
+    padding: var(--spacing-xs);
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--border-radius);
+    background: var(--color-bg-light);
+}
+
+.attachment-item {
+    padding: var(--spacing-xs);
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--border-radius);
+    background: var(--color-bg-light);
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    /* .page-actions movido a 05-objects/_layout.css (ITCSS Layer 05) */
+}

@@ -1,0 +1,205 @@
+/**
+ * Badges y Tags Modernos - Workee
+ *
+ * ITCSS Layer 06: Components
+ * Componentes de badges modernos con diseño SaaS 2025
+ * BEM: .badge-modern (block), .badge-modern__* (elements), .badge-modern--* (modifiers)
+ */
+
+/* ============================================
+   BADGE MODERNO BASE
+   ============================================ */
+.badge-modern {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: var(--border-radius-pill);
+    text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-tight);
+    transition: var(--transition-base);
+}
+
+/* ============================================
+   MODIFICADORES DE COLOR
+   ============================================ */
+.badge-modern--primary {
+    background-color: rgba(var(--color-primary-rgb), 0.1);
+    color: var(--color-primary);
+    border: var(--border-width) solid rgba(var(--color-primary-rgb), 0.2);
+}
+
+.badge-modern--secondary {
+    background-color: rgba(var(--color-secondary-rgb), 0.1);
+    color: var(--color-secondary-dark);
+    border: var(--border-width) solid rgba(var(--color-secondary-rgb), 0.2);
+}
+
+.badge-modern--success {
+    background-color: rgba(var(--color-success-rgb), 0.1);
+    color: var(--color-success-dark);
+    border: var(--border-width) solid rgba(var(--color-success-rgb), 0.2);
+}
+
+.badge-modern--warning {
+    background-color: rgba(var(--color-warning-rgb), 0.1);
+    color: var(--color-warning-dark);
+    border: var(--border-width) solid rgba(var(--color-warning-rgb), 0.2);
+}
+
+.badge-modern--danger {
+    background-color: rgba(var(--color-danger-rgb), 0.1);
+    color: var(--color-danger-dark);
+    border: var(--border-width) solid rgba(var(--color-danger-rgb), 0.2);
+}
+
+.badge-modern--info {
+    background-color: rgba(var(--color-info-rgb), 0.1);
+    color: var(--color-info-dark);
+    border: var(--border-width) solid rgba(var(--color-info-rgb), 0.2);
+}
+
+/* Variantes sólidas (opcional) */
+.badge-modern--primary-solid {
+    background-color: var(--color-primary);
+    color: var(--color-text-inverse);
+    border: var(--border-width) solid var(--color-primary);
+}
+
+.badge-modern--success-solid {
+    background-color: var(--color-success);
+    color: var(--color-text-inverse);
+    border: var(--border-width) solid var(--color-success);
+}
+
+.badge-modern--warning-solid {
+    background-color: var(--color-warning);
+    color: var(--color-text);
+    border: var(--border-width) solid var(--color-warning);
+}
+
+.badge-modern--danger-solid {
+    background-color: var(--color-danger);
+    color: var(--color-text-inverse);
+    border: var(--border-width) solid var(--color-danger);
+}
+
+.badge-modern--info-solid {
+    background-color: var(--color-info);
+    color: var(--color-text-inverse);
+    border: var(--border-width) solid var(--color-info);
+}
+
+/* ============================================
+   MODIFICADORES DE TAMAÑO
+   ============================================ */
+.badge-modern--sm {
+    padding: calc(var(--spacing-xs) * 0.5) var(--spacing-xs);
+    font-size: calc(var(--font-size-xs) * 0.875);
+    line-height: 1;
+}
+
+.badge-modern--md {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: var(--font-size-xs);
+    line-height: 1;
+}
+
+.badge-modern--lg {
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: var(--font-size-sm);
+    line-height: 1.2;
+}
+
+/* ============================================
+   ELEMENTOS INTERNOS (Iconos)
+   ============================================ */
+.badge-modern__icon {
+    width: var(--icon-size-xs);
+    height: var(--icon-size-xs);
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.badge-modern--sm .badge-modern__icon {
+    width: calc(var(--icon-size-xs) * 0.875);
+    height: calc(var(--icon-size-xs) * 0.875);
+}
+
+.badge-modern--lg .badge-modern__icon {
+    width: var(--icon-size-sm);
+    height: var(--icon-size-sm);
+}
+
+.badge-modern__icon--left {
+    margin-right: calc(var(--spacing-xs) * 0.5);
+}
+
+.badge-modern__icon--right {
+    margin-left: calc(var(--spacing-xs) * 0.5);
+}
+
+/* ============================================
+   ESTADOS (Hover, Active)
+   ============================================ */
+.badge-modern--clickable {
+    cursor: pointer;
+    user-select: none;
+}
+
+.badge-modern--clickable:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-xs);
+}
+
+.badge-modern--clickable:active {
+    transform: translateY(0);
+    box-shadow: none;
+}
+
+.badge-modern--clickable:focus-visible {
+    outline: var(--outline-width) solid var(--color-primary);
+    outline-offset: var(--outline-offset);
+}
+
+/* ============================================
+   COMPATIBILIDAD CON BOOTSTRAP
+   ============================================ */
+/* Mantener compatibilidad con badges de Bootstrap si se usan */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: var(--border-radius-pill);
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 767px) {
+    .badge-modern {
+        font-size: calc(var(--font-size-xs) * 0.875);
+        padding: calc(var(--spacing-xs) * 0.75) var(--spacing-xs);
+    }
+    
+    .badge-modern--lg {
+        font-size: var(--font-size-xs);
+        padding: var(--spacing-xs) var(--spacing-sm);
+    }
+}
+

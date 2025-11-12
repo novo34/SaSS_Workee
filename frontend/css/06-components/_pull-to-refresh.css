@@ -1,0 +1,86 @@
+/**
+ * Pull to Refresh - Workee
+ * 
+ * Estilos para indicador visual de pull to refresh
+ * MOB-140: Implementar Pull to Refresh
+ */
+
+/* Indicador de pull to refresh */
+.pull-to-refresh-indicator {
+    position: absolute;
+    top: -60px;
+    left: 50%;
+    transform: translateX(-50%) translateY(0px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-sm);
+    opacity: 0;
+    transition: opacity var(--transition-base);
+    z-index: var(--z-base);
+    pointer-events: none;
+    width: 100%;
+    max-width: 100%;
+    text-align: center;
+}
+
+/* Spinner del indicador */
+.pull-to-refresh-indicator__spinner {
+    width: 24px;
+    height: 24px;
+    border: 3px solid var(--color-border);
+    border-top-color: var(--color-primary);
+    border-radius: var(--border-radius-circle);
+    transition: var(--transition-base);
+}
+
+/* Estado "ready" (listo para soltar) */
+.pull-to-refresh-indicator__spinner--ready {
+    border-top-color: var(--color-success);
+}
+
+/* Estado "refreshing" (actualizando) */
+.pull-to-refresh-indicator__spinner--refreshing {
+    animation: pull-to-refresh-spin 0.6s linear infinite;
+    border-top-color: var(--color-primary);
+}
+
+@keyframes pull-to-refresh-spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Texto del indicador */
+.pull-to-refresh-indicator__text {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+    font-weight: var(--font-weight-medium);
+    white-space: nowrap;
+    text-align: center;
+}
+
+/* MOB-140: Solo en móvil */
+@media (min-width: 992px) {
+    .pull-to-refresh-indicator {
+        display: none !important;
+    }
+}
+
+/* Respetar prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+    .pull-to-refresh-indicator,
+    .pull-to-refresh-indicator__spinner {
+        transition: none;
+    }
+    
+    .pull-to-refresh-indicator__spinner--refreshing {
+        animation: none;
+    }
+}
+

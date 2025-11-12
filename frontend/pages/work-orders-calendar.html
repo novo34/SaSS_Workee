@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workee - Calendario OT</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.css">
+    <link rel="stylesheet" href="/frontend/css/main.css">
+    <link rel="stylesheet" href="/frontend/css/pages/work-orders-calendar.css">
+    <link rel="stylesheet" href="/frontend/css/components/components.css">
+    <link rel="stylesheet" href="/frontend/css/calendar.css">
+    <link rel="stylesheet" href="/frontend/css/work-orders-calendar.css">
+</head>
+<body>
+    <!-- El sidebar y header se inyectan automáticamente por index.php -->
+    
+    <main id="main-content" class="container-fluid" role="main">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title" data-i18n="work_orders.calendar_title">Calendario de Órdenes de Trabajo</h1>
+            <div class="page-actions">
+                <a href="/work-orders" class="btn-modern btn-modern--ghost">
+                    <svg class="btn-modern__icon btn-modern__icon--left" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
+                    </svg>
+                    <span data-i18n="work_orders.list">Listado</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Filtros -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-12 col-md-3">
+                        <div class="form-modern__group">
+                            <label class="form-modern__label" data-i18n="work_orders.filter_work_order">Orden de Trabajo</label>
+                            <select class="form-modern__select" id="filter-work-order">
+                                <option value="" data-i18n="work_orders.filter_all_orders">Todas las órdenes</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-3">
+                        <div class="form-modern__group">
+                            <label class="form-modern__label" data-i18n="work_orders.filter_group">Grupo</label>
+                            <select class="form-modern__select" id="filter-group">
+                                <option value="" data-i18n="work_orders.filter_all_groups">Todos los grupos</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-3">
+                        <div class="form-modern__group">
+                            <label class="form-modern__label" data-i18n="calendar.filter_view">Vista</label>
+                            <select class="form-modern__select" id="filter-view">
+                                <option value="dayGridMonth" data-i18n="calendar.view_month">Mes</option>
+                                <option value="timeGridWeek" data-i18n="calendar.view_week">Semana</option>
+                                <option value="timeGridDay" data-i18n="calendar.view_day">Día</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-3 d-flex align-items-end">
+                        <button class="btn-modern btn-modern--ghost w-100" id="btn-clear-filters">
+                            <svg class="btn-modern__icon btn-modern__icon--left" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                            <span data-i18n="common.clear_filters">Limpiar</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Calendario -->
+        <div class="card">
+            <div class="card-body">
+                <div id="calendar-ot"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Detalles de Asignación -->
+    <div class="modal fade" id="modal-assignment" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" data-i18n="work_orders.assignment_details">Detalles de Asignación</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="assignment-details">
+                    <!-- Se llena dinámicamente -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-modern btn-modern--secondary" data-bs-dismiss="modal" data-i18n="common.close">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
+    <script src="/frontend/js/core/components-loader.js"></script>
+    <script src="/frontend/js/layout.js"></script>
+    <script src="/frontend/js/work-orders-calendar.js"></script>
+</body>
+</html>
+

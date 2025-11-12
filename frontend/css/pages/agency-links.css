@@ -1,0 +1,64 @@
+/**
+ * Estilos para Gestión de Relaciones
+ * ITCSS Layer: Pages
+ * Mobile-first design
+ */
+
+/* Botones táctiles */
+.btn-lg {
+    min-height: var(--btn-lg-min-height);
+    min-width: var(--btn-lg-min-width);
+}
+
+.btn-sm {
+    min-height: var(--btn-sm-min-height);
+    padding: var(--spacing-xs) var(--spacing-sm);
+}
+
+/* Cards responsivos */
+.card {
+    margin-bottom: var(--spacing-md);
+}
+
+@media (max-width: 767px) {
+    .card-body .row > div {
+        margin-bottom: var(--spacing-xs);
+    }
+    
+    .text-end {
+        text-align: left !important;
+        margin-top: var(--spacing-md);
+    }
+}
+
+/* Badges */
+.badge {
+    font-size: var(--font-size-sm);
+    padding: var(--spacing-xs) var(--spacing-sm);
+}
+
+/* Filtros */
+.form-select,
+.form-control {
+    min-height: var(--touch-target-min);
+}
+
+/* Paginación móvil */
+.pagination {
+    flex-wrap: wrap;
+}
+
+.page-link {
+    min-width: var(--touch-target-min);
+    min-height: var(--touch-target-min);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Modal móvil */
+@media (max-width: 767px) {
+    .modal-dialog {
+        margin: var(--spacing-xs);
+    }
+}

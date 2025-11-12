@@ -1,0 +1,192 @@
+# Archivos de configuración sensibles
+.env
+.env.local
+.env.*.local
+*.env
+
+# Archivos de configuración de servidor
+.htaccess.local
+config.local.php
+
+# Base de datos
+*.sql.backup
+*.sql.bak
+*.db
+*.sqlite
+*.sqlite3
+
+# Archivos temporales y logs
+*.log
+*.tmp
+*.temp
+logs/
+tmp/
+temp/
+*.cache
+
+# Archivos del sistema operativo
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+$RECYCLE.BIN/
+
+# Archivos de IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+*.sublime-project
+*.sublime-workspace
+*.code-workspace
+
+# Archivos de PHP
+*.php~
+*.php.bak
+*.php.swp
+
+# Archivos compilados
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+
+# Archivos de sesión
+sessions/
+session_*
+
+# Archivos de uploads temporales
+uploads/temp/
+uploads/cache/
+*.upload
+
+# Archivos de backup
+*.backup
+*.bak
+backup/
+backups/
+
+# Archivos de XAMPP específicos
+xampp/
+htdocs/.htaccess.local
+
+# Archivos de dependencias (si se usa Composer)
+vendor/
+composer.lock
+
+# Archivos de Node.js (si se usa en el futuro)
+node_modules/
+npm-debug.log
+yarn-error.log
+package-lock.json
+yarn.lock
+
+# Archivos de build
+dist/
+build/
+*.min.js
+*.min.css
+
+# Archivos de testing
+coverage/
+.phpunit.result.cache
+.phpunit.cache
+
+# Archivos de documentación generados
+docs/_build/
+docs/.doctrees/
+
+# Archivos de S3/local storage (si se almacenan localmente)
+storage/app/
+storage/framework/
+storage/logs/
+
+# Archivos de certificados y claves
+*.pem
+*.key
+*.crt
+*.cert
+*.p12
+*.pfx
+
+# Archivos de migración temporales
+migrations/temp/
+
+# Archivos de exportación temporal
+exports/temp/
+exports/cache/
+
+# Archivos de reportes temporales
+reports/temp/
+reports/cache/
+
+# Archivos de imágenes temporales
+images/temp/
+images/cache/
+
+# Archivos de PDF temporales
+pdfs/temp/
+pdfs/cache/
+
+# Archivos de webhooks temporales
+webhooks/temp/
+webhooks/logs/
+
+# Archivos de auditoría temporales
+audit/temp/
+audit/logs/
+
+# Archivos de notificaciones temporales
+notifications/temp/
+notifications/logs/
+
+# Archivos de caché general
+cache/
+*.cache
+
+# Archivos de sesión PHP
+sess_*
+
+# Archivos de error de PHP
+error_log
+php_errors.log
+
+# Archivos de configuración local de desarrollo
+config.local.php
+settings.local.php
+
+# Archivos de documentación Word (si hay)
+*.docx
+*.doc
+
+# Archivos de Excel temporales
+*.xlsx.tmp
+*.xls.tmp
+
+# Archivos de CSV temporales
+*.csv.tmp
+
+# Archivos de imágenes temporales
+*.jpg.tmp
+*.png.tmp
+*.gif.tmp
+*.webp.tmp
+
+# Archivos de video temporales
+*.mp4.tmp
+*.avi.tmp
+
+# Archivos de audio temporales
+*.mp3.tmp
+*.wav.tmp
+

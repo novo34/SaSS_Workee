@@ -1,0 +1,122 @@
+/**
+ * Tipografía Base - Workee
+ * 
+ * ITCSS Layer 04: Elements
+ * Estilos para elementos HTML sin clases (h1, p, a, etc.)
+ */
+
+body {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-base);
+    color: var(--color-text);
+    background-color: var(--color-bg);
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-family-heading);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text);
+    line-height: var(--line-height-sm);
+    margin-bottom: var(--spacing-md);
+}
+
+h1 {
+    font-size: var(--font-size-xxxl);
+}
+
+h2 {
+    font-size: var(--font-size-xxl);
+}
+
+h3 {
+    font-size: var(--font-size-xl);
+}
+
+h4 {
+    font-size: var(--font-size-lg);
+}
+
+h5 {
+    font-size: var(--font-size-base);
+}
+
+h6 {
+    font-size: var(--font-size-sm);
+}
+
+/* Responsive: Ajustes de tamaño para móvil */
+@media (max-width: 767px) {
+    h6 {
+        font-size: var(--font-size-sm);
+    }
+}
+
+/* Párrafos */
+p {
+    margin-bottom: var(--spacing-md);
+    line-height: var(--line-height-base);
+}
+
+/* Links */
+a {
+    color: var(--color-primary);
+    text-decoration: none;
+    transition: var(--transition-all);
+}
+
+a:hover {
+    color: var(--color-primary-dark);
+    text-decoration: underline;
+}
+
+a:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+/* Listas */
+ul,
+ol {
+    margin-bottom: var(--spacing-md);
+    padding-left: var(--spacing-lg);
+}
+
+li {
+    margin-bottom: var(--spacing-xs);
+}
+
+/* Citas */
+blockquote {
+    margin: var(--spacing-lg) 0;
+    padding: var(--spacing-md) var(--spacing-lg);
+    border-left: 4px solid var(--color-primary);
+    background-color: var(--color-bg-light);
+    font-style: italic;
+}
+
+/* Código */
+code {
+    font-family: var(--font-family-monospace);
+    font-size: var(--font-size-sm);
+    background-color: var(--color-bg-light);
+    padding: 0.125rem 0.25rem;
+    border-radius: var(--border-radius);
+}
+
+pre {
+    font-family: var(--font-family-monospace);
+    font-size: var(--font-size-sm);
+    background-color: var(--color-bg-light);
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius);
+    overflow-x: auto;
+    margin-bottom: var(--spacing-md);
+}
+
+pre code {
+    background: none;
+    padding: 0;
+}
+

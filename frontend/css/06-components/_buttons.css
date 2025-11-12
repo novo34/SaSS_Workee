@@ -1,0 +1,278 @@
+/**
+ * Botones Modernos - Workee
+ * 
+ * ITCSS Layer 06: Components
+ * Componentes de botones modernos con diseño SaaS 2025
+ * BEM: .btn-modern (block), .btn-modern__* (elements), .btn-modern--* (modifiers)
+ */
+
+/* ============================================
+   BOTÓN MODERNO BASE
+   ============================================ */
+.btn-modern {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-xs);
+    min-height: var(--touch-target-min);
+    min-width: var(--touch-target-min);
+    padding: var(--spacing-sm) var(--spacing-lg);
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-medium);
+    line-height: var(--line-height-base);
+    text-align: center;
+    text-decoration: none;
+    white-space: nowrap;
+    vertical-align: middle;
+    cursor: pointer;
+    user-select: none;
+    border: var(--border-width-thick) solid transparent;
+    border-radius: var(--border-radius);
+    background-color: transparent;
+    color: var(--color-text);
+    transition: var(--transition-all);
+    box-shadow: var(--shadow-sm);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-modern:not(:disabled):hover {
+    transform: translateY(var(--transform-hover-y));
+    box-shadow: var(--shadow-md);
+}
+
+.btn-modern:not(:disabled):active {
+    transform: translateY(0);
+    box-shadow: var(--shadow-sm);
+}
+
+.btn-modern:focus-visible {
+    outline: var(--outline-width) solid var(--color-primary);
+    outline-offset: var(--outline-offset);
+}
+
+.btn-modern:disabled {
+    opacity: var(--opacity-disabled);
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* Elementos BEM */
+.btn-modern__icon {
+    width: var(--icon-size-sm);
+    height: var(--icon-size-sm);
+    flex-shrink: 0;
+}
+
+.btn-modern__icon--left {
+    margin-right: var(--spacing-xs);
+}
+
+.btn-modern__icon--right {
+    margin-left: var(--spacing-xs);
+}
+
+.btn-modern__spinner {
+    width: var(--icon-size-sm);
+    height: var(--icon-size-sm);
+    border: 2px solid currentColor;
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: btn-spin 0.6s linear infinite;
+    flex-shrink: 0;
+}
+
+@keyframes btn-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ============================================
+   VARIANTES DE BOTÓN MODERNO
+   ============================================ */
+
+/* Botón Primario con gradiente sutil */
+.btn-modern--primary {
+    background: var(--gradient-button-primary);
+    color: var(--color-text-inverse);
+    border-color: var(--color-primary);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Efecto de brillo sutil en hover */
+.btn-modern--primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(var(--color-text-inverse-rgb), var(--opacity-shimmer-white)), transparent);
+    transition: left var(--transition-slow);
+}
+
+.btn-modern--primary:not(:disabled):hover::before {
+    left: 100%;
+}
+
+.btn-modern--primary:not(:disabled):hover {
+    background: var(--gradient-primary);
+    border-color: var(--color-primary-dark);
+    color: var(--color-text-inverse);
+    box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.4);
+}
+
+.btn-modern--primary:not(:disabled):active {
+    background: var(--gradient-primary);
+    border-color: var(--color-primary-dark);
+    box-shadow: var(--shadow-sm);
+}
+
+/* Botón Secundario */
+.btn-modern--secondary {
+    background-color: var(--color-secondary);
+    color: var(--color-text-inverse);
+    border-color: var(--color-secondary);
+}
+
+.btn-modern--secondary:not(:disabled):hover {
+    background-color: var(--color-secondary-dark);
+    border-color: var(--color-secondary-dark);
+    color: var(--color-text-inverse);
+}
+
+.btn-modern--secondary:not(:disabled):active {
+    background-color: var(--color-secondary-dark);
+    border-color: var(--color-secondary-dark);
+}
+
+/* Botón Ghost (sin fondo) */
+.btn-modern--ghost {
+    background-color: transparent;
+    color: var(--color-primary);
+    border-color: var(--color-primary);
+    box-shadow: none;
+}
+
+.btn-modern--ghost:not(:disabled):hover {
+    background-color: var(--color-primary);
+    color: var(--color-text-inverse);
+    box-shadow: var(--shadow-sm);
+}
+
+.btn-modern--ghost:not(:disabled):active {
+    background-color: var(--color-primary-dark);
+    border-color: var(--color-primary-dark);
+}
+
+/* Botón Success */
+.btn-modern--success {
+    background-color: var(--color-success);
+    color: var(--color-text-inverse);
+    border-color: var(--color-success);
+}
+
+.btn-modern--success:not(:disabled):hover {
+    background-color: var(--color-success-dark);
+    border-color: var(--color-success-dark);
+}
+
+/* Botón Danger */
+.btn-modern--danger {
+    background-color: var(--color-danger);
+    color: var(--color-text-inverse);
+    border-color: var(--color-danger);
+}
+
+.btn-modern--danger:not(:disabled):hover {
+    background-color: var(--color-danger-dark);
+    border-color: var(--color-danger-dark);
+}
+
+/* Botón Warning */
+.btn-modern--warning {
+    background-color: var(--color-warning);
+    color: var(--color-text);
+    border-color: var(--color-warning);
+}
+
+.btn-modern--warning:not(:disabled):hover {
+    background-color: var(--color-warning-dark);
+    border-color: var(--color-warning-dark);
+}
+
+/* Botón Info */
+.btn-modern--info {
+    background-color: var(--color-info);
+    color: var(--color-text-inverse);
+    border-color: var(--color-info);
+}
+
+.btn-modern--info:not(:disabled):hover {
+    background-color: var(--color-info-dark);
+    border-color: var(--color-info-dark);
+}
+
+/* ============================================
+   TAMAÑOS DE BOTÓN
+   ============================================ */
+
+.btn-modern--sm {
+    min-height: var(--btn-sm-min-height);
+    padding: var(--spacing-xs) var(--spacing-md);
+    font-size: var(--font-size-sm);
+}
+
+.btn-modern--lg {
+    min-height: var(--btn-lg-min-height);
+    min-width: var(--btn-lg-min-width);
+    padding: var(--spacing-md) var(--spacing-xl);
+    font-size: var(--font-size-lg);
+}
+
+/* ============================================
+   ESTADO LOADING
+   ============================================ */
+
+.btn-modern--loading {
+    pointer-events: none;
+    opacity: var(--opacity-disabled);
+}
+
+.btn-modern--loading .btn-modern__spinner {
+    display: inline-block;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 767px) {
+    .btn-modern {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .btn-modern--sm {
+        width: auto;
+    }
+}
+
+/* ============================================
+   ACCESIBILIDAD
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+    .btn-modern {
+        transition: none;
+    }
+    
+    .btn-modern:not(:disabled):hover {
+        transform: none;
+    }
+    
+    .btn-modern__spinner {
+        animation: none;
+    }
+}
+

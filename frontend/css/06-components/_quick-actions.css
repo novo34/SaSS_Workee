@@ -1,0 +1,91 @@
+/**
+ * Componente Quick Actions
+ * ITCSS Layer 06 - Components
+ */
+
+.quick-actions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: var(--spacing-md);
+}
+
+.quick-action-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-lg);
+    background: var(--color-bg);
+    border: 2px solid var(--color-border-light);
+    border-radius: var(--border-radius-lg);
+    text-decoration: none;
+    color: var(--color-text);
+    transition: var(--transition-all);
+    cursor: pointer;
+    text-align: center;
+}
+
+.quick-action-card:hover {
+    border-color: var(--color-primary);
+    background: var(--color-bg-light);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    color: var(--color-text);
+    text-decoration: none;
+}
+
+.quick-action-card:focus {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+.quick-action-card__icon {
+    font-size: var(--font-size-xxl);
+    margin-bottom: var(--spacing-sm);
+    line-height: 1;
+}
+
+.quick-action-card__title {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    margin-bottom: var(--spacing-xs);
+    color: var(--color-text);
+}
+
+.quick-action-card__shortcut {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+    margin-top: var(--spacing-xs);
+}
+
+.quick-action-card__shortcut kbd {
+    background-color: var(--color-bg-light);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    padding: 2px 6px;
+    font-size: var(--font-size-xs);
+    font-family: monospace;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, var(--opacity-shadow-light));
+}
+
+@media (max-width: 768px) {
+    .quick-actions-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--spacing-sm);
+    }
+    
+    .quick-action-card {
+        padding: var(--spacing-md);
+    }
+    
+    .quick-action-card__icon {
+        font-size: var(--font-size-xl);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .quick-action-card {
+        transition: none;
+    }
+}
+

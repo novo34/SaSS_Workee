@@ -1,0 +1,167 @@
+/**
+ * Dashboard Grid System - Workee
+ * 
+ * CSS Grid para layouts de dashboard responsive
+ * ITCSS Layer 05: Objects
+ * BEM: .dashboard-grid (block), .dashboard-grid__* (elements)
+ * Mobile-first: 1 columna → 2 columnas → 3-4 columnas
+ */
+
+/* Grid base para dashboards */
+.dashboard-grid {
+    display: grid;
+    gap: var(--dashboard-grid-gap);
+    grid-template-columns: 1fr; /* Mobile: 1 columna */
+}
+
+/* KPI Cards Grid - Flexible con auto-fit */
+.dashboard-grid--kpi {
+    display: grid;
+    gap: var(--dashboard-grid-gap);
+    grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr)); /* Mobile: 1 columna, auto-fit en desktop */
+}
+
+/* Cards Grid - 2-3 columnas en desktop */
+.dashboard-grid--cards {
+    display: grid;
+    gap: var(--dashboard-grid-gap);
+    grid-template-columns: 1fr; /* Mobile: 1 columna */
+}
+
+/* Layout de dashboard completo (sidebar + main) */
+.dashboard-layout {
+    display: grid;
+    grid-template-areas:
+        "sidebar header"
+        "sidebar main";
+    grid-template-columns: var(--sidebar-width) 1fr;
+    grid-template-rows: var(--header-height) 1fr;
+    min-height: 100vh;
+}
+
+.dashboard-layout__sidebar {
+    grid-area: sidebar;
+}
+
+.dashboard-layout__header {
+    grid-area: header;
+}
+
+.dashboard-layout__main {
+    grid-area: main;
+    padding: var(--content-padding);
+    overflow-y: auto;
+    background-color: var(--color-bg-light);
+}
+
+/* Responsive - Tablet (≥ 768px) */
+@media (min-width: 768px) {
+    .dashboard-grid--kpi {
+        grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr)); /* Tablet: auto-fit con mínimo 250px */
+    }
+    
+    .dashboard-grid--cards {
+        grid-template-columns: repeat(2, 1fr); /* Tablet: 2 columnas */
+    }
+    
+    .dashboard-layout {
+        grid-template-areas:
+            "sidebar header"
+            "sidebar main";
+    }
+}
+
+/* Responsive - Desktop (≥ 992px) */
+@media (min-width: 992px) {
+    .dashboard-grid--kpi {
+        grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr)); /* Desktop: auto-fit con mínimo 280px */
+    }
+    
+    .dashboard-grid--cards {
+        grid-template-columns: repeat(3, 1fr); /* Desktop: 3 columnas */
+    }
+}
+
+/* Responsive - Large Desktop (≥ 1200px) */
+@media (min-width: 1200px) {
+    .dashboard-grid--cards {
+        grid-template-columns: repeat(4, 1fr); /* Large Desktop: 4 columnas */
+    }
+}
+
+/* Grid para contenido principal + sidebar (dashboard owner) */
+.dashboard-grid--main-sidebar {
+    display: grid;
+    gap: var(--dashboard-grid-gap);
+    grid-template-columns: 1fr; /* Mobile: 1 columna */
+}
+
+@media (min-width: 992px) {
+    .dashboard-grid--main-sidebar {
+        grid-template-columns: 2fr 1fr; /* Desktop: 2/3 + 1/3 */
+    }
+}
+
+/* Grid para métricas + gráficos */
+.dashboard-grid--metrics-charts {
+    display: grid;
+    gap: var(--dashboard-grid-gap);
+    grid-template-columns: 1fr; /* Mobile: 1 columna */
+}
+
+@media (min-width: 992px) {
+    .dashboard-grid--metrics-charts {
+        grid-template-columns: 1fr 1fr; /* Desktop: 2 columnas iguales */
+    }
+}
+
+/* Grid para welcome card + actions */
+.dashboard-grid--welcome-actions {
+    display: grid;
+    gap: var(--dashboard-grid-gap);
+    grid-template-columns: 1fr; /* Mobile: 1 columna */
+}
+
+@media (min-width: 992px) {
+    .dashboard-grid--welcome-actions {
+        grid-template-columns: 1fr; /* Welcome siempre full width */
+    }
+}
+
+/* Auto-fit para grids flexibles */
+.dashboard-grid--auto-fit {
+    display: grid;
+    gap: var(--dashboard-grid-gap);
+    grid-template-columns: repeat(auto-fit, minmax(var(--dashboard-kpi-min-width), 1fr));
+}
+
+/* Auto-fill para grids con tamaño fijo */
+.dashboard-grid--auto-fill {
+    display: grid;
+    gap: var(--dashboard-grid-gap);
+    grid-template-columns: repeat(auto-fill, minmax(var(--dashboard-card-min-width), 1fr));
+}
+
+/* Responsive - Mobile adjustments */
+@media (max-width: 767px) {
+    /* MOB-141: KPI Cards en 1 columna en móvil (verificado) */
+    .dashboard-grid,
+    .dashboard-grid--kpi,
+    .dashboard-grid--cards {
+        gap: var(--dashboard-grid-gap-mobile);
+        grid-template-columns: 1fr; /* Forzar 1 columna en móvil */
+    }
+    
+    .dashboard-layout {
+        grid-template-areas:
+            "header"
+            "main";
+        grid-template-columns: 1fr;
+        grid-template-rows: var(--header-height) 1fr;
+    }
+    
+    .dashboard-layout__sidebar {
+        display: none; /* Sidebar oculto en móvil, se muestra con toggle */
+    }
+}
+

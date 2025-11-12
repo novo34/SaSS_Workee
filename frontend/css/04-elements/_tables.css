@@ -1,0 +1,463 @@
+/**
+ * Estilos para Tablas Modernas - Workee
+ * 
+ * Basado en diseño tipo dashboard moderno
+ */
+
+/* ============================================
+   TABLAS MODERNAS - Estilo SaaS 2025
+   ============================================ */
+.table-modern-wrapper {
+    position: relative;
+    width: 100%;
+    overflow: visible;
+    background: var(--color-bg);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-sm);
+    border: var(--border-width) solid var(--color-border-light);
+    transition: var(--transition-base);
+}
+
+.table-modern-wrapper:hover {
+    box-shadow: var(--shadow-md);
+}
+
+/* Clase principal para tablas modernas */
+.table-modern {
+    width: 100%;
+    background: var(--color-bg);
+    border-radius: var(--border-radius-lg);
+    overflow: hidden;
+    position: relative;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+/* Headers destacados */
+.table-modern thead {
+    background-color: var(--color-bg-light);
+    position: sticky;
+    top: 0;
+    z-index: var(--z-base);
+}
+
+.table-modern thead th {
+    padding: var(--spacing-md) var(--spacing-lg);
+    text-align: left;
+    font-weight: var(--font-weight-semibold);
+    font-size: var(--font-size-sm);
+    color: var(--color-text);
+    text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-tight);
+    border-bottom: var(--border-width-thick) solid var(--color-border);
+    white-space: nowrap;
+    position: relative;
+    background-color: var(--color-bg-light);
+}
+
+.table-modern thead th:first-child {
+    border-top-left-radius: var(--border-radius-lg);
+    padding-left: var(--spacing-lg);
+}
+
+.table-modern thead th:last-child {
+    border-top-right-radius: var(--border-radius-lg);
+    padding-right: var(--spacing-lg);
+}
+
+/* Filas con hover effect sutil */
+.table-modern tbody tr {
+    border-bottom: var(--border-width) solid var(--color-border-light);
+    transition: var(--transition-base);
+    background-color: var(--color-bg);
+}
+
+.table-modern tbody tr:hover {
+    background-color: var(--color-bg-light);
+    transform: translateX(2px);
+    box-shadow: var(--shadow-xs);
+}
+
+/* Alternancia de filas opcional (zebra striping) */
+.table-modern--striped tbody tr:nth-child(even) {
+    background-color: var(--color-bg-light);
+}
+
+.table-modern--striped tbody tr:nth-child(even):hover {
+    background-color: var(--color-bg-dark);
+}
+
+.table-modern tbody tr:last-child {
+    border-bottom: none;
+}
+
+.table-modern tbody tr:last-child td:first-child {
+    border-bottom-left-radius: var(--border-radius-lg);
+}
+
+.table-modern tbody tr:last-child td:last-child {
+    border-bottom-right-radius: var(--border-radius-lg);
+}
+
+/* Celdas con espaciado adecuado */
+.table-modern tbody td {
+    padding: var(--spacing-md) var(--spacing-lg);
+    font-size: var(--font-size-sm);
+    color: var(--color-text);
+    vertical-align: middle;
+    position: relative;
+    border-top: var(--border-width) solid transparent;
+}
+
+.table-modern tbody td:first-child {
+    padding-left: var(--spacing-lg);
+}
+
+.table-modern tbody td:last-child {
+    padding-right: var(--spacing-lg);
+}
+
+/* Compatibilidad: mantener .modern-table para código existente */
+.modern-table-wrapper {
+    position: relative;
+    width: 100%;
+    overflow: visible;
+    background: var(--color-bg);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-sm);
+    border: var(--border-width) solid var(--color-border-light);
+}
+
+.modern-table {
+    width: 100%;
+    background: var(--color-bg);
+    border-radius: var(--border-radius-lg);
+    overflow: hidden;
+    position: relative;
+}
+
+.modern-table table {
+    width: 100%;
+    margin: 0;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.modern-table thead {
+    background-color: var(--color-bg-light);
+}
+
+.modern-table thead th {
+    padding: var(--spacing-md) var(--spacing-lg);
+    text-align: left;
+    font-weight: var(--font-weight-semibold);
+    font-size: var(--font-size-sm);
+    color: var(--color-text);
+    text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-tight);
+    border-bottom: var(--border-width-thick) solid var(--color-border);
+    white-space: nowrap;
+    position: relative;
+}
+
+.modern-table thead th:first-child {
+    border-top-left-radius: var(--border-radius-lg);
+}
+
+.modern-table thead th:last-child {
+    border-top-right-radius: var(--border-radius-lg);
+}
+
+.modern-table tbody tr {
+    border-bottom: var(--border-width) solid var(--color-border-light);
+    transition: var(--transition-base);
+    background-color: var(--color-bg);
+}
+
+.modern-table tbody tr:hover {
+    background-color: var(--color-bg-light);
+    transform: translateX(2px);
+}
+
+.modern-table tbody tr:last-child {
+    border-bottom: none;
+}
+
+.modern-table tbody tr:last-child td:first-child {
+    border-bottom-left-radius: var(--border-radius-lg);
+}
+
+.modern-table tbody tr:last-child td:last-child {
+    border-bottom-right-radius: var(--border-radius-lg);
+}
+
+.modern-table tbody td {
+    padding: var(--spacing-md) var(--spacing-lg);
+    font-size: var(--font-size-sm);
+    color: var(--color-text);
+    vertical-align: middle;
+    position: relative;
+    border-top: var(--border-width) solid transparent;
+}
+
+/* Avatar en tabla - Estilo WowDash */
+.table-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--border-radius-circle);
+    background: var(--gradient-hero);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text-inverse);
+    font-weight: var(--font-weight-semibold);
+    font-size: var(--font-size-sm);
+    margin-right: var(--spacing-md);
+    flex-shrink: 0;
+}
+
+/* Badges en tabla - Estilo WowDash */
+.table-badge {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    line-height: 1;
+}
+
+.table-badge.active {
+    background-color: var(--color-success-light);
+    color: var(--color-success-dark);
+}
+
+.table-badge.inactive {
+    background-color: var(--color-bg-dark);
+    color: var(--color-text);
+}
+
+.table-badge.pending {
+    background-color: var(--color-warning-light);
+    color: var(--color-warning-dark);
+}
+
+/* Acciones en tabla - Estilo WowDash (botones circulares separados) */
+.table-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+/* Botones de acción circulares (estilo WowDash exacto) */
+.action-btn {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: var(--border-radius-circle);
+    cursor: pointer;
+    transition: var(--transition-fast);
+    padding: 0;
+    flex-shrink: 0;
+}
+
+.action-btn svg {
+    width: 16px;
+    height: 16px;
+    display: block;
+}
+
+/* Botón Ver (azul) - Estilo WowDash */
+.action-btn-view {
+    background-color: var(--color-bg-light);
+    color: var(--color-primary);
+}
+
+.action-btn-view:hover {
+    background-color: var(--color-primary);
+    color: var(--color-text-inverse);
+    transform: scale(1.05);
+}
+
+/* Botón Editar (verde) - Estilo WowDash */
+.action-btn-edit {
+    background-color: var(--color-success-light);
+    color: var(--color-success-dark);
+}
+
+.action-btn-edit:hover {
+    background-color: var(--color-success);
+    color: var(--color-text-inverse);
+    transform: scale(1.05);
+}
+
+/* Botón Eliminar (rojo) - Estilo WowDash */
+.action-btn-delete {
+    background-color: var(--color-danger-light);
+    color: var(--color-danger-dark);
+}
+
+.action-btn-delete:hover {
+    background-color: var(--color-danger);
+    color: var(--color-text-inverse);
+    transform: scale(1.05);
+}
+
+.action-btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--color-primary);
+    opacity: var(--opacity-hover);
+}
+
+.action-btn:active {
+    transform: scale(0.95);
+}
+
+/* Responsive - Convertir a cards en móvil */
+@media (max-width: 767px) {
+    .table-modern-wrapper {
+        border-radius: var(--border-radius);
+        box-shadow: none;
+        border: none;
+        background: transparent;
+    }
+    
+    .table-modern {
+        display: block;
+        border-radius: 0;
+        overflow: visible;
+    }
+    
+    .table-modern thead {
+        display: none;
+    }
+    
+    .table-modern tbody {
+        display: block;
+    }
+    
+    .table-modern tbody tr {
+        display: block;
+        margin-bottom: var(--spacing-md);
+        background: var(--color-bg);
+        border: var(--border-width) solid var(--color-border-light);
+        border-radius: var(--border-radius-lg);
+        box-shadow: var(--shadow-sm);
+        padding: var(--spacing-md);
+        transition: var(--transition-base);
+    }
+    
+    .table-modern tbody tr:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+        border-color: var(--color-primary-light);
+    }
+    
+    .table-modern tbody td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: var(--spacing-sm) 0;
+        border: none;
+        border-bottom: var(--border-width) solid var(--color-border-light);
+    }
+    
+    .table-modern tbody td:last-child {
+        border-bottom: none;
+    }
+    
+    .table-modern tbody td::before {
+        content: attr(data-label);
+        font-weight: var(--font-weight-semibold);
+        color: var(--color-text-muted);
+        text-transform: uppercase;
+        font-size: var(--font-size-xs);
+        letter-spacing: var(--letter-spacing-tight);
+        margin-right: var(--spacing-md);
+        flex-shrink: 0;
+    }
+    
+    .table-modern tbody tr:last-child {
+        margin-bottom: 0;
+    }
+    
+    /* Compatibilidad: mantener .modern-table */
+    .modern-table {
+        overflow-x: auto;
+    }
+    
+    .modern-table table {
+        min-width: 600px;
+    }
+    
+    .table-actions {
+        flex-direction: column;
+        gap: var(--spacing-xs);
+    }
+}
+
+/* Paginación moderna - Estilo WowDash */
+.modern-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--spacing-md) var(--spacing-lg);
+    background-color: var(--color-bg-light);
+    border-top: var(--border-width) solid var(--color-border-light);
+    flex-wrap: wrap;
+    gap: var(--spacing-md);
+    border-bottom-left-radius: var(--border-radius-lg);
+    border-bottom-right-radius: var(--border-radius-lg);
+}
+
+.pagination-info {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    font-weight: var(--font-weight-medium);
+}
+
+.pagination-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.pagination-controls .btn {
+    min-width: 36px;
+    min-height: 36px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--border-radius);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    border: var(--border-width) solid var(--color-border);
+}
+
+.pagination-controls .btn:hover {
+    background-color: var(--color-bg-light);
+    border-color: var(--color-border-dark);
+}
+
+.pagination-controls .btn-primary {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+    color: var(--color-text-inverse);
+}
+
+.pagination-controls .btn-primary:hover {
+    background-color: var(--color-primary-dark);
+    border-color: var(--color-primary-dark);
+}
+
+.pagination-controls .btn:disabled {
+    opacity: var(--opacity-disabled);
+    cursor: not-allowed;
+}
+

@@ -1,0 +1,66 @@
+/**
+ * Estilos para Componente Modal Moderno - Workee
+ * BEM: .modal (block de Bootstrap), estilos adicionales
+ * ITCSS Layer 06: Components
+ * 
+ * Modales modernos con backdrop blur, animaciones suaves y sombras grandes
+ */
+
+/* Asegurar que los modales tengan z-index apropiado usando tokens */
+.modal {
+    z-index: var(--z-modal);
+}
+
+/* Backdrop con blur moderno (Glassmorphism) */
+.modal-backdrop {
+    z-index: var(--z-modal-backdrop);
+    background-color: rgba(0, 0, 0, var(--backdrop-opacity));
+    backdrop-filter: var(--backdrop-blur-md);
+    -webkit-backdrop-filter: var(--backdrop-blur-md);
+    transition: opacity var(--transition-base), backdrop-filter var(--transition-base);
+}
+
+/* Mejora para navegadores que no soportan backdrop-filter */
+@supports not (backdrop-filter: blur(4px)) {
+    .modal-backdrop {
+        background-color: rgba(0, 0, 0, var(--backdrop-opacity-dark));
+    }
+}
+
+.modal-backdrop.show {
+    opacity: 1;
+}
+
+/* Animación de entrada suave (fade + scale) */
+.modal.fade .modal-dialog {
+    transition: opacity var(--transition-base), transform var(--transition-base);
+    opacity: 0;
+    transform: scale(0.95) translateY(-20px);
+}
+
+.modal.show .modal-dialog {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+}
+
+/* Animación de salida */
+.modal.fade:not(.show) .modal-dialog {
+    opacity: 0;
+    transform: scale(0.95) translateY(-20px);
+}
+
+/* Respetar prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+    .modal.fade .modal-dialog,
+    .modal-backdrop {
+        transition: none;
+    }
+    
+    .modal.fade .modal-dialog {
+        transform: none;
+    }
+    
+    .modal.show .modal-dialog {
+        transform: none;
+    }
+}

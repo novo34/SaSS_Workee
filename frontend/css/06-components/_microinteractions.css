@@ -1,0 +1,330 @@
+/**
+ * Microinteracciones - Workee
+ *
+ * ITCSS Layer 06: Components
+ * Transiciones suaves y microinteracciones consistentes en toda la aplicación
+ * BEM: .micro-* (block), .micro-__* (elements), .micro--* (modifiers)
+ */
+
+/* ============================================
+   TRANSICIONES GLOBALES PARA ELEMENTOS INTERACTIVOS
+   ============================================ */
+
+/* Enlaces con hover effects mejorados */
+a:not(.btn):not(.btn-modern):not(.nav-link):not(.dropdown-item) {
+    transition: var(--transition-base);
+    color: var(--color-primary);
+    text-decoration: none;
+}
+
+a:not(.btn):not(.btn-modern):not(.nav-link):not(.dropdown-item):hover {
+    color: var(--color-primary-dark);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+a:not(.btn):not(.btn-modern):not(.nav-link):not(.dropdown-item):focus-visible {
+    outline: var(--outline-width) solid var(--color-primary);
+    outline-offset: var(--outline-offset);
+    border-radius: var(--border-radius-sm);
+}
+
+/* Inputs y controles de formulario */
+input:not([type="checkbox"]):not([type="radio"]),
+textarea,
+select {
+    transition: var(--transition-base);
+}
+
+input:not([type="checkbox"]):not([type="radio"]):focus,
+textarea:focus,
+select:focus {
+    transition: var(--transition-fast);
+}
+
+/* Checkboxes y radios con animación */
+input[type="checkbox"],
+input[type="radio"] {
+    transition: var(--transition-fast);
+}
+
+input[type="checkbox"]:checked,
+input[type="radio"]:checked {
+    animation: checkmark 0.2s ease-in-out;
+}
+
+@keyframes checkmark {
+    0% {
+        transform: scale(0.8);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* ============================================
+   HOVER EFFECTS EN CARDS Y ELEMENTOS
+   ============================================ */
+
+/* Cards con hover effect mejorado (ya implementado en _cards.css, pero agregamos variantes) */
+.card-modern--interactive {
+    cursor: pointer;
+    transition: var(--transition-all);
+}
+
+.card-modern--interactive:hover {
+    transform: translateY(var(--transform-hover-y));
+    box-shadow: var(--shadow-md);
+}
+
+.card-modern--interactive:active {
+    transform: translateY(0);
+    box-shadow: var(--shadow-sm);
+}
+
+/* List items con hover */
+.list-item-interactive {
+    transition: var(--transition-base);
+    cursor: pointer;
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--border-radius);
+}
+
+.list-item-interactive:hover {
+    background-color: var(--color-bg-light);
+    transform: translateX(4px);
+}
+
+.list-item-interactive:active {
+    transform: translateX(2px);
+}
+
+/* ============================================
+   FEEDBACK INMEDIATO EN ACCIONES
+   ============================================ */
+
+/* Ripple effect para botones (opcional, para acciones importantes) */
+.btn-modern--ripple {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-modern--ripple::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: var(--border-radius-circle);
+    background: rgba(var(--color-text-inverse-rgb), var(--opacity-ripple-white));
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.btn-modern--ripple:active::after {
+    width: 300px;
+    height: 300px;
+}
+
+/* Pulse animation para elementos destacados */
+.pulse {
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.7;
+    }
+}
+
+/* Shake animation para errores */
+.shake {
+    animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    10%, 30%, 50%, 70%, 90% {
+        transform: translateX(-5px);
+    }
+    20%, 40%, 60%, 80% {
+        transform: translateX(5px);
+    }
+}
+
+/* Fade in/out para elementos que aparecen */
+.fade-in {
+    animation: fadeIn var(--transition-base);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-out {
+    animation: fadeOut var(--transition-base);
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+}
+
+/* ============================================
+   ESTADOS DE FOCUS MEJORADOS
+   ============================================ */
+
+/* Focus ring mejorado para todos los elementos interactivos */
+*:focus-visible {
+    outline: var(--outline-width) solid var(--color-primary);
+    outline-offset: var(--outline-offset);
+    border-radius: var(--border-radius-sm);
+}
+
+/* Focus ring para botones (ya implementado en _buttons.css, pero mejoramos) */
+.btn-modern:focus-visible,
+.btn:focus-visible {
+    outline: var(--outline-width) solid var(--color-primary);
+    outline-offset: var(--outline-offset);
+    box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.1);
+}
+
+/* Focus ring para inputs */
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+    outline: var(--outline-width) solid var(--color-primary);
+    outline-offset: var(--outline-offset);
+    box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.1);
+}
+
+/* Focus ring para cards clickables */
+.card-modern--clickable:focus-visible {
+    outline: var(--outline-width) solid var(--color-primary);
+    outline-offset: var(--outline-offset);
+    box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.1);
+}
+
+/* ============================================
+   LOADING STATES CON ANIMACIONES SUTILES
+   ============================================ */
+
+/* Skeleton pulse mejorado (ya en _skeleton.css, pero agregamos variante) */
+.skeleton--pulse {
+    animation: skeleton-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes skeleton-pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+/* Spinner con bounce (alternativa al spinner rotativo) */
+.spinner-bounce {
+    display: inline-flex;
+    gap: var(--spacing-xs);
+}
+
+.spinner-bounce__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: var(--border-radius-circle);
+    background-color: var(--color-primary);
+    animation: bounce 1.4s ease-in-out infinite both;
+}
+
+.spinner-bounce__dot:nth-child(1) {
+    animation-delay: -0.32s;
+}
+
+.spinner-bounce__dot:nth-child(2) {
+    animation-delay: -0.16s;
+}
+
+@keyframes bounce {
+    0%, 80%, 100% {
+        transform: scale(0);
+    }
+    40% {
+        transform: scale(1);
+    }
+}
+
+/* ============================================
+   TOAST NOTIFICATIONS MEJORADAS
+   ============================================ */
+
+/* Animaciones de toast movidas a _toast.css para evitar duplicación */
+/* Las animaciones toastSlideIn y toastSlideOut están definidas en _toast.css */
+
+/* ============================================
+   MICROINTERACCIONES EN TABLAS
+   ============================================ */
+
+/* Hover en filas de tabla (ya implementado, pero mejoramos) */
+.table-modern tbody tr,
+.data-table__row {
+    transition: var(--transition-base);
+}
+
+.table-modern tbody tr:hover,
+.data-table__row:hover {
+    transition: var(--transition-fast);
+}
+
+/* ============================================
+   RESPETAR PREFERS-REDUCED-MOTION
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    
+    .pulse,
+    .shake,
+    .fade-in,
+    .fade-out {
+        animation: none;
+    }
+    
+    .skeleton,
+    .skeleton--pulse {
+        animation: none;
+        background: var(--color-bg-light);
+    }
+    
+    .spinner-bounce__dot {
+        animation: none;
+    }
+}
+

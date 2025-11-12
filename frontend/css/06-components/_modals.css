@@ -1,0 +1,183 @@
+/**
+ * Estilos para Modales Modernos - Workee
+ * BEM: .modal-* (compatibilidad con Bootstrap), estilos adicionales
+ * ITCSS Layer 06: Components
+ * 
+ * Basado en diseño tipo dashboard moderno
+ */
+
+/* ============================================
+   MODALES MODERNOS - Estilo SaaS 2025
+   ============================================ */
+.modal-content {
+    border: none;
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-xl);
+    overflow: hidden;
+    transition: var(--transition-base);
+}
+
+.modal-content:hover {
+    box-shadow: var(--shadow-xl);
+}
+
+/* Header moderno con estilos destacados */
+.modal-header {
+    border-bottom: var(--border-width-thick) solid var(--color-border-light);
+    padding: var(--spacing-lg);
+    background: linear-gradient(to bottom, var(--color-bg-light), var(--color-bg));
+    border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-md);
+}
+
+.modal-title {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text);
+    margin: 0;
+    line-height: var(--line-height-sm);
+    flex: 1;
+}
+
+.modal-header .btn-close {
+    padding: var(--spacing-xs);
+    margin: 0;
+    opacity: 0.6;
+    transition: var(--transition-base);
+    border-radius: var(--border-radius-sm);
+}
+
+.modal-header .btn-close:hover {
+    opacity: 1;
+    background-color: var(--color-bg-light);
+    transform: scale(1.1);
+}
+
+.modal-header .btn-close:focus {
+    box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.1);
+    outline: none;
+}
+
+/* Body con espaciado adecuado */
+.modal-body {
+    padding: var(--spacing-lg);
+    max-height: var(--modal-body-max-height);
+    overflow-y: auto;
+}
+
+.modal-body::-webkit-scrollbar {
+    width: var(--scrollbar-width);
+}
+
+.modal-body::-webkit-scrollbar-track {
+    background: var(--color-bg-light);
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+    background: var(--color-border);
+    border-radius: var(--scrollbar-thumb-radius);
+}
+
+.modal-body::-webkit-scrollbar-thumb:hover {
+    background: var(--color-text-muted);
+}
+
+/* Footer moderno con estilos destacados */
+.modal-footer {
+    border-top: var(--border-width-thick) solid var(--color-border-light);
+    padding: var(--spacing-lg);
+    background: linear-gradient(to top, var(--color-bg-light), var(--color-bg));
+    border-radius: 0 0 var(--border-radius-lg) var(--border-radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--spacing-sm);
+    flex-wrap: wrap;
+}
+
+/* Botones en modal */
+.modal-footer .btn {
+    min-width: var(--modal-footer-btn-min-width);
+}
+
+/* Formularios en modales */
+.modal-body .form-label {
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text);
+    margin-bottom: var(--spacing-sm);
+}
+
+.modal-body .form-control,
+.modal-body .form-select {
+    border-color: var(--color-border);
+    border-radius: var(--border-radius);
+}
+
+.modal-body .form-control:focus,
+.modal-body .form-select:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 0.2rem rgba(var(--color-primary-rgb), 0.25);
+}
+
+/* Invalid feedback */
+.modal-body .invalid-feedback {
+    display: block;
+    font-size: var(--font-size-sm);
+    color: var(--color-danger);
+    margin-top: var(--spacing-xs);
+}
+
+/* Tamaños de modal modernos */
+.modal-dialog {
+    margin: var(--spacing-lg) auto;
+    transition: var(--transition-base);
+}
+
+.modal-dialog-centered {
+    display: flex;
+    align-items: center;
+    min-height: calc(100% - var(--spacing-lg) * 2);
+}
+
+/* MOB-138: Responsive - En móvil, los modales se convierten en bottom sheet o fullscreen */
+@media (max-width: 991px) {
+    /* Ocultar modales normales en móvil si se usa bottom sheet */
+    .modal[data-mobile-mode="bottom-sheet"],
+    .modal[data-mobile-mode="fullscreen"] {
+        display: none !important;
+    }
+    
+    /* Si se mantiene modal normal en móvil, ajustar estilos */
+    .modal-dialog {
+        margin: 0;
+        max-width: 100%;
+        height: 100vh;
+        display: flex;
+        align-items: flex-end;
+    }
+    
+    .modal-content {
+        border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
+        max-height: 90vh;
+        margin: 0;
+        width: 100%;
+    }
+    
+    .modal-header,
+    .modal-body,
+    .modal-footer {
+        padding: var(--spacing-md);
+    }
+    
+    .modal-title {
+        font-size: var(--font-size-lg);
+    }
+    
+    .modal-body {
+        max-height: calc(90vh - 150px);
+        overflow-y: auto;
+    }
+}

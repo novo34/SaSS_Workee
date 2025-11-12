@@ -1,0 +1,409 @@
+/**
+ * Formularios Modernos - Workee
+ * 
+ * ITCSS Layer 06: Components
+ * Componentes de formularios modernos con diseño SaaS 2025
+ * BEM: .form-modern (block), .form-modern__* (elements), .form-modern--* (modifiers)
+ */
+
+/* ============================================
+   FORMULARIO MODERNO BASE
+   ============================================ */
+.form-modern {
+    width: 100%;
+}
+
+/* Elementos BEM */
+.form-modern__group {
+    position: relative;
+    margin-bottom: var(--spacing-lg);
+}
+
+.form-modern__label {
+    display: block;
+    margin-bottom: var(--spacing-xs);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text);
+    transition: var(--transition-base);
+}
+
+/* Label flotante */
+.form-modern__label--floating {
+    position: absolute;
+    top: var(--spacing-sm);
+    left: var(--spacing-md);
+    margin-bottom: 0;
+    pointer-events: none;
+    background-color: var(--color-bg);
+    padding: 0 var(--spacing-xs);
+    z-index: 1;
+    transition: var(--transition-base);
+}
+
+.form-modern__input:focus + .form-modern__label--floating,
+.form-modern__input:not(:placeholder-shown) + .form-modern__label--floating,
+.form-modern__select:focus + .form-modern__label--floating,
+.form-modern__select:not([value=""]) + .form-modern__label--floating,
+.form-modern__textarea:focus + .form-modern__label--floating,
+.form-modern__textarea:not(:placeholder-shown) + .form-modern__label--floating {
+    top: -8px;
+    font-size: var(--font-size-xs);
+    color: var(--color-primary);
+}
+
+/* Inputs modernos */
+.form-modern__input,
+.form-modern__select,
+.form-modern__textarea {
+    width: 100%;
+    min-height: var(--touch-target-min);
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: var(--font-size-base);
+    font-family: var(--font-family-base);
+    color: var(--color-text);
+    background-color: var(--color-bg);
+    border: var(--border-width-thick) solid var(--color-border);
+    border-radius: var(--border-radius);
+    transition: var(--transition-all);
+    appearance: none;
+}
+
+.form-modern__input:focus,
+.form-modern__select:focus,
+.form-modern__textarea:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.1);
+}
+
+.form-modern__input:focus-visible,
+.form-modern__select:focus-visible,
+.form-modern__textarea:focus-visible {
+    outline: var(--outline-width) solid var(--color-primary);
+    outline-offset: var(--outline-offset);
+}
+
+.form-modern__input:disabled,
+.form-modern__select:disabled,
+.form-modern__textarea:disabled {
+    background-color: var(--color-bg-light);
+    color: var(--color-text-muted);
+    cursor: not-allowed;
+    opacity: var(--opacity-disabled);
+}
+
+.form-modern__input::placeholder,
+.form-modern__textarea::placeholder {
+    color: var(--color-text-muted);
+}
+
+/* Textarea */
+.form-modern__textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+/* Select */
+.form-modern__select {
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right var(--spacing-sm) center;
+    background-size: 16px 12px;
+    padding-right: calc(var(--spacing-md) + 20px);
+}
+
+/* Tamaños grandes (para login, onboarding) */
+.form-modern__input--lg,
+.form-modern__select--lg {
+    padding: var(--spacing-md) var(--spacing-lg);
+    font-size: var(--font-size-lg);
+    min-height: var(--form-control-lg-min-height);
+}
+
+/* ============================================
+   FEEDBACK INLINE (Ayuda/Error/Success)
+   ============================================ */
+.form-modern__feedback {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    margin-top: var(--spacing-xs);
+    font-size: var(--font-size-xs);
+    line-height: var(--line-height-base);
+}
+
+.form-modern__feedback-icon {
+    width: var(--icon-size-sm);
+    height: var(--icon-size-sm);
+    flex-shrink: 0;
+}
+
+/* Feedback de ayuda */
+.form-modern__feedback--help {
+    color: var(--color-text-muted);
+}
+
+.form-modern__feedback--help .form-modern__feedback-icon {
+    color: var(--color-info);
+}
+
+/* Feedback de error */
+.form-modern__feedback--error {
+    color: var(--color-danger);
+}
+
+.form-modern__feedback--error .form-modern__feedback-icon {
+    color: var(--color-danger);
+}
+
+/* Feedback de éxito */
+.form-modern__feedback--success {
+    color: var(--color-success);
+}
+
+.form-modern__feedback--success .form-modern__feedback-icon {
+    color: var(--color-success);
+}
+
+/* Estados de input con feedback */
+.form-modern__input--error,
+.form-modern__select--error,
+.form-modern__textarea--error {
+    border-color: var(--color-danger);
+}
+
+.form-modern__input--error:focus,
+.form-modern__select--error:focus,
+.form-modern__textarea--error:focus {
+    box-shadow: 0 0 0 3px rgba(var(--color-danger-rgb), 0.1);
+}
+
+.form-modern__input--success,
+.form-modern__select--success,
+.form-modern__textarea--success {
+    border-color: var(--color-success);
+}
+
+.form-modern__input--success:focus,
+.form-modern__select--success:focus,
+.form-modern__textarea--success:focus {
+    box-shadow: 0 0 0 3px rgba(var(--color-success-rgb), 0.1);
+}
+
+/* ============================================
+   CHECKBOX Y RADIO MODERNOS
+   ============================================ */
+.form-modern__check {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-md);
+    cursor: pointer;
+}
+
+.form-modern__check-input {
+    width: var(--form-check-input-size);
+    height: var(--form-check-input-size);
+    margin-top: var(--spacing-xs);
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.form-modern__check-label {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-normal);
+    color: var(--color-text);
+    cursor: pointer;
+    user-select: none;
+}
+
+.form-modern__check-input:checked + .form-modern__check-label {
+    font-weight: var(--font-weight-medium);
+}
+
+.form-modern__check-input:focus-visible {
+    outline: var(--outline-width) solid var(--color-primary);
+    outline-offset: var(--outline-offset);
+}
+
+/* Check grande (para onboarding) */
+.form-modern__check--lg {
+    padding: var(--spacing-md);
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--border-radius-md);
+    margin-bottom: var(--spacing-md);
+}
+
+.form-modern__check--lg .form-modern__check-input {
+    width: var(--form-check-input-size-lg);
+    height: var(--form-check-input-size-lg);
+    margin-top: calc((var(--line-height-base) - var(--form-check-input-size-lg)) / 2);
+}
+
+/* ============================================
+   GRUPO DE INPUTS (Input Group)
+   ============================================ */
+.form-modern__input-group {
+    display: flex;
+    align-items: stretch;
+    width: 100%;
+}
+
+.form-modern__input-group-prepend,
+.form-modern__input-group-append {
+    display: flex;
+    align-items: center;
+    padding: var(--spacing-sm) var(--spacing-md);
+    background-color: var(--color-bg-light);
+    border: var(--border-width-thick) solid var(--color-border);
+    border-radius: var(--border-radius);
+    color: var(--color-text-muted);
+    font-size: var(--font-size-sm);
+}
+
+.form-modern__input-group-prepend {
+    border-right: none;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.form-modern__input-group-append {
+    border-left: none;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.form-modern__input-group .form-modern__input {
+    border-radius: 0;
+}
+
+.form-modern__input-group .form-modern__input:first-child {
+    border-top-left-radius: var(--border-radius);
+    border-bottom-left-radius: var(--border-radius);
+}
+
+.form-modern__input-group .form-modern__input:last-child {
+    border-top-right-radius: var(--border-radius);
+    border-bottom-right-radius: var(--border-radius);
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 767px) {
+    .form-modern__group {
+        margin-bottom: var(--spacing-md);
+    }
+    
+    .form-modern__input,
+    .form-modern__select,
+    .form-modern__textarea {
+        font-size: var(--font-size-base);
+    }
+}
+
+/* ============================================
+   RATING STARS (Para valoraciones)
+   ============================================ */
+.rating-stars {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    gap: var(--spacing-xs);
+}
+
+.rating-input {
+    display: none;
+}
+
+.rating-star {
+    font-size: var(--font-size-xxl);
+    color: var(--color-border);
+    cursor: pointer;
+    transition: var(--transition-base);
+    user-select: none;
+}
+
+.rating-star:hover,
+.rating-star.active,
+.rating-input:checked ~ .rating-star {
+    color: var(--color-warning);
+}
+
+.rating-star:hover ~ .rating-star,
+.rating-input:checked ~ .rating-star ~ .rating-star {
+    color: var(--color-warning);
+}
+
+.rating-display {
+    font-size: var(--font-size-lg);
+    color: var(--color-warning);
+    letter-spacing: var(--spacing-xs);
+}
+
+/* ============================================
+   TAGS CONTAINER (Para etiquetas de valoración)
+   ============================================ */
+.tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-xs);
+}
+
+.tag-checkbox {
+    display: inline-flex;
+    align-items: center;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--border-radius);
+    background: var(--color-bg);
+    cursor: pointer;
+    transition: var(--transition-base);
+    font-size: var(--font-size-sm);
+}
+
+.tag-checkbox:hover {
+    border-color: var(--color-primary);
+    background: var(--color-bg-light);
+}
+
+.tag-checkbox input[type="checkbox"] {
+    margin-right: var(--spacing-xs);
+    cursor: pointer;
+}
+
+.tag-checkbox input[type="checkbox"]:checked + span {
+    font-weight: var(--font-weight-semibold);
+}
+
+.tag-checkbox:has(input[type="checkbox"]:checked) {
+    border-color: var(--color-primary);
+    background: rgba(var(--color-primary-rgb), 0.1);
+}
+
+/* ============================================
+   ACCESIBILIDAD
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+    .form-modern__label--floating,
+    .form-modern__input,
+    .form-modern__select,
+    .form-modern__textarea,
+    .rating-star {
+        transition: none;
+    }
+}
+
+@media (max-width: 767px) {
+    .rating-star {
+        font-size: var(--font-size-xl);
+    }
+    
+    .tags-container {
+        gap: var(--spacing-xs);
+    }
+}
+

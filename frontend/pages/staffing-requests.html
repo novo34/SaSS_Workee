@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workee - Solicitudes de Personal</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/frontend/css/main.css">
+    <link rel="stylesheet" href="/frontend/css/components/components.css">
+</head>
+<body>
+    <!-- El sidebar y header se inyectan automáticamente por index.php -->
+    
+    <main id="main-content" class="container-fluid" role="main">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title" data-i18n="staffing_requests.title">Solicitudes de Personal</h1>
+            <div class="page-actions">
+                <button class="btn-modern btn-modern--primary" id="btn-new-request">
+                    <svg class="btn-modern__icon btn-modern__icon--left" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                    </svg>
+                    <span data-i18n="staffing_requests.new">Nueva Solicitud</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Filtros -->
+        <div class="card-modern mb-4">
+            <div class="card-modern__body">
+                <div class="row g-3">
+                    <div class="col-12 col-md-3">
+                        <div class="form-modern__group">
+                            <label class="form-modern__label" data-i18n="staffing_requests.filter_status">Estado</label>
+                            <select class="form-modern__select" id="filter-status">
+                                <option value="" data-i18n="staffing_requests.filter_all">Todos</option>
+                                <option value="open" data-i18n="staffing_requests.filter_open">Abiertas</option>
+                                <option value="partially_filled" data-i18n="staffing_requests.filter_partially_filled">Parcialmente cubiertas</option>
+                                <option value="filled" data-i18n="staffing_requests.filter_filled">Cubiertas</option>
+                                <option value="canceled" data-i18n="staffing_requests.filter_canceled">Canceladas</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-3">
+                        <div class="form-modern__group">
+                            <label class="form-modern__label" data-i18n="staffing_requests.filter_search">Buscar</label>
+                            <input type="text" class="form-modern__input" id="filter-search" placeholder="" data-i18n-placeholder="common.search">
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-3 d-flex align-items-end">
+                        <button class="btn-modern btn-modern--ghost w-100" id="btn-filter">
+                            <svg class="btn-modern__icon btn-modern__icon--left" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path>
+                            </svg>
+                            <span data-i18n="staffing_requests.filter_apply">Filtrar</span>
+                        </button>
+                    </div>
+                    <div class="col-12 col-md-3 d-flex align-items-end">
+                        <button class="btn-modern btn-modern--ghost w-100" id="btn-clear-filters">
+                            <svg class="btn-modern__icon btn-modern__icon--left" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                            <span data-i18n="staffing_requests.filter_clear">Limpiar</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lista de Solicitudes -->
+        <div id="requests-container">
+            <div class="text-center py-5" id="loading-spinner-container">
+                <!-- LoadingSpinner se inicializa aquí -->
+            </div>
+        </div>
+
+        <!-- Paginación -->
+        <nav aria-label="Paginación" id="pagination-container" class="mt-4 d-none">
+            <ul class="pagination justify-content-center" id="pagination"></ul>
+        </nav>
+    </div>
+
+    <!-- Modal: Nueva Solicitud -->
+    <div class="modal fade" id="modal-new-request" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" data-i18n="staffing_requests.modal_title">Nueva Solicitud de Personal</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form class="form-modern" id="form-new-request">
+                        <!-- Paso 1: Fechas y Ubicación -->
+                        <div class="step" id="step-1">
+                            <h6 class="mb-3" data-i18n="staffing_requests.step_1_title">Fechas y Ubicación</h6>
+                            <div class="row g-3">
+                                <div class="col-12 col-md-6">
+                                    <div class="form-modern__group">
+                                        <label class="form-modern__label" data-i18n="staffing_requests.field_date_from">Fecha y Hora Inicio *</label>
+                                        <input type="datetime-local" class="form-modern__input" id="date-from" required>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <div class="form-modern__group">
+                                        <label class="form-modern__label" data-i18n="staffing_requests.field_date_to">Fecha y Hora Fin *</label>
+                                        <input type="datetime-local" class="form-modern__input" id="date-to" required>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-modern__group">
+                                        <label class="form-modern__label" data-i18n="staffing_requests.field_location">Ubicación</label>
+                                        <input type="text" class="form-modern__input" id="location" data-i18n-placeholder="staffing_requests.field_location_placeholder">
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <div class="form-modern__group">
+                                        <label class="form-modern__label" data-i18n="staffing_requests.field_latitude">Latitud (opcional)</label>
+                                        <input type="number" step="0.00000001" class="form-modern__input" id="latitude">
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <div class="form-modern__group">
+                                        <label class="form-modern__label" data-i18n="staffing_requests.field_longitude">Longitud (opcional)</label>
+                                        <input type="number" step="0.00000001" class="form-modern__input" id="longitude">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Paso 2: Cantidad y Requisitos -->
+                        <div class="step d-none" id="step-2">
+                            <h6 class="mb-3" data-i18n="staffing_requests.step_2_title">Cantidad y Requisitos</h6>
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <div class="form-modern__group">
+                                        <label class="form-modern__label" data-i18n="staffing_requests.field_qty_needed">Cantidad Necesaria *</label>
+                                        <input type="number" class="form-modern__input" id="qty-needed" min="1" required>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-modern__group">
+                                        <label class="form-modern__label" data-i18n="staffing_requests.field_skills">Skills Requeridos (separados por comas)</label>
+                                        <input type="text" class="form-modern__input" id="skills" data-i18n-placeholder="staffing_requests.field_skills_placeholder">
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-modern__group">
+                                        <label class="form-modern__label" data-i18n="staffing_requests.field_languages">Idiomas Requeridos</label>
+                                        <input type="text" class="form-modern__input" id="languages" data-i18n-placeholder="staffing_requests.field_languages_placeholder">
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-modern__group">
+                                        <label class="form-modern__label" data-i18n="staffing_requests.field_other_requirements">Otros Requisitos</label>
+                                        <textarea class="form-modern__textarea" id="other-requirements" rows="3" data-i18n-placeholder="staffing_requests.field_other_requirements_placeholder"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Paso 3: Proyecto y Destinatarios -->
+                        <div class="step d-none" id="step-3">
+                            <h6 class="mb-3" data-i18n="staffing_requests.step_3_title">Proyecto y Destinatarios</h6>
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <div class="form-modern__group">
+                                        <label class="form-modern__label" data-i18n="staffing_requests.field_project">Proyecto (opcional)</label>
+                                        <select class="form-modern__select" id="project-id">
+                                            <option value="" data-i18n="staffing_requests.field_project_select">Seleccionar proyecto...</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label" data-i18n="staffing_requests.field_agencies">Enviar a Temporeras</label>
+                                    <div id="agencies-list" class="border rounded p-3 agencies-list-container">
+                                        <div class="text-muted" data-i18n="staffing_requests.field_agencies_loading">Cargando temporeras...</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Navegación de pasos -->
+                        <div class="d-flex justify-content-between mt-4">
+                            <button type="button" class="btn-modern btn-modern--ghost d-none" id="btn-prev-step">
+                                <svg class="btn-modern__icon btn-modern__icon--left" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                                </svg>
+                                <span data-i18n="staffing_requests.btn_previous">Anterior</span>
+                            </button>
+                            <div class="ms-auto d-flex gap-2">
+                                <button type="button" class="btn-modern btn-modern--secondary" data-bs-dismiss="modal" data-i18n="staffing_requests.btn_cancel">Cancelar</button>
+                                <button type="button" class="btn-modern btn-modern--primary" id="btn-next-step">
+                                    <span data-i18n="staffing_requests.btn_next">Siguiente</span>
+                                    <svg class="btn-modern__icon btn-modern__icon--right" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                    </svg>
+                                </button>
+                                <button type="submit" class="btn-modern btn-modern--success d-none" id="btn-submit" data-i18n="staffing_requests.btn_submit">Crear Solicitud</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/frontend/js/core/components-loader.js"></script>
+    <script src="/frontend/js/layout.js"></script>
+    <script src="/frontend/js/staffing-requests.js"></script>
+</body>
+</html>
+

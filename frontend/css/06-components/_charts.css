@@ -1,0 +1,422 @@
+/**
+ * Gráficos y Visualizaciones - Workee
+ *
+ * ITCSS Layer 06: Components
+ * Estilos para gráficos y visualizaciones de datos con paleta corporativa
+ * BEM: .chart (block), .chart__* (elements), .chart--* (modifiers)
+ */
+
+/* ============================================
+   VARIABLES CSS PARA GRÁFICOS
+   ============================================ */
+:root {
+    /* Colores de gráficos usando paleta corporativa */
+    --chart-color-primary: var(--color-primary);
+    --chart-color-primary-light: var(--color-primary-light);
+    --chart-color-secondary: var(--color-secondary);
+    --chart-color-success: var(--color-success);
+    --chart-color-warning: var(--color-warning);
+    --chart-color-danger: var(--color-danger);
+    --chart-color-info: var(--color-info);
+    
+    /* Colores adicionales para series múltiples */
+    --chart-color-1: var(--color-primary);
+    --chart-color-2: var(--color-success);
+    --chart-color-3: var(--color-warning);
+    --chart-color-4: var(--color-danger);
+    --chart-color-5: var(--color-info);
+    --chart-color-6: var(--color-secondary);
+    
+    /* Colores de fondo para áreas */
+    --chart-bg-primary: rgba(var(--color-primary-rgb), 0.1);
+    --chart-bg-success: rgba(var(--color-success-rgb), 0.1);
+    --chart-bg-warning: rgba(var(--color-warning-rgb), 0.1);
+    --chart-bg-danger: rgba(var(--color-danger-rgb), 0.1);
+    --chart-bg-info: rgba(var(--color-info-rgb), 0.1);
+    
+    /* Colores de grid y ejes */
+    --chart-grid-color: var(--color-border-light);
+    --chart-axis-color: var(--color-text-muted);
+    --chart-text-color: var(--color-text);
+    --chart-text-muted: var(--color-text-muted);
+}
+
+/* ============================================
+   CONTENEDOR DE GRÁFICOS
+   ============================================ */
+.chart-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-height: 300px;
+    background: var(--color-bg);
+    border-radius: var(--border-radius-lg);
+    padding: var(--spacing-lg);
+    box-shadow: var(--shadow-sm);
+    border: var(--border-width) solid var(--color-border-light);
+}
+
+.chart-container--responsive {
+    position: relative;
+    width: 100%;
+    height: 0;
+    padding-bottom: 56.25%; /* 16:9 aspect ratio */
+    overflow: hidden;
+}
+
+.chart-container--responsive canvas,
+.chart-container--responsive svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* ============================================
+   CANVAS Y SVG
+   ============================================ */
+.chart-container canvas,
+.chart-container svg {
+    max-width: 100%;
+    height: auto;
+}
+
+/* ============================================
+   TOOLTIPS INFORMATIVOS
+   ============================================ */
+.chart-tooltip {
+    position: absolute;
+    background: var(--color-bg);
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-sm) var(--spacing-md);
+    box-shadow: var(--shadow-lg);
+    font-size: var(--font-size-sm);
+    color: var(--color-text);
+    pointer-events: none;
+    z-index: var(--z-tooltip);
+    opacity: 0;
+    transition: opacity var(--transition-base);
+    max-width: 250px;
+}
+
+.chart-tooltip--show {
+    opacity: 1;
+}
+
+.chart-tooltip__title {
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text);
+    margin-bottom: var(--spacing-xs);
+    font-size: var(--font-size-sm);
+}
+
+.chart-tooltip__label {
+    color: var(--color-text-muted);
+    font-size: var(--font-size-xs);
+    margin-bottom: var(--spacing-xs);
+}
+
+.chart-tooltip__value {
+    font-weight: var(--font-weight-bold);
+    color: var(--color-primary);
+    font-size: var(--font-size-base);
+}
+
+.chart-tooltip__item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    margin-bottom: var(--spacing-xs);
+}
+
+.chart-tooltip__item:last-child {
+    margin-bottom: 0;
+}
+
+.chart-tooltip__color {
+    width: 12px;
+    height: 12px;
+    border-radius: var(--border-radius-sm);
+    flex-shrink: 0;
+}
+
+/* ============================================
+   LEYENDAS CLARAS Y ACCESIBLES
+   ============================================ */
+.chart-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-lg);
+    padding: var(--spacing-md);
+    background: var(--color-bg-light);
+    border-radius: var(--border-radius);
+    border: var(--border-width) solid var(--color-border-light);
+}
+
+.chart-legend__item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    font-size: var(--font-size-sm);
+    color: var(--color-text);
+    cursor: pointer;
+    transition: var(--transition-base);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--border-radius-sm);
+}
+
+.chart-legend__item:hover {
+    background: var(--color-bg-dark);
+}
+
+.chart-legend__item--hidden {
+    opacity: var(--opacity-disabled);
+    text-decoration: line-through;
+}
+
+.chart-legend__color {
+    width: 16px;
+    height: 16px;
+    border-radius: var(--border-radius-sm);
+    flex-shrink: 0;
+    border: var(--border-width) solid var(--color-border);
+}
+
+.chart-legend__label {
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text);
+}
+
+.chart-legend__value {
+    color: var(--color-text-muted);
+    font-size: var(--font-size-xs);
+    margin-left: var(--spacing-xs);
+}
+
+/* Leyenda vertical */
+.chart-legend--vertical {
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+/* Leyenda horizontal (default) */
+.chart-legend--horizontal {
+    flex-direction: row;
+    align-items: center;
+}
+
+/* ============================================
+   TÍTULOS Y DESCRIPCIONES DE GRÁFICOS
+   ============================================ */
+.chart-header {
+    margin-bottom: var(--spacing-md);
+}
+
+.chart-title {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text);
+    margin-bottom: var(--spacing-xs);
+}
+
+.chart-description {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    line-height: var(--line-height-base);
+}
+
+/* ============================================
+   GRID Y EJES
+   ============================================ */
+.chart-grid {
+    stroke: var(--chart-grid-color);
+    stroke-width: 1;
+    stroke-dasharray: 2, 2;
+}
+
+.chart-axis {
+    stroke: var(--chart-axis-color);
+    stroke-width: 1;
+}
+
+.chart-axis-label {
+    fill: var(--chart-text-muted);
+    font-size: var(--font-size-xs);
+    font-family: var(--font-family-base);
+}
+
+.chart-axis-title {
+    fill: var(--chart-text);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    font-family: var(--font-family-base);
+}
+
+/* ============================================
+   ESTILOS PARA DIFERENTES TIPOS DE GRÁFICOS
+   ============================================ */
+
+/* Gráfico de barras */
+.chart--bar .chart-bar {
+    transition: var(--transition-base);
+    cursor: pointer;
+}
+
+.chart--bar .chart-bar:hover {
+    opacity: var(--opacity-hover);
+    transform: translateY(-2px);
+}
+
+/* Gráfico de líneas */
+.chart--line .chart-line {
+    stroke-width: 2;
+    fill: none;
+    transition: var(--transition-base);
+}
+
+.chart--line .chart-line:hover {
+    stroke-width: 3;
+}
+
+.chart--line .chart-point {
+    cursor: pointer;
+    transition: var(--transition-base);
+}
+
+.chart--line .chart-point:hover {
+    r: 6;
+    opacity: 1;
+}
+
+/* Gráfico de área */
+.chart--area .chart-area {
+    opacity: 0.6;
+    transition: var(--transition-base);
+}
+
+.chart--area .chart-area:hover {
+    opacity: 0.8;
+}
+
+/* Gráfico circular (pie/donut) */
+.chart--pie .chart-segment {
+    cursor: pointer;
+    transition: var(--transition-base);
+}
+
+.chart--pie .chart-segment:hover {
+    opacity: var(--opacity-hover);
+    transform: scale(1.05);
+    transform-origin: center;
+}
+
+/* ============================================
+   INDICADORES Y ANOTACIONES
+   ============================================ */
+.chart-annotation {
+    position: absolute;
+    background: var(--color-bg);
+    border: var(--border-width) solid var(--color-primary);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: var(--font-size-xs);
+    color: var(--color-primary);
+    font-weight: var(--font-weight-semibold);
+    box-shadow: var(--shadow-sm);
+    pointer-events: none;
+}
+
+.chart-indicator {
+    position: absolute;
+    width: 2px;
+    background: var(--color-primary);
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+/* ============================================
+   LOADING STATE PARA GRÁFICOS
+   ============================================ */
+.chart-container--loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 300px;
+}
+
+.chart-container--loading::after {
+    content: '';
+    width: 40px;
+    height: 40px;
+    border: 4px solid var(--color-border-light);
+    border-top-color: var(--color-primary);
+    border-radius: var(--border-radius-circle);
+    animation: spin 0.8s linear infinite;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 767px) {
+    .chart-container {
+        padding: var(--spacing-md);
+        min-height: 250px;
+    }
+    
+    .chart-legend {
+        flex-direction: column;
+        gap: var(--spacing-sm);
+    }
+    
+    .chart-legend__item {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .chart-title {
+        font-size: var(--font-size-base);
+    }
+    
+    .chart-description {
+        font-size: var(--font-size-xs);
+    }
+    
+    .chart-tooltip {
+        max-width: 200px;
+        font-size: var(--font-size-xs);
+        padding: var(--spacing-xs) var(--spacing-sm);
+    }
+}
+
+/* ============================================
+   ACCESIBILIDAD
+   ============================================ */
+.chart-container[aria-label],
+.chart-container[aria-labelledby] {
+    /* Mejora la accesibilidad para lectores de pantalla */
+}
+
+.chart-legend__item:focus-visible {
+    outline: var(--outline-width) solid var(--color-primary);
+    outline-offset: var(--outline-offset);
+    border-radius: var(--border-radius-sm);
+}
+
+/* Respetar prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+    .chart-bar,
+    .chart-line,
+    .chart-point,
+    .chart-area,
+    .chart-segment {
+        transition: none;
+    }
+    
+    .chart-container--loading::after {
+        animation: none;
+    }
+}
+

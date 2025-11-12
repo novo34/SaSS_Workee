@@ -1,0 +1,76 @@
+/**
+ * Utilidades de Bordes - Workee
+ * 
+ * ITCSS Layer 07: Utilities
+ * Clases utilitarias para bordes usando design tokens
+ * Prefijo: .u-border-*
+ */
+
+/* ============================================
+   BORDER WIDTH
+   ============================================ */
+.u-border-0 { border-width: 0 !important; }
+.u-border { border-width: var(--border-width) !important; }
+.u-border-thick { border-width: var(--border-width-thick) !important; }
+.u-border-thicker { border-width: var(--border-width-thicker) !important; }
+
+/* Border Top */
+.u-border-t-0 { border-top-width: 0 !important; }
+.u-border-t { border-top-width: var(--border-width) !important; }
+.u-border-t-thick { border-top-width: var(--border-width-thick) !important; }
+
+/* Border Bottom */
+.u-border-b-0 { border-bottom-width: 0 !important; }
+.u-border-b { border-bottom-width: var(--border-width) !important; }
+.u-border-b-thick { border-bottom-width: var(--border-width-thick) !important; }
+
+/* Border Left */
+.u-border-l-0 { border-left-width: 0 !important; }
+.u-border-l { border-left-width: var(--border-width) !important; }
+.u-border-l-thick { border-left-width: var(--border-width-thick) !important; }
+
+/* Border Right */
+.u-border-r-0 { border-right-width: 0 !important; }
+.u-border-r { border-right-width: var(--border-width) !important; }
+.u-border-r-thick { border-right-width: var(--border-width-thick) !important; }
+
+/* ============================================
+   BORDER COLOR
+   ============================================ */
+.u-border-primary { border-color: var(--color-primary) !important; }
+.u-border-secondary { border-color: var(--color-secondary) !important; }
+.u-border-success { border-color: var(--color-success) !important; }
+.u-border-danger { border-color: var(--color-danger) !important; }
+.u-border-warning { border-color: var(--color-warning) !important; }
+.u-border-info { border-color: var(--color-info) !important; }
+.u-border-light { border-color: var(--color-border-light) !important; }
+.u-border-dark { border-color: var(--color-border) !important; }
+.u-border-transparent { border-color: transparent !important; }
+
+/* ============================================
+   BORDER RADIUS
+   ============================================ */
+.u-rounded-none { border-radius: 0 !important; }
+.u-rounded { border-radius: var(--border-radius) !important; }
+.u-rounded-sm { border-radius: var(--border-radius-sm) !important; }
+.u-rounded-lg { border-radius: var(--border-radius-lg) !important; }
+.u-rounded-full { border-radius: 9999px !important; }
+
+/* Border Radius por esquina */
+.u-rounded-t { border-top-left-radius: var(--border-radius) !important; border-top-right-radius: var(--border-radius) !important; }
+.u-rounded-b { border-bottom-left-radius: var(--border-radius) !important; border-bottom-right-radius: var(--border-radius) !important; }
+.u-rounded-l { border-top-left-radius: var(--border-radius) !important; border-bottom-left-radius: var(--border-radius) !important; }
+.u-rounded-r { border-top-right-radius: var(--border-radius) !important; border-bottom-right-radius: var(--border-radius) !important; }
+.u-rounded-tl { border-top-left-radius: var(--border-radius) !important; }
+.u-rounded-tr { border-top-right-radius: var(--border-radius) !important; }
+.u-rounded-bl { border-bottom-left-radius: var(--border-radius) !important; }
+.u-rounded-br { border-bottom-right-radius: var(--border-radius) !important; }
+
+/* ============================================
+   BORDER STYLE
+   ============================================ */
+.u-border-solid { border-style: solid !important; }
+.u-border-dashed { border-style: dashed !important; }
+.u-border-dotted { border-style: dotted !important; }
+.u-border-none { border-style: none !important; }
+

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workee - Dashboard Owner</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/frontend/css/main.css">
+    <link rel="stylesheet" href="/frontend/css/pages/owner.css">
+    <link rel="stylesheet" href="/frontend/css/owner.css">
+</head>
+<body>
+    <!-- El sidebar y header se inyectan automáticamente por index.php -->
+    
+    <main id="main-content" class="container-fluid" role="main">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title">Dashboard Owner</h1>
+        </div>
+
+        <!-- Métricas - CSS Grid con KPI Cards Modernas -->
+        <div class="dashboard-grid dashboard-grid--kpi mb-4">
+            <!-- KPI Card - Total Tenants -->
+            <div class="kpi-card kpi-card--success">
+                <div class="kpi-card__header">
+                    <div>
+                        <div class="kpi-card__value" id="metric-tenants">-</div>
+                        <div class="kpi-card__label">Total Tenants</div>
+                    </div>
+                    <svg class="kpi-card__icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                    </svg>
+                </div>
+            </div>
+            
+            <!-- KPI Card - MRR -->
+            <div class="kpi-card kpi-card--info">
+                <div class="kpi-card__header">
+                    <div>
+                        <div class="kpi-card__value" id="metric-mrr">-</div>
+                        <div class="kpi-card__label">MRR</div>
+                    </div>
+                    <svg class="kpi-card__icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+            </div>
+            
+            <!-- KPI Card - Usuarios Activos -->
+            <div class="kpi-card kpi-card--success">
+                <div class="kpi-card__header">
+                    <div>
+                        <div class="kpi-card__value" id="metric-users">-</div>
+                        <div class="kpi-card__label">Usuarios Activos</div>
+                    </div>
+                    <svg class="kpi-card__icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                    </svg>
+                </div>
+            </div>
+            
+            <!-- KPI Card - Churn Rate -->
+            <div class="kpi-card kpi-card--warning">
+                <div class="kpi-card__header">
+                    <div>
+                        <div class="kpi-card__value" id="metric-churn">-</div>
+                        <div class="kpi-card__label">Churn Rate</div>
+                    </div>
+                    <svg class="kpi-card__icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gráficos y tablas - CSS Grid con Cards Modernas -->
+        <div class="dashboard-grid dashboard-grid--main-sidebar">
+            <!-- Card Moderna - Actividad Reciente -->
+            <div class="card-modern card-modern--elevated">
+                <div class="card-modern__header">
+                    <h3 class="card-modern__title">Actividad Reciente</h3>
+                </div>
+                <div class="card-modern__body">
+                    <div id="activity-list">
+                        <p class="text-muted mb-0">Cargando...</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Card Moderna - Tenants por Plan -->
+            <div class="card-modern card-modern--elevated">
+                <div class="card-modern__header">
+                    <h3 class="card-modern__title">Tenants por Plan</h3>
+                </div>
+                <div class="card-modern__body">
+                    <div id="plan-distribution">
+                        <p class="text-muted mb-0">Cargando...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/frontend/js/layout.js"></script>
+    <script type="module" src="/frontend/js/owner-base.js"></script>
+</body>
+</html>
+

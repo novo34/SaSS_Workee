@@ -1,0 +1,101 @@
+/**
+ * Estilos para Wizard de Onboarding
+ * ITCSS Layer: Pages
+ * BEM: .plan-card, .step-content, .onboarding-card (blocks)
+ * Mobile-first design
+ */
+
+/* Cards de plan táctiles */
+.plan-card {
+    cursor: pointer;
+    transition: var(--transition-all);
+    min-height: var(--plan-card-min-height);
+}
+
+.plan-card:hover {
+    transform: translateY(var(--transform-hover-y-large));
+    box-shadow: var(--shadow-md);
+}
+
+.plan-card.border-primary {
+    border-width: var(--border-width-thicker) !important;
+}
+
+/* Radio buttons grandes para móvil */
+.form-check-lg {
+    min-height: var(--form-check-lg-min-height);
+}
+
+.form-check-input {
+    width: var(--form-check-input-size);
+    height: var(--form-check-input-size);
+    margin-top: var(--spacing-xs);
+}
+
+.form-check-label {
+    font-size: var(--font-size-base);
+    padding-left: var(--spacing-xs);
+}
+
+/* Inputs grandes para móvil */
+.form-control-lg,
+.form-select-lg {
+    min-height: var(--form-control-lg-min-height);
+    font-size: var(--font-size-base);
+}
+
+/* Botones táctiles */
+.btn-lg {
+    min-height: var(--btn-lg-min-height);
+    min-width: var(--btn-lg-min-width);
+    font-size: var(--font-size-base);
+    padding: var(--spacing-sm) var(--spacing-lg);
+}
+
+/* Progress bar */
+.progress {
+    border-radius: var(--progress-border-radius);
+}
+
+.progress-onboarding {
+    height: var(--progress-onboarding-height);
+}
+
+.progress-bar {
+    transition: width var(--transition-base);
+}
+
+/* Steps */
+.step-content {
+    min-height: var(--step-content-min-height);
+}
+
+@media (min-width: 768px) {
+    .step-content {
+        min-height: var(--step-content-min-height-desktop);
+    }
+}
+
+/* Cards responsivos */
+.onboarding-card {
+    max-width: var(--onboarding-card-max-width);
+}
+
+@media (max-width: 767px) {
+    .plan-card {
+        margin-bottom: var(--spacing-md);
+    }
+}
+
+/* Tabla de resumen */
+.table td {
+    padding: var(--spacing-sm) var(--spacing-xs);
+    font-size: var(--font-size-base);
+}
+
+@media (min-width: 768px) {
+    .table td {
+        padding: var(--spacing-md);
+        font-size: var(--font-size-base);
+    }
+}

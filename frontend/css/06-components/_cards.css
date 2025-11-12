@@ -1,0 +1,329 @@
+/**
+ * Cards Modernas - Workee
+ * 
+ * ITCSS Layer 06: Components
+ * Componentes de cards modernos con diseño SaaS 2025
+ * BEM: .card-modern (block), .card-modern__* (elements), .card-modern--* (modifiers)
+ */
+
+/* ============================================
+   CARD MODERNA BASE
+   ============================================ */
+.card-modern {
+    background: var(--color-bg);
+    border: var(--border-width) solid var(--color-border-light);
+    border-radius: var(--border-radius-lg);
+    padding: var(--spacing-lg);
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition-all);
+    position: relative;
+    overflow: hidden;
+}
+
+.card-modern:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(var(--transform-hover-y));
+    border-color: var(--color-primary-light);
+}
+
+.card-modern:active {
+    transform: translateY(0);
+    box-shadow: var(--shadow-sm);
+}
+
+/* Elementos BEM */
+.card-modern__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-md);
+    padding-bottom: var(--spacing-md);
+    border-bottom: var(--border-width) solid var(--color-border-light);
+}
+
+.card-modern__title {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text);
+    margin: 0;
+    line-height: var(--line-height-base);
+}
+
+.card-modern__subtitle {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-normal);
+    color: var(--color-text-muted);
+    margin: 0;
+    margin-top: var(--spacing-xs);
+}
+
+.card-modern__body {
+    padding: 0;
+    margin-bottom: var(--spacing-md);
+}
+
+.card-modern__footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-md);
+    padding-top: var(--spacing-md);
+    border-top: var(--border-width) solid var(--color-border-light);
+}
+
+.card-modern__icon {
+    width: var(--icon-size-md);
+    height: var(--icon-size-md);
+    color: var(--color-primary);
+    flex-shrink: 0;
+}
+
+/* ============================================
+   VARIANTES DE CARD MODERNA
+   ============================================ */
+
+/* Card elevada (más sombra) */
+.card-modern--elevated {
+    box-shadow: var(--shadow-md);
+    border: none;
+}
+
+.card-modern--elevated:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(var(--transform-hover-y-large));
+}
+
+/* Card con borde (outlined) */
+.card-modern--outlined {
+    box-shadow: none;
+    border: var(--border-width-thick) solid var(--color-border);
+    background: transparent;
+}
+
+.card-modern--outlined:hover {
+    border-color: var(--color-primary);
+    background: var(--color-bg);
+    box-shadow: var(--shadow-sm);
+}
+
+/* Card interactiva (clickeable) */
+.card-modern--clickable {
+    cursor: pointer;
+}
+
+.card-modern--clickable:focus-visible {
+    outline: var(--outline-width) solid var(--color-primary);
+    outline-offset: var(--outline-offset);
+}
+
+/* Card con gradiente sutil */
+.card-modern--gradient {
+    background: var(--gradient-card-subtle);
+}
+
+/* Card con neumorphism ligero (efecto moderno sutil) */
+.card-modern--neumorphism {
+    background: var(--neumorphism-bg);
+    border: none;
+    box-shadow: var(--shadow-neumorphism-light);
+}
+
+.card-modern--neumorphism:hover {
+    box-shadow: var(--shadow-neumorphism-light-hover);
+    transform: translateY(var(--transform-hover-y));
+}
+
+.card-modern--neumorphism:active {
+    box-shadow: var(--shadow-neumorphism-inset);
+    transform: translateY(0);
+}
+
+/* ============================================
+   KPI CARD
+   ============================================ */
+.kpi-card {
+    background: var(--gradient-card-subtle);
+    border-left: var(--border-width-thicker) solid var(--color-primary);
+    border-radius: var(--border-radius-lg);
+    padding: var(--spacing-lg);
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition-all);
+    position: relative;
+    overflow: hidden;
+}
+
+.kpi-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(var(--transform-hover-y));
+    border-left-color: var(--color-primary-dark);
+    background: var(--color-bg);
+}
+
+/* Elementos BEM de KPI Card */
+.kpi-card__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-md);
+}
+
+.kpi-card__icon {
+    width: var(--icon-size-lg);
+    height: var(--icon-size-lg);
+    color: var(--color-primary);
+    opacity: var(--opacity-hover);
+    flex-shrink: 0;
+}
+
+.kpi-card__value {
+    font-size: var(--font-size-xxxl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-primary);
+    line-height: 1.2;
+    margin: 0;
+    margin-bottom: var(--spacing-xs);
+}
+
+.kpi-card__label {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-tight);
+    margin: 0;
+}
+
+.kpi-card__trend {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    margin-top: var(--spacing-sm);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--border-radius);
+    background: var(--color-bg-light);
+    transition: var(--transition-base);
+}
+
+.kpi-card__trend--up {
+    color: var(--color-success);
+    background: rgba(var(--color-success-rgb), 0.1);
+}
+
+.kpi-card__trend--down {
+    color: var(--color-danger);
+    background: rgba(var(--color-danger-rgb), 0.1);
+}
+
+.kpi-card__trend--neutral {
+    color: var(--color-text-muted);
+    background: var(--color-bg-light);
+}
+
+.kpi-card__trend-icon {
+    width: var(--icon-size-sm);
+    height: var(--icon-size-sm);
+    flex-shrink: 0;
+}
+
+.kpi-card__trend-value {
+    font-weight: var(--font-weight-bold);
+    margin-left: var(--spacing-xs);
+}
+
+.kpi-card__description {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+    margin-top: var(--spacing-xs);
+    line-height: var(--line-height-base);
+}
+
+/* Variantes de color para KPI Cards */
+.kpi-card--success {
+    border-left-color: var(--color-success);
+}
+
+.kpi-card--success .kpi-card__value,
+.kpi-card--success .kpi-card__icon {
+    color: var(--color-success);
+}
+
+.kpi-card--warning {
+    border-left-color: var(--color-warning);
+}
+
+.kpi-card--warning .kpi-card__value,
+.kpi-card--warning .kpi-card__icon {
+    color: var(--color-warning);
+}
+
+.kpi-card--danger {
+    border-left-color: var(--color-danger);
+}
+
+.kpi-card--danger .kpi-card__value,
+.kpi-card--danger .kpi-card__icon {
+    color: var(--color-danger);
+}
+
+.kpi-card--info {
+    border-left-color: var(--color-info);
+}
+
+.kpi-card--info .kpi-card__value,
+.kpi-card--info .kpi-card__icon {
+    color: var(--color-info);
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 767px) {
+    .card-modern {
+        padding: var(--spacing-md);
+    }
+    
+    .card-modern__header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--spacing-xs);
+    }
+    
+    .card-modern__footer {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .kpi-card {
+        padding: var(--spacing-md);
+    }
+    
+    .kpi-card__value {
+        font-size: var(--font-size-xxl);
+    }
+}
+
+/* ============================================
+   ACCESIBILIDAD
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+    .card-modern,
+    .kpi-card {
+        transition: none;
+    }
+    
+    .card-modern:hover,
+    .kpi-card:hover {
+        transform: none;
+    }
+}
+
+/* Focus visible para cards clickeables */
+.card-modern--clickable:focus-visible,
+.kpi-card:focus-visible {
+    outline: var(--outline-width) solid var(--color-primary);
+    outline-offset: var(--outline-offset);
+}
+

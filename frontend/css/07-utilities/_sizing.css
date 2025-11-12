@@ -1,0 +1,73 @@
+/**
+ * Utilidades de Tamaño - Workee
+ * 
+ * ITCSS Layer 07: Utilities
+ * Clases utilitarias para width, height, max-width, min-width
+ * Prefijo: .u-w-*, .u-h-*
+ */
+
+/* ============================================
+   WIDTH
+   ============================================ */
+.u-w-auto { width: auto !important; }
+.u-w-full { width: 100% !important; }
+.u-w-screen { width: 100vw !important; }
+.u-w-fit { width: fit-content !important; }
+.u-w-min { width: min-content !important; }
+.u-w-max { width: max-content !important; }
+
+/* Width en fracciones */
+.u-w-1\/2 { width: 50% !important; }
+.u-w-1\/3 { width: 33.333333% !important; }
+.u-w-2\/3 { width: 66.666667% !important; }
+.u-w-1\/4 { width: 25% !important; }
+.u-w-3\/4 { width: 75% !important; }
+.u-w-1\/5 { width: 20% !important; }
+.u-w-2\/5 { width: 40% !important; }
+.u-w-3\/5 { width: 60% !important; }
+.u-w-4\/5 { width: 80% !important; }
+
+/* ============================================
+   MIN-WIDTH
+   ============================================ */
+.u-min-w-0 { min-width: 0 !important; }
+.u-min-w-full { min-width: 100% !important; }
+.u-min-w-fit { min-width: fit-content !important; }
+.u-min-w-min { min-width: min-content !important; }
+.u-min-w-max { min-width: max-content !important; }
+
+/* ============================================
+   MAX-WIDTH
+   ============================================ */
+.u-max-w-none { max-width: none !important; }
+.u-max-w-full { max-width: 100% !important; }
+.u-max-w-screen-sm { max-width: 576px !important; }
+.u-max-w-screen-md { max-width: 768px !important; }
+.u-max-w-screen-lg { max-width: 992px !important; }
+.u-max-w-screen-xl { max-width: 1200px !important; }
+
+/* ============================================
+   HEIGHT
+   ============================================ */
+.u-h-auto { height: auto !important; }
+.u-h-full { height: 100% !important; }
+.u-h-screen { height: 100vh !important; }
+.u-h-fit { height: fit-content !important; }
+.u-h-min { height: min-content !important; }
+.u-h-max { height: max-content !important; }
+
+/* ============================================
+   MIN-HEIGHT
+   ============================================ */
+.u-min-h-0 { min-height: 0 !important; }
+.u-min-h-full { min-height: 100% !important; }
+.u-min-h-screen { min-height: 100vh !important; }
+.u-min-h-fit { min-height: fit-content !important; }
+
+/* ============================================
+   MAX-HEIGHT
+   ============================================ */
+.u-max-h-full { max-height: 100% !important; }
+.u-max-h-screen { max-height: 100vh !important; }
+.u-max-h-fit { max-height: fit-content !important; }
+

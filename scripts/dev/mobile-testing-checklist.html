@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Testing Checklist - Workee</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #0066cc;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+        }
+        
+        .section-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #0066cc;
+        }
+        
+        .checklist-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 12px;
+            margin-bottom: 8px;
+            background: #f9f9f9;
+            border-radius: 4px;
+            border-left: 4px solid #ddd;
+        }
+        
+        .checklist-item:hover {
+            background: #f0f0f0;
+        }
+        
+        .checklist-item input[type="checkbox"] {
+            margin-right: 12px;
+            margin-top: 2px;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+        
+        .checklist-item label {
+            flex: 1;
+            cursor: pointer;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .checklist-item.checked {
+            background: #e8f5e9;
+            border-left-color: #4caf50;
+        }
+        
+        .checklist-item.checked label {
+            text-decoration: line-through;
+            color: #666;
+        }
+        
+        .device-selector {
+            margin-bottom: 30px;
+            padding: 15px;
+            background: #e3f2fd;
+            border-radius: 4px;
+        }
+        
+        .device-selector select {
+            padding: 8px 12px;
+            font-size: 14px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+        
+        .device-selector button {
+            padding: 8px 16px;
+            background: #0066cc;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .device-selector button:hover {
+            background: #0052a3;
+        }
+        
+        .progress {
+            margin-bottom: 30px;
+            padding: 15px;
+            background: #f5f5f5;
+            border-radius: 4px;
+        }
+        
+        .progress-bar {
+            height: 30px;
+            background: #e0e0e0;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4caf50, #8bc34a);
+            transition: width 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 12px;
+        }
+        
+        .export-buttons {
+            margin-top: 30px;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .export-buttons button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .btn-save {
+            background: #4caf50;
+            color: white;
+        }
+        
+        .btn-export {
+            background: #2196f3;
+            color: white;
+        }
+        
+        .btn-reset {
+            background: #f44336;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📱 Mobile Testing Checklist - Workee</h1>
+        <p class="subtitle">MOB-148: Testing Móvil Completo</p>
+        
+        <div class="device-selector">
+            <label>Dispositivo:</label>
+            <select id="device-select">
+                <option value="iphone-se">iPhone SE (375x667)</option>
+                <option value="iphone-12">iPhone 12/13 (390x844)</option>
+                <option value="iphone-12-pro-max">iPhone 12/13 Pro Max (428x926)</option>
+                <option value="iphone-14">iPhone 14/15 (393x852)</option>
+                <option value="iphone-14-pro-max">iPhone 14/15 Pro Max (430x932)</option>
+                <option value="samsung-s21">Samsung Galaxy S21 (360x800)</option>
+                <option value="pixel-5">Google Pixel 5 (393x851)</option>
+                <option value="ipad-mini">iPad Mini (768x1024)</option>
+                <option value="ipad-pro">iPad Air/Pro (820x1180)</option>
+            </select>
+            <label>Orientación:</label>
+            <select id="orientation-select">
+                <option value="portrait">Vertical (Portrait)</option>
+                <option value="landscape">Horizontal (Landscape)</option>
+            </select>
+            <label>Conexión:</label>
+            <select id="connection-select">
+                <option value="wifi">WiFi (Rápida)</option>
+                <option value="3g">3G (Lenta)</option>
+            </select>
+            <button onclick="saveDeviceInfo()">Guardar Configuración</button>
+        </div>
+        
+        <div class="progress">
+            <strong>Progreso:</strong>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill" style="width: 0%">0%</div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">1. Navegación y Layout</div>
+            <div class="checklist-item">
+                <input type="checkbox" id="nav-1" onchange="updateProgress()">
+                <label for="nav-1">Sidebar se oculta correctamente en móvil</label>
+            </div>
+            <div class="checklist-item">
+                <input type="checkbox" id="nav-2" onchange="updateProgress()">
+                <label for="nav-2">Botón hamburguesa funciona para abrir/cerrar sidebar</label>
+            </div>
+            <div class="checklist-item">
+                <input type="checkbox" id="nav-3" onchange="updateProgress()">
+                <label for="nav-3">Swipe desde borde izquierdo abre sidebar</label>
+            </div>
+            <div class="checklist-item">
+                <input type="checkbox" id="nav-4" onchange="updateProgress()">
+                <label for="nav-4">Swipe derecho cierra sidebar</label>
+            </div>
+            <div class="checklist-item">
+                <input type="checkbox" id="nav-5" onchange="updateProgress()">
+                <label for="nav-5">Breadcrumbs se muestran correctamente (solo últimos 2-3 niveles)</label>
+            </div>
+            <div class="checklist-item">
+                <input type="checkbox" id="nav-6" onchange="updateProgress()">
+                <label for="nav-6">Navegación por teclado funciona (Tab, Arrow keys, Enter/Space)</label>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">2. Formularios</div>
+            <div class="checklist-item">
+                <input type="checkbox" id="form-1" onchange="updateProgress()">
+                <label for="form-1">Todos los inputs tienen altura mínima de 44px</label>
+            </div>
+            <div class="checklist-item">
+                <input type="checkbox" id="form-2" onchange="updateProgress()">
+                <label for="form-2">Font-size mínimo de 16px (no hay zoom automático en iOS)</label>
+            </div>
+            <div class="checklist-item">
+                <input type="checkbox" id="form-3" onchange="updateProgress()">
+                <label for="form-3">Date pickers usan nativos en móvil</label>
+            </div>
+            <div class="checklist-item">
+                <input type="checkbox" id="form-4" onchange="updateProgress()">
+                <label for="form-4">Validación en tiempo real funciona sin bloquear teclado</label>
+            </div>
+            <div class="checklist-item">
+                <input type="checkbox" id="form-5" onchange="updateProgress()">
+                <label for="form-5">Botones sticky en bottom funcionan en formularios largos</label>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">3. Dashboards</div>
+            <div class="checklist-item">
+                <input type="checkbox" id="dash-1" onchange="updateProgress()">
+                <label for="dash-1">KPI Cards se muestran en 1 columna en móvil</label>
+            </div>
+            <div class="checklist-item">
+                <input type="checkbox" id="dash-2" onchange="updateProgress()">
+                <label for="dash-2">Gráficos tienen scroll horizontal si es necesario</label>
+            </div>
+            <div class="checklist-item">
+                <input type="checkbox" id="dash-3" onchange="updateProgress()">
+                <label for="dash-3">Filtros están en bottom sheet o drawer colapsable</label>
+            </div>
+            <div class="checklist-item">
+                <input type="checkbox" id="dash-4" onchange="updateProgress()">
+                <label for="dash-4">Lazy loading de datos secundarios funciona</label>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">4. Tablas y Listas</div>
+            <div class="checklist-item">
+                <input type="checkbox" id="table-1" onchange="updateProgress()">
+                <label for="table-1">Tablas se convierten a cards en móvil automáticamente</label>
+            </div>
+            <div class="checklist-item">
+                <input type="checkbox" id="table-2" onchange="updateProgress()">
+                <label for="table-2">Swipe left/right muestra acciones rápidas</label>
+            </div>
+            <div class="checklist-item">
+                <input type="checkbox" id="table-3" onchange="updateProgress()">
+                <label for="table-3">Pull to refresh funciona correctamente</label>
+            </div>
+            <div class="checklist-item">
+                <input type="checkbox" id="table-4" onchange="updateProgress()">
+                <label for="table-4">Virtual scrolling funciona para listas >50 items</label>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">5. Modales y Bottom Sheets</div>
+            <div class="checklist-item">
+                <input type="checkbox" id="modal-1" onchange="updateProgress()">
+                <label for="modal-1">Modales se convierten en bottom sheet en móvil</label>
+            </div>
+            <div class="checklist-item">
+                <input type="checkbox" id="modal-2" onchange="updateProgress()">
+                <label for="modal-2">Swipe down cierra bottom sheet</label>
+            </div>
+            <div class="checklist-item">
+                <input type="checkbox" id="modal-3" onchange="updateProgress()">
+                <label for="modal-3">Animación de entrada es suave</label>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">6. Performance</div>
+            <div class="checklist-item">
+                <input type="checkbox" id="perf-1" onchange="updateProgress()">
+                <label for="perf-1">Tiempo de carga inicial < 3 segundos en 3G</label>
+            </div>
+            <div class="checklist-item">
+                <input type="checkbox" id="perf-2" onchange="updateProgress()">
+                <label for="perf-2">Scroll es suave (60fps)</label>
+            </div>
+            <div class="checklist-item">
+                <input type="checkbox" id="perf-3" onchange="updateProgress()">
+                <label for="perf-3">Animaciones son fluidas (150-200ms)</label>
+            </div>
+            <div class="checklist-item">
+                <input type="checkbox" id="perf-4" onchange="updateProgress()">
+                <label for="perf-4">Cache funciona correctamente</label>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">7. Texto y Contraste</div>
+            <div class="checklist-item">
+                <input type="checkbox" id="text-1" onchange="updateProgress()">
+                <label for="text-1">Texto normal tiene mínimo 16px</label>
+            </div>
+            <div class="checklist-item">
+                <input type="checkbox" id="text-2" onchange="updateProgress()">
+                <label for="text-2">Contraste mínimo WCAG AA (4.5:1)</label>
+            </div>
+            <div class="checklist-item">
+                <input type="checkbox" id="text-3" onchange="updateProgress()">
+                <label for="text-3">Espaciado mínimo de 8px entre elementos táctiles</label>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">8. Imágenes y Videos</div>
+            <div class="checklist-item">
+                <input type="checkbox" id="img-1" onchange="updateProgress()">
+                <label for="img-1">Imágenes tienen srcset con tamaños móviles</label>
+            </div>
+            <div class="checklist-item">
+                <input type="checkbox" id="img-2" onchange="updateProgress()">
+                <label for="img-2">WebP con fallback funciona correctamente</label>
+            </div>
+            <div class="checklist-item">
+                <input type="checkbox" id="img-3" onchange="updateProgress()">
+                <label for="img-3">Lazy loading funciona con Intersection Observer</label>
+            </div>
+            <div class="checklist-item">
+                <input type="checkbox" id="img-4" onchange="updateProgress()">
+                <label for="img-4">Videos tienen aspect-ratio y object-fit: cover</label>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">9. Orientaciones</div>
+            <div class="checklist-item">
+                <input type="checkbox" id="orient-1" onchange="updateProgress()">
+                <label for="orient-1">Todas las funcionalidades funcionan en vertical</label>
+            </div>
+            <div class="checklist-item">
+                <input type="checkbox" id="orient-2" onchange="updateProgress()">
+                <label for="orient-2">Todas las funcionalidades funcionan en horizontal</label>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">10. Touch Events</div>
+            <div class="checklist-item">
+                <input type="checkbox" id="touch-1" onchange="updateProgress()">
+                <label for="touch-1">Todos los botones responden a touch</label>
+            </div>
+            <div class="checklist-item">
+                <input type="checkbox" id="touch-2" onchange="updateProgress()">
+                <label for="touch-2">Área de toque es adecuada (44x44px mínimo)</label>
+            </div>
+            <div class="checklist-item">
+                <input type="checkbox" id="touch-3" onchange="updateProgress()">
+                <label for="touch-3">Swipe gestures funcionan correctamente</label>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">11. Zoom Automático en iOS</div>
+            <div class="checklist-item">
+                <input type="checkbox" id="zoom-1" onchange="updateProgress()">
+                <label for="zoom-1">No hay zoom automático al hacer focus en inputs</label>
+            </div>
+            <div class="checklist-item">
+                <input type="checkbox" id="zoom-2" onchange="updateProgress()">
+                <label for="zoom-2">Font-size mínimo de 16px en todos los inputs</label>
+            </div>
+        </div>
+        
+        <div class="export-buttons">
+            <button class="btn-save" onclick="saveChecklist()">💾 Guardar Progreso</button>
+            <button class="btn-export" onclick="exportChecklist()">📄 Exportar Reporte</button>
+            <button class="btn-reset" onclick="resetChecklist()">🔄 Reiniciar</button>
+            <button class="btn-verify" onclick="runVerification()" style="background: #9c27b0; color: white;">🔍 Ejecutar Verificación Automática</button>
+        </div>
+        
+        <div id="verification-results" style="margin-top: 30px; padding: 20px; background: #f5f5f5; border-radius: 4px; display: none;">
+            <h3>📊 Resultados de Verificación Automática</h3>
+            <div id="verification-output" style="margin-top: 15px; font-family: monospace; font-size: 12px; white-space: pre-wrap; background: white; padding: 15px; border-radius: 4px; max-height: 400px; overflow-y: auto;"></div>
+        </div>
+    </div>
+    
+    <script>
+        // Cargar progreso guardado
+        function loadProgress() {
+            const saved = localStorage.getItem('mobileTestingChecklist');
+            if (saved) {
+                const data = JSON.parse(saved);
+                Object.keys(data.checks).forEach(id => {
+                    const checkbox = document.getElementById(id);
+                    if (checkbox) {
+                        checkbox.checked = data.checks[id];
+                        if (checkbox.checked) {
+                            checkbox.closest('.checklist-item').classList.add('checked');
+                        }
+                    }
+                });
+                if (data.device) {
+                    document.getElementById('device-select').value = data.device;
+                }
+                if (data.orientation) {
+                    document.getElementById('orientation-select').value = data.orientation;
+                }
+                if (data.connection) {
+                    document.getElementById('connection-select').value = data.connection;
+                }
+                updateProgress();
+            }
+        }
+        
+        // Guardar progreso
+        function saveChecklist() {
+            const checks = {};
+            document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+                checks[cb.id] = cb.checked;
+            });
+            
+            const data = {
+                checks: checks,
+                device: document.getElementById('device-select').value,
+                orientation: document.getElementById('orientation-select').value,
+                connection: document.getElementById('connection-select').value,
+                timestamp: new Date().toISOString()
+            };
+            
+            localStorage.setItem('mobileTestingChecklist', JSON.stringify(data));
+            alert('✅ Progreso guardado');
+        }
+        
+        // Guardar información del dispositivo
+        function saveDeviceInfo() {
+            saveChecklist();
+        }
+        
+        // Actualizar barra de progreso
+        function updateProgress() {
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            const checked = document.querySelectorAll('input[type="checkbox"]:checked').length;
+            const total = checkboxes.length;
+            const percentage = Math.round((checked / total) * 100);
+            
+            const progressFill = document.getElementById('progress-fill');
+            progressFill.style.width = percentage + '%';
+            progressFill.textContent = percentage + '% (' + checked + '/' + total + ')';
+            
+            // Actualizar clases de items
+            checkboxes.forEach(cb => {
+                const item = cb.closest('.checklist-item');
+                if (cb.checked) {
+                    item.classList.add('checked');
+                } else {
+                    item.classList.remove('checked');
+                }
+            });
+        }
+        
+        // Exportar reporte
+        function exportChecklist() {
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            const report = {
+                device: document.getElementById('device-select').value,
+                orientation: document.getElementById('orientation-select').value,
+                connection: document.getElementById('connection-select').value,
+                timestamp: new Date().toISOString(),
+                results: {}
+            };
+            
+            document.querySelectorAll('.section').forEach(section => {
+                const sectionTitle = section.querySelector('.section-title').textContent;
+                report.results[sectionTitle] = [];
+                
+                section.querySelectorAll('.checklist-item').forEach(item => {
+                    const checkbox = item.querySelector('input[type="checkbox"]');
+                    const label = item.querySelector('label').textContent;
+                    report.results[sectionTitle].push({
+                        item: label,
+                        checked: checkbox.checked
+                    });
+                });
+            });
+            
+            const blob = new Blob([JSON.stringify(report, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `mobile-testing-report-${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+        
+        // Reiniciar checklist
+        function resetChecklist() {
+            if (confirm('¿Está seguro de reiniciar todo el checklist?')) {
+                document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+                    cb.checked = false;
+                });
+                localStorage.removeItem('mobileTestingChecklist');
+                updateProgress();
+                alert('✅ Checklist reiniciado');
+            }
+        }
+        
+        // Ejecutar verificación automática
+        function runVerification() {
+            const resultsDiv = document.getElementById('verification-results');
+            const outputDiv = document.getElementById('verification-output');
+            
+            resultsDiv.style.display = 'block';
+            outputDiv.textContent = '🔄 Cargando script de verificación...\n';
+            
+            // Verificar si el script ya está cargado
+            if (typeof MobileTestingVerification !== 'undefined') {
+                executeVerification();
+                return;
+            }
+            
+            // Cargar el script
+            const script = document.createElement('script');
+            script.src = 'mobile-testing-verification.js';
+            script.onload = () => {
+                outputDiv.textContent += '✅ Script cargado correctamente\n';
+                outputDiv.textContent += '🚀 Ejecutando verificación...\n\n';
+                executeVerification();
+            };
+            script.onerror = () => {
+                outputDiv.textContent += '❌ Error al cargar el script\n';
+                outputDiv.textContent += '💡 Asegúrate de que el archivo existe en: scripts/dev/mobile-testing-verification.js\n';
+                outputDiv.textContent += '💡 O ejecuta el script manualmente desde la consola del navegador en la aplicación principal\n';
+            };
+            document.head.appendChild(script);
+        }
+        
+        function executeVerification() {
+            const outputDiv = document.getElementById('verification-output');
+            
+            // Verificar si estamos en la aplicación principal o en el checklist
+            const isChecklistPage = window.location.pathname.includes('mobile-testing-checklist.html');
+            
+            if (isChecklistPage) {
+                outputDiv.textContent = '⚠️ ADVERTENCIA: Este script debe ejecutarse en la aplicación principal, no en esta página.\n\n';
+                outputDiv.textContent += '📋 INSTRUCCIONES:\n';
+                outputDiv.textContent += '1. Abre la aplicación principal (ej: http://localhost/SaSS_Workee/dashboard)\n';
+                outputDiv.textContent += '2. Abre las herramientas de desarrollador (F12)\n';
+                outputDiv.textContent += '3. Activa el modo móvil (Ctrl+Shift+M o Cmd+Shift+M)\n';
+                outputDiv.textContent += '4. Abre la consola y ejecuta:\n';
+                outputDiv.textContent += '   MobileTestingVerification.runAll()\n\n';
+                outputDiv.textContent += 'O carga el script manualmente:\n';
+                outputDiv.textContent += '   const script = document.createElement("script");\n';
+                outputDiv.textContent += '   script.src = "/SaSS_Workee/scripts/dev/mobile-testing-verification.js";\n';
+                outputDiv.textContent += '   document.head.appendChild(script);\n';
+                outputDiv.textContent += '   script.onload = () => MobileTestingVerification.runAll();\n';
+                return;
+            }
+            
+            // Capturar console.log y console.warn
+            const originalLog = console.log;
+            const originalWarn = console.warn;
+            const logs = [];
+            
+            console.log = function(...args) {
+                logs.push({ type: 'log', message: args.join(' ') });
+                originalLog.apply(console, args);
+            };
+            
+            console.warn = function(...args) {
+                logs.push({ type: 'warn', message: args.join(' ') });
+                originalWarn.apply(console, args);
+            };
+            
+            try {
+                // Ejecutar verificación
+                const allPassed = MobileTestingVerification.runAll();
+                
+                // Restaurar console
+                console.log = originalLog;
+                console.warn = originalWarn;
+                
+                // Mostrar resultados
+                setTimeout(() => {
+                    let output = '';
+                    logs.forEach(log => {
+                        if (log.type === 'warn') {
+                            output += '⚠️ ' + log.message + '\n';
+                        } else {
+                            output += log.message + '\n';
+                        }
+                    });
+                    
+                    output += '\n📊 RESUMEN:\n';
+                    output += '========================\n';
+                    
+                    const results = window.mobileTestingResults || {};
+                    Object.keys(results).forEach(key => {
+                        const result = results[key];
+                        const icon = result.failed === 0 ? '✅' : '❌';
+                        output += `${icon} ${key}: ${result.passed} passed, ${result.failed} failed\n`;
+                    });
+                    
+                    outputDiv.textContent = output;
+                    
+                    // Scroll al final
+                    outputDiv.scrollTop = outputDiv.scrollHeight;
+                }, 500);
+            } catch (error) {
+                console.log = originalLog;
+                console.warn = originalWarn;
+                outputDiv.textContent += '❌ Error al ejecutar verificación: ' + error.message + '\n';
+                outputDiv.textContent += '💡 Asegúrate de ejecutar el script desde la aplicación principal (no desde este HTML)\n';
+            }
+        }
+        
+        // Cargar al iniciar
+        loadProgress();
+    </script>
+</body>
+</html>
+

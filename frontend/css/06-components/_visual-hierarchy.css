@@ -1,0 +1,294 @@
+/**
+ * Jerarquía Visual - Workee
+ *
+ * ITCSS Layer 06: Components
+ * Estilos para crear jerarquía visual clara y consistente
+ * BEM: .page-header (block), .page-header__* (elements), .section-* (blocks)
+ */
+
+/* ============================================
+   PAGE HEADER - Títulos de Página
+   ============================================ */
+/* Complementa los estilos existentes en _layout.css */
+.page-header {
+    margin-bottom: var(--spacing-xl);
+}
+
+.page-header__title,
+.page-title {
+    font-size: var(--font-size-xxxl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text);
+    line-height: var(--line-height-tight);
+    margin-bottom: var(--spacing-xs);
+    letter-spacing: var(--letter-spacing-tight);
+}
+
+.page-header__subtitle {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-normal);
+    color: var(--color-text-muted);
+    line-height: var(--line-height-base);
+    margin-top: var(--spacing-sm);
+}
+
+.page-header__description {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    line-height: var(--line-height-base);
+    margin-top: var(--spacing-sm);
+    max-width: 800px;
+}
+
+/* ============================================
+   SECTION HEADERS - Títulos de Sección
+   ============================================ */
+.section-header {
+    margin-bottom: var(--spacing-lg);
+    margin-top: var(--spacing-xl);
+}
+
+.section-header:first-child {
+    margin-top: 0;
+}
+
+.section-title {
+    font-size: var(--font-size-xxl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text);
+    line-height: var(--line-height-tight);
+    margin-bottom: var(--spacing-xs);
+}
+
+.section-subtitle {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-normal);
+    color: var(--color-text-muted);
+    line-height: var(--line-height-base);
+    margin-top: var(--spacing-xs);
+}
+
+/* Subtítulos con color muted para jerarquía */
+.section-subtitle--muted {
+    color: var(--color-text-muted);
+    font-size: var(--font-size-sm);
+}
+
+/* ============================================
+   HEADINGS MEJORADOS
+   ============================================ */
+
+/* H1 - Títulos principales grandes y prominentes */
+h1 {
+    font-size: var(--font-size-xxxl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text);
+    line-height: var(--line-height-tight);
+    margin-bottom: var(--spacing-lg);
+    letter-spacing: var(--letter-spacing-tight);
+}
+
+/* H2 - Subtítulos principales */
+h2 {
+    font-size: var(--font-size-xxl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text);
+    line-height: var(--line-height-tight);
+    margin-bottom: var(--spacing-md);
+    margin-top: var(--spacing-xl);
+    letter-spacing: var(--letter-spacing-tight);
+}
+
+h2:first-child {
+    margin-top: 0;
+}
+
+/* H3 - Subtítulos de sección */
+h3 {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text);
+    line-height: var(--line-height-base);
+    margin-bottom: var(--spacing-md);
+    margin-top: var(--spacing-lg);
+}
+
+/* H4 - Subtítulos menores */
+h4 {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text);
+    line-height: var(--line-height-base);
+    margin-bottom: var(--spacing-sm);
+    margin-top: var(--spacing-md);
+}
+
+/* H5 y H6 - Subtítulos pequeños con color muted */
+h5 {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-muted);
+    line-height: var(--line-height-base);
+    margin-bottom: var(--spacing-sm);
+    margin-top: var(--spacing-md);
+    text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-tight);
+}
+
+h6 {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-muted);
+    line-height: var(--line-height-base);
+    margin-bottom: var(--spacing-xs);
+    margin-top: var(--spacing-sm);
+    text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-tight);
+}
+
+/* ============================================
+   ESPACIADO VERTICAL GENEROSO ENTRE SECCIONES
+   ============================================ */
+.section {
+    margin-bottom: var(--spacing-xl);
+}
+
+.section:last-child {
+    margin-bottom: 0;
+}
+
+.section--large {
+    margin-bottom: calc(var(--spacing-xl) * 1.5);
+}
+
+.section--small {
+    margin-bottom: var(--spacing-lg);
+}
+
+/* Espaciado entre grupos de contenido relacionado */
+.content-group {
+    margin-bottom: var(--spacing-lg);
+}
+
+/* .content-group:last-child movido a _content-grouping.css para evitar duplicación */
+
+/* ============================================
+   USO ESTRATÉGICO DE COLOR PRIMARIO
+   ============================================ */
+
+/* Títulos destacados con color primario */
+.title-primary {
+    color: var(--color-primary);
+}
+
+.title-primary--gradient {
+    background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Elementos importantes con borde primario */
+.highlight-primary {
+    border-left: var(--border-width-thick) solid var(--color-primary);
+    padding-left: var(--spacing-md);
+    background-color: rgba(var(--color-primary-rgb), 0.05);
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius);
+}
+
+/* Badges y tags con color primario para elementos importantes */
+.important-badge {
+    background-color: rgba(var(--color-primary-rgb), 0.1);
+    color: var(--color-primary);
+    border: var(--border-width) solid rgba(var(--color-primary-rgb), 0.2);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--border-radius-pill);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-tight);
+}
+
+/* ============================================
+   CARDS CON SOMBRAS PARA CREAR PROFUNDIDAD
+   ============================================ */
+
+/* Cards con sombras progresivas según importancia */
+.card-hierarchy-1 {
+    box-shadow: var(--shadow-sm);
+}
+
+.card-hierarchy-2 {
+    box-shadow: var(--shadow-md);
+}
+
+.card-hierarchy-3 {
+    box-shadow: var(--shadow-lg);
+}
+
+.card-hierarchy-4 {
+    box-shadow: var(--shadow-xl);
+}
+
+/* ============================================
+   JERARQUÍA EN LISTAS
+   ============================================ */
+.list-hierarchy {
+    list-style: none;
+    padding-left: 0;
+}
+
+.list-hierarchy__item {
+    padding: var(--spacing-sm) 0;
+    border-bottom: var(--border-width) solid var(--color-border-light);
+}
+
+.list-hierarchy__item:last-child {
+    border-bottom: none;
+}
+
+.list-hierarchy__item--primary {
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text);
+}
+
+.list-hierarchy__item--secondary {
+    color: var(--color-text-muted);
+    font-size: var(--font-size-sm);
+    padding-left: var(--spacing-md);
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 767px) {
+    .page-header__title {
+        font-size: var(--font-size-xxl);
+    }
+    
+    .section-title {
+        font-size: var(--font-size-xl);
+    }
+    
+    h1 {
+        font-size: var(--font-size-xxl);
+    }
+    
+    h2 {
+        font-size: var(--font-size-xl);
+    }
+    
+    h3 {
+        font-size: var(--font-size-lg);
+    }
+    
+    .section {
+        margin-bottom: var(--spacing-lg);
+    }
+    
+    .section--large {
+        margin-bottom: var(--spacing-xl);
+    }
+}
+

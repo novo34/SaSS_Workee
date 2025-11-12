@@ -1,0 +1,61 @@
+/**
+ * CSS Principal - Workee
+ * 
+ * Archivo maestro que importa todas las capas ITCSS en orden
+ * Este archivo debe ser importado en todas las páginas HTML
+ */
+
+/* ============================================
+   ITCSS LAYER 01: SETTINGS
+   Variables CSS, design tokens
+   ============================================ */
+@import url('01-settings/theme.css');
+
+/* ============================================
+   ITCSS LAYER 02: TOOLS
+   Mixins, funciones (vacío por ahora, no usamos preprocesador)
+   ============================================ */
+/* Sin archivos por ahora */
+
+/* ============================================
+   ITCSS LAYER 03: GENERIC
+   Reset, normalize, elementos base
+   ============================================ */
+@import url('03-generic/_reset.css');
+
+/* ============================================
+   ITCSS LAYER 04: ELEMENTS
+   Elementos HTML sin clases (h1, p, a, etc.)
+   ============================================ */
+@import url('04-elements/_typography.css');
+@import url('04-elements/_forms.css');
+@import url('04-elements/_tables.css');
+@import url('04-elements/_images.css');
+@import url('04-elements/_accessibility.css');
+
+/* ============================================
+   ITCSS LAYER 05: OBJECTS
+   Patrones de layout reutilizables (grids, wrappers)
+   ============================================ */
+@import url('05-objects/_layout.css');
+@import url('05-objects/_common.css');
+@import url('05-objects/_dashboard-grid.css');
+
+/* ============================================
+   ITCSS LAYER 06: COMPONENTS
+   Componentes UI específicos (botones, cards, modals)
+   ============================================ */
+@import url('06-components/components.css');
+
+/* ============================================
+   ITCSS LAYER 07: UTILITIES
+   Clases utilitarias (helpers, overrides)
+   ============================================ */
+@import url('07-utilities/utilities.css');
+
+/* ============================================
+   PAGES
+   Estilos específicos por página (mínimos)
+   ============================================ */
+/* Se importan individualmente en cada página HTML según necesidad */
+

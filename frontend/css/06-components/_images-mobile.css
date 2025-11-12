@@ -1,0 +1,264 @@
+/**
+ * Imágenes y Videos Mobile Optimizations - Workee
+ * 
+ * Estilos específicos para optimizar imágenes y videos en móvil
+ * MOB-149: Optimizar Videos e Imágenes para Móvil
+ */
+
+/* ============================================
+   IMÁGENES RESPONSIVAS CON SRCSET
+   ============================================ */
+
+/* MOB-149: Imágenes con srcset con tamaños móviles específicos */
+@media (max-width: 767px) {
+    /* Asegurar que todas las imágenes sean responsivas */
+    img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+    }
+    
+    /* Imágenes con aspect ratio para evitar CLS (Cumulative Layout Shift) */
+    img[data-aspect-ratio] {
+        aspect-ratio: attr(data-aspect-ratio);
+        object-fit: cover;
+    }
+    
+    /* Imágenes en cards con aspect ratio */
+    .card-modern img,
+    .card img {
+        aspect-ratio: 16 / 9;
+        object-fit: cover;
+        width: 100%;
+    }
+    
+    /* Imágenes de perfil/avatar con aspect ratio circular */
+    .avatar,
+    .user-avatar,
+    img[data-type="avatar"] {
+        aspect-ratio: 1 / 1;
+        object-fit: cover;
+        border-radius: var(--border-radius-circle);
+    }
+    
+    /* Imágenes de fondo responsivas */
+    .bg-image,
+    [style*="background-image"] {
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+}
+
+/* ============================================
+   WEBP CON FALLBACK
+   ============================================ */
+
+/* MOB-149: WebP con fallback para todas las imágenes */
+/* Los estilos CSS solo aseguran que las imágenes se muestren correctamente */
+/* La lógica de WebP/fallback se maneja en JavaScript o HTML con <picture> */
+@media (max-width: 767px) {
+    picture img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+    }
+    
+    /* Asegurar que el fallback (img dentro de picture) también sea responsivo */
+    picture source + img {
+        max-width: 100%;
+        height: auto;
+    }
+}
+
+/* ============================================
+   VIDEOS RESPONSIVOS
+   ============================================ */
+
+/* MOB-149: Videos responsivos con aspect-ratio y object-fit: cover */
+@media (max-width: 767px) {
+    video {
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+    
+    /* Videos con aspect ratio para evitar CLS */
+    video[data-aspect-ratio] {
+        aspect-ratio: attr(data-aspect-ratio);
+        object-fit: cover;
+    }
+    
+    /* Videos en contenedores con aspect ratio estándar */
+    .video-container,
+    .video-wrapper {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        overflow: hidden;
+    }
+    
+    .video-container video,
+    .video-wrapper video {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    /* Videos embebidos (iframe) responsivos */
+    .video-embed,
+    iframe[src*="youtube"],
+    iframe[src*="vimeo"] {
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        border: none;
+    }
+}
+
+/* ============================================
+   LAZY LOADING MEJORADO
+   ============================================ */
+
+/* MOB-149: Lazy loading mejorado con intersection observer */
+/* Los estilos CSS solo aseguran que las imágenes lazy se muestren correctamente */
+/* La lógica de Intersection Observer se maneja en JavaScript */
+@media (max-width: 767px) {
+    /* Imágenes con lazy loading */
+    img[loading="lazy"] {
+        opacity: 0;
+        transition: opacity var(--transition-fast-mobile, 150ms) ease-in;
+    }
+    
+    img[loading="lazy"].loaded {
+        opacity: 1;
+    }
+    
+    /* Placeholder mientras carga (blur effect) */
+    img[loading="lazy"]:not(.loaded) {
+        background: var(--color-bg-light);
+        background-image: linear-gradient(
+            90deg,
+            var(--color-bg-light) 0%,
+            var(--color-bg) 50%,
+            var(--color-bg-light) 100%
+        );
+        background-size: 200% 100%;
+        animation: image-loading-shimmer 1.5s infinite;
+    }
+    
+    @keyframes image-loading-shimmer {
+        0% {
+            background-position: -200% 0;
+        }
+        100% {
+            background-position: 200% 0;
+        }
+    }
+    
+    /* Desactivar shimmer cuando la imagen está cargada */
+    img[loading="lazy"].loaded {
+        background: none;
+        animation: none;
+    }
+}
+
+/* ============================================
+   OPTIMIZACIONES ADICIONALES
+   ============================================ */
+
+@media (max-width: 767px) {
+    /* Imágenes grandes optimizadas */
+    .hero-image,
+    .banner-image {
+        width: 100%;
+        max-width: 100%;
+        height: auto;
+        aspect-ratio: 16 / 9;
+        object-fit: cover;
+    }
+    
+    /* Imágenes en galerías */
+    .gallery-image,
+    .image-gallery img {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 4 / 3;
+        object-fit: cover;
+    }
+    
+    /* Imágenes en listas */
+    .list-image,
+    .item-image {
+        width: 60px;
+        height: 60px;
+        aspect-ratio: 1 / 1;
+        object-fit: cover;
+        border-radius: var(--border-radius);
+    }
+    
+    /* Imágenes en modales */
+    .modal-image,
+    .modal-body img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+        margin: 0 auto;
+    }
+    
+    /* Imágenes en tablas */
+    .table-image,
+    .data-table__cell img {
+        width: 40px;
+        height: 40px;
+        aspect-ratio: 1 / 1;
+        object-fit: cover;
+        border-radius: var(--border-radius-sm);
+    }
+}
+
+/* ============================================
+   PERFORMANCE OPTIMIZATIONS
+   ============================================ */
+
+@media (max-width: 767px) {
+    /* Usar contain para mejor performance */
+    img,
+    video {
+        contain: layout style paint;
+    }
+    
+    /* Desactivar will-change en imágenes estáticas */
+    img:not([loading="lazy"]):not(:hover) {
+        will-change: auto;
+    }
+    
+    /* Solo activar will-change cuando sea necesario */
+    img[loading="lazy"]:not(.loaded) {
+        will-change: opacity;
+    }
+    
+    /* Desactivar will-change después de cargar */
+    img[loading="lazy"].loaded {
+        will-change: auto;
+    }
+}
+
+/* ============================================
+   RESPETAR PREFERS-REDUCED-MOTION
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+    img[loading="lazy"] {
+        transition: none;
+        animation: none;
+    }
+    
+    img[loading="lazy"]:not(.loaded) {
+        background: var(--color-bg-light);
+        animation: none;
+    }
+}
+

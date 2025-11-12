@@ -1,0 +1,211 @@
+/**
+ * Imágenes Responsivas - Workee
+ * 
+ * ITCSS Layer 04: Elements
+ * Estilos base para imágenes con optimización responsive
+ * Incluye: aspect-ratio, object-fit, lazy loading, srcset
+ */
+
+/* ============================================
+   IMÁGENES BASE
+   ============================================ */
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Aspect ratio para evitar CLS (Cumulative Layout Shift) */
+img[data-aspect-ratio] {
+    aspect-ratio: attr(data-aspect-ratio);
+}
+
+/* Imágenes responsivas con aspect ratio común */
+.responsive-image {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+}
+
+.responsive-image--square {
+    aspect-ratio: 1 / 1;
+}
+
+.responsive-image--portrait {
+    aspect-ratio: 3 / 4;
+}
+
+.responsive-image--landscape {
+    aspect-ratio: 4 / 3;
+}
+
+/* ============================================
+   LAZY LOADING
+   ============================================ */
+/* Imágenes con lazy loading nativo */
+img[loading="lazy"] {
+    opacity: 0;
+    transition: opacity var(--transition-base);
+}
+
+img[loading="lazy"].loaded {
+    opacity: 1;
+}
+
+/* Placeholder mientras carga (usando background) */
+img[data-src] {
+    background-color: var(--color-bg-light);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'%3E%3Crect width='1' height='1' fill='%23e9ecef'/%3E%3C/svg%3E");
+    background-size: cover;
+    background-position: center;
+}
+
+/* ============================================
+   OBJECT FIT
+   ============================================ */
+.object-fit-cover {
+    object-fit: cover;
+}
+
+.object-fit-contain {
+    object-fit: contain;
+}
+
+.object-fit-fill {
+    object-fit: fill;
+}
+
+.object-fit-none {
+    object-fit: none;
+}
+
+.object-fit-scale-down {
+    object-fit: scale-down;
+}
+
+/* ============================================
+   ASPECT RATIO UTILITIES
+   ============================================ */
+.aspect-ratio-16-9 {
+    aspect-ratio: 16 / 9;
+}
+
+.aspect-ratio-4-3 {
+    aspect-ratio: 4 / 3;
+}
+
+.aspect-ratio-1-1 {
+    aspect-ratio: 1 / 1;
+}
+
+.aspect-ratio-3-4 {
+    aspect-ratio: 3 / 4;
+}
+
+/* ============================================
+   IMÁGENES DE FONDO RESPONSIVAS
+   ============================================ */
+.bg-image-responsive {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+@media (max-width: 767px) {
+    .bg-image-responsive {
+        background-size: cover;
+    }
+}
+
+/* ============================================
+   PICTURE ELEMENT (WebP con fallback)
+   ============================================ */
+picture {
+    display: block;
+    width: 100%;
+}
+
+picture img {
+    width: 100%;
+    height: auto;
+}
+
+/* ============================================
+   AVATARES Y THUMBNAILS
+   ============================================ */
+.avatar {
+    width: var(--avatar-size-md);
+    height: var(--avatar-size-md);
+    border-radius: 50%;
+    object-fit: cover;
+    display: inline-block;
+}
+
+.avatar--sm {
+    width: var(--avatar-size-sm);
+    height: var(--avatar-size-sm);
+}
+
+.avatar--lg {
+    width: var(--avatar-size-lg);
+    height: var(--avatar-size-lg);
+}
+
+.thumbnail {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: var(--border-radius);
+}
+
+/* ============================================
+   ACCESIBILIDAD
+   ============================================ */
+/* Imágenes decorativas deben tener alt="" */
+img[alt=""] {
+    /* Ya manejado en accessibility.js */
+}
+
+/* Imágenes sin alt deben ser marcadas como presentational */
+img:not([alt]) {
+    /* Se maneja en JavaScript, pero CSS puede ayudar */
+    border: var(--border-width-thick) dashed var(--color-warning);
+}
+
+/* ============================================
+   LOADING STATES
+   ============================================ */
+.image-loading {
+    background-color: var(--color-bg-light);
+    background-image: 
+        linear-gradient(90deg, transparent, rgba(var(--color-text-inverse-rgb), var(--opacity-shimmer-white-medium)), transparent),
+        linear-gradient(var(--color-bg-light) 20px, transparent 0),
+        linear-gradient(var(--color-bg-light) 20px, transparent 0);
+    background-size: 200% 100%, 20px 20px, 20px 20px;
+    background-position: -200% 0, 0 0, 0 40px;
+    animation: image-loading 1.5s infinite;
+}
+
+@keyframes image-loading {
+    0% {
+        background-position: -200% 0, 0 0, 0 40px;
+    }
+    100% {
+        background-position: 200% 0, 0 0, 0 40px;
+    }
+}
+
+/* Respetar prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+    .image-loading {
+        animation: none;
+        background: var(--color-bg-light);
+    }
+    
+    img[loading="lazy"] {
+        transition: none;
+    }
+}
+

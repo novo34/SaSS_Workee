@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="agency_workers.title">Trabajadores</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/frontend/css/01-settings/theme.css">
+    <link rel="stylesheet" href="/frontend/css/06-components/_data-table.css">
+    <link rel="stylesheet" href="/frontend/css/06-components/_modal.css">
+    <link rel="stylesheet" href="/frontend/css/06-components/_toast.css">
+    <link rel="stylesheet" href="/frontend/css/06-components/_empty-state.css">
+    <link rel="stylesheet" href="/frontend/css/06-components/_loading-spinner.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+</head>
+<body>
+    <div id="app-container">
+        <!-- Header y Sidebar se cargan dinámicamente -->
+        
+        <main id="main-content" class="main-content" role="main">
+            <div class="container-fluid py-4">
+                <!-- Breadcrumbs -->
+                <nav aria-label="breadcrumb" class="mb-4">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/dashboard">Dashboard</a></li>
+                        <li class="breadcrumb-item active" data-i18n="agency_workers.title">Trabajadores</li>
+                    </ol>
+                </nav>
+                
+                <!-- Header con título y botón crear -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h1 class="h3 mb-0" data-i18n="agency_workers.title">Trabajadores Temporeros</h1>
+                    <button type="button" class="btn btn-primary" id="btn-create-worker" data-i18n="agency_workers.create">
+                        <i class="bi bi-plus-circle me-2"></i>Crear Trabajador
+                    </button>
+                </div>
+                
+                <!-- Filtros -->
+                <div class="card-modern mb-4">
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label for="filter-search" class="form-label" data-i18n="common.search">Buscar</label>
+                                <input type="text" class="form-control" id="filter-search" placeholder="Nombre, email, código...">
+                            </div>
+                            <div class="col-md-3">
+                                <label for="filter-active" class="form-label" data-i18n="agency_workers.status">Estado</label>
+                                <select class="form-select" id="filter-active">
+                                    <option value="">Todos</option>
+                                    <option value="1" selected data-i18n="common.active">Activos</option>
+                                    <option value="0" data-i18n="common.inactive">Inactivos</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3 d-flex align-items-end">
+                                <button type="button" class="btn btn-secondary w-100" id="btn-reset-filters" data-i18n="common.reset_filters">
+                                    <i class="bi bi-x-circle me-2"></i>Limpiar Filtros
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tabla de trabajadores -->
+                <div class="card-modern">
+                    <div class="card-body">
+                        <div id="workers-table-container"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Modal Crear/Editar Trabajador -->
+    <div class="modal fade" id="modal-worker" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal-worker-title" data-i18n="agency_workers.create">Crear Trabajador</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-worker">
+                        <input type="hidden" id="worker-id">
+                        
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="worker-first-name" class="form-label" data-i18n="agency_workers.first_name">Nombre *</label>
+                                <input type="text" class="form-control" id="worker-first-name" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="worker-last-name" class="form-label" data-i18n="agency_workers.last_name">Apellidos *</label>
+                                <input type="text" class="form-control" id="worker-last-name" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="worker-code" class="form-label" data-i18n="agency_workers.code">Código</label>
+                                <input type="text" class="form-control" id="worker-code">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="worker-email" class="form-label" data-i18n="agency_workers.email">Email</label>
+                                <input type="email" class="form-control" id="worker-email">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="worker-phone" class="form-label" data-i18n="agency_workers.phone">Teléfono</label>
+                                <input type="tel" class="form-control" id="worker-phone">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="worker-active" class="form-label" data-i18n="agency_workers.status">Estado</label>
+                                <select class="form-select" id="worker-active">
+                                    <option value="1" data-i18n="common.active">Activo</option>
+                                    <option value="0" data-i18n="common.inactive">Inactivo</option>
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <label for="worker-address" class="form-label" data-i18n="agency_workers.address">Dirección</label>
+                                <textarea class="form-control" id="worker-address" rows="2"></textarea>
+                            </div>
+                            
+                            <!-- Skills -->
+                            <div class="col-12">
+                                <label class="form-label" data-i18n="agency_workers.skills">Habilidades</label>
+                                <div id="skills-container" class="mb-2"></div>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="skill-input" placeholder="Agregar habilidad...">
+                                    <button type="button" class="btn btn-outline-secondary" id="btn-add-skill" data-i18n="common.add">Agregar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-i18n="common.cancel">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="btn-save-worker" data-i18n="common.save">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal Disponibilidad -->
+    <div class="modal fade" id="modal-availability" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" data-i18n="agency_workers.availability">Disponibilidad</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="availability-worker-id">
+                    <p class="text-muted" data-i18n="agency_workers.availability_info">La disponibilidad se puede configurar aquí. Por ahora, se almacena en formato JSON.</p>
+                    <div class="mb-3">
+                        <label for="availability-json" class="form-label" data-i18n="agency_workers.availability_json">JSON de Disponibilidad</label>
+                        <textarea class="form-control font-monospace" id="availability-json" rows="10" placeholder='{"monday": {"available": true, "start": "08:00", "end": "17:00"}, ...}'></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-i18n="common.cancel">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="btn-save-availability" data-i18n="common.save">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/frontend/js/core/api.js"></script>
+    <script src="/frontend/js/core/auth.js"></script>
+    <script src="/frontend/js/components/data-table.js"></script>
+    <script src="/frontend/js/components/modal.js"></script>
+    <script src="/frontend/js/components/toast.js"></script>
+    <script src="/frontend/js/components/empty-state.js"></script>
+    <script src="/frontend/js/components/loading-spinner.js"></script>
+    <script src="/frontend/js/layout.js"></script>
+    <script src="/frontend/js/agency-workers.js"></script>
+</body>
+</html>
+

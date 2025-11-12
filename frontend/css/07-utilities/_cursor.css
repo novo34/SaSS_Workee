@@ -1,0 +1,22 @@
+/**
+ * Utilidades de Cursor - Workee
+ * 
+ * ITCSS Layer 07: Utilities
+ * Clases utilitarias para cursor
+ * Prefijo: .u-cursor-*
+ */
+
+/* ============================================
+   CURSOR
+   ============================================ */
+.u-cursor-auto { cursor: auto !important; }
+.u-cursor-default { cursor: default !important; }
+.u-cursor-pointer { cursor: pointer !important; }
+.u-cursor-wait { cursor: wait !important; }
+.u-cursor-text { cursor: text !important; }
+.u-cursor-move { cursor: move !important; }
+.u-cursor-help { cursor: help !important; }
+.u-cursor-not-allowed { cursor: not-allowed !important; }
+.u-cursor-grab { cursor: grab !important; }
+.u-cursor-grabbing { cursor: grabbing !important; }
+

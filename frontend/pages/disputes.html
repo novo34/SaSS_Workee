@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workee - Disputas</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/frontend/css/main.css">
+    <link rel="stylesheet" href="/frontend/css/components/components.css">
+</head>
+<body>
+    <!-- El sidebar y header se inyectan automáticamente por index.php -->
+    
+    <div class="container-fluid">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title" data-i18n="disputes.list">Disputas</h1>
+            <div class="page-actions">
+                <button class="btn-modern btn-modern--primary" id="btn-create-dispute">
+                    <svg class="btn-modern__icon btn-modern__icon--left" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                    </svg>
+                    <span data-i18n="disputes.create">Crear Disputa</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Filtros -->
+        <div class="card-modern mb-4">
+            <div class="card-modern__body">
+                <div class="row g-3">
+                    <div class="col-12 col-md-3">
+                        <div class="form-modern__group">
+                            <label class="form-modern__label" data-i18n="disputes.status">Estado</label>
+                            <select class="form-modern__select" id="filter-status">
+                                <option value="" data-i18n="common.all">Todos</option>
+                                <option value="sin_disputa" data-i18n="disputes.status_sin_disputa">Sin disputa</option>
+                                <option value="disputado" data-i18n="disputes.status_disputado">Disputado</option>
+                                <option value="resuelto" data-i18n="disputes.status_resuelto">Resuelto</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-3">
+                        <div class="form-modern__group">
+                            <label class="form-modern__label" data-i18n="common.from">Desde</label>
+                            <input type="date" class="form-modern__input" id="filter-from">
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-3">
+                        <div class="form-modern__group">
+                            <label class="form-modern__label" data-i18n="common.to">Hasta</label>
+                            <input type="date" class="form-modern__input" id="filter-to">
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-3 d-flex align-items-end">
+                        <button class="btn-modern btn-modern--ghost w-100" id="btn-clear-filters">
+                            <svg class="btn-modern__icon btn-modern__icon--left" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                            <span data-i18n="common.clear_filters">Limpiar</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lista de Disputas -->
+        <div class="card-modern">
+            <div class="card-modern__body">
+                <div id="disputes-container">
+                    <!-- DataTable se inicializa aquí automáticamente -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Crear Disputa -->
+    <div class="modal fade" id="modal-create-dispute" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" data-i18n="disputes.create">Crear Disputa</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form class="form-modern" id="form-create-dispute">
+                        <input type="hidden" id="dispute-work-log-id" value="">
+                        <input type="hidden" id="dispute-report-line-id" value="">
+                        
+                        <div class="form-modern__group">
+                            <label class="form-modern__label" data-i18n="disputes.work_log">Work Log ID</label>
+                            <input type="number" class="form-modern__input" id="work-log-id" placeholder="ID del work log">
+                            <small class="form-modern__help" data-i18n="disputes.work_log_help">Opcional: ID del work log relacionado</small>
+                        </div>
+                        
+                        <div class="form-modern__group">
+                            <label class="form-modern__label" data-i18n="disputes.reason">Razón de la Disputa</label>
+                            <textarea class="form-modern__textarea" id="dispute-reason" rows="4" required data-i18n-placeholder="disputes.reason_placeholder"></textarea>
+                        </div>
+                        
+                        <div class="form-modern__group">
+                            <label class="form-modern__label" data-i18n="disputes.evidence_comments">Comentarios Adicionales</label>
+                            <textarea class="form-modern__textarea" id="dispute-comments" rows="3" data-i18n-placeholder="disputes.evidence_comments_placeholder"></textarea>
+                        </div>
+                        
+                        <div class="form-modern__group">
+                            <label class="form-modern__label" data-i18n="disputes.evidence_photos">Fotos (URLs)</label>
+                            <textarea class="form-modern__textarea" id="dispute-photos" rows="2" data-i18n-placeholder="disputes.evidence_photos_placeholder"></textarea>
+                            <small class="form-modern__help" data-i18n="disputes.evidence_photos_help">Una URL por línea</small>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-modern btn-modern--secondary" data-bs-dismiss="modal" data-i18n="common.cancel">Cancelar</button>
+                    <button type="button" class="btn-modern btn-modern--primary" id="btn-confirm-create-dispute" data-i18n="disputes.create">Crear Disputa</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Resolver Disputa -->
+    <div class="modal fade" id="modal-resolve-dispute" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" data-i18n="disputes.resolve">Resolver Disputa</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form class="form-modern" id="form-resolve-dispute">
+                        <input type="hidden" id="resolve-dispute-id" value="">
+                        <div class="form-modern__group">
+                            <label class="form-modern__label" data-i18n="disputes.resolution">Resolución</label>
+                            <textarea class="form-modern__textarea" id="dispute-resolution" rows="4" required data-i18n-placeholder="disputes.resolution_placeholder"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-modern btn-modern--secondary" data-bs-dismiss="modal" data-i18n="common.cancel">Cancelar</button>
+                    <button type="button" class="btn-modern btn-modern--primary" id="btn-confirm-resolve-dispute" data-i18n="disputes.resolve">Resolver</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Detalles Disputa -->
+    <div class="modal fade" id="modal-details" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" data-i18n="disputes.view">Detalles de la Disputa</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="dispute-details">
+                    <!-- Se llena dinámicamente -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-modern btn-modern--secondary" data-bs-dismiss="modal" data-i18n="common.close">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/frontend/js/core/components-loader.js"></script>
+    <script src="/frontend/js/layout.js"></script>
+    <script src="/frontend/js/disputes.js"></script>
+</body>
+</html>
+

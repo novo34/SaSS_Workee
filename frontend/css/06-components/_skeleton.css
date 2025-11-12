@@ -1,0 +1,191 @@
+/**
+ * Skeleton Screens - Workee
+ *
+ * ITCSS Layer 06: Components
+ * Componentes de skeleton loading para mejorar velocidad percibida
+ * BEM: .skeleton (block), .skeleton__* (elements), .skeleton--* (modifiers)
+ */
+
+/* ============================================
+   SKELETON BASE
+   ============================================ */
+.skeleton {
+    background: linear-gradient(
+        90deg,
+        var(--color-bg-light) 0%,
+        var(--color-bg-dark) 50%,
+        var(--color-bg-light) 100%
+    );
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s ease-in-out infinite;
+    border-radius: var(--border-radius);
+}
+
+@keyframes skeleton-loading {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+/* Respetar prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+    .skeleton {
+        animation: none;
+        background: var(--color-bg-light);
+    }
+}
+
+/* ============================================
+   VARIANTES DE SKELETON
+   ============================================ */
+.skeleton--text {
+    height: 1em;
+    width: 100%;
+    margin-bottom: var(--spacing-xs);
+}
+
+.skeleton--text:last-child {
+    margin-bottom: 0;
+}
+
+.skeleton--title {
+    height: 1.5em;
+    width: 60%;
+    margin-bottom: var(--spacing-sm);
+}
+
+.skeleton--subtitle {
+    height: 1.2em;
+    width: 40%;
+    margin-bottom: var(--spacing-sm);
+}
+
+.skeleton--avatar {
+    width: var(--avatar-size-md);
+    height: var(--avatar-size-md);
+    border-radius: var(--border-radius-circle);
+}
+
+.skeleton--image {
+    width: 100%;
+    height: 200px;
+    border-radius: var(--border-radius-lg);
+}
+
+.skeleton--button {
+    height: 40px;
+    width: 120px;
+    border-radius: var(--border-radius);
+}
+
+.skeleton--card {
+    padding: var(--spacing-lg);
+    border-radius: var(--border-radius-lg);
+    margin-bottom: var(--spacing-md);
+}
+
+.skeleton--table-row {
+    height: 60px;
+    border-radius: var(--border-radius);
+    margin-bottom: var(--spacing-xs);
+}
+
+/* ============================================
+   SKELETON GRID (para listas)
+   ============================================ */
+.skeleton-grid {
+    display: grid;
+    gap: var(--spacing-md);
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
+
+.skeleton-grid--2 {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.skeleton-grid--3 {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.skeleton-grid--4 {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+@media (max-width: 768px) {
+    .skeleton-grid,
+    .skeleton-grid--2,
+    .skeleton-grid--3,
+    .skeleton-grid--4 {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ============================================
+   SKELETON CARD COMPLETO
+   ============================================ */
+.skeleton-card {
+    background: var(--color-bg);
+    border: var(--border-width) solid var(--color-border-light);
+    border-radius: var(--border-radius-lg);
+    padding: var(--spacing-lg);
+    box-shadow: var(--shadow-sm);
+}
+
+.skeleton-card__header {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+}
+
+.skeleton-card__avatar {
+    width: var(--avatar-size-md);
+    height: var(--avatar-size-md);
+    border-radius: var(--border-radius-circle);
+}
+
+.skeleton-card__title {
+    flex: 1;
+    height: 1.5em;
+}
+
+.skeleton-card__body {
+    margin-bottom: var(--spacing-md);
+}
+
+.skeleton-card__footer {
+    display: flex;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-md);
+}
+
+/* ============================================
+   SKELETON TABLE
+   ============================================ */
+.skeleton-table {
+    width: 100%;
+}
+
+.skeleton-table__row {
+    display: flex;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md) 0;
+    border-bottom: var(--border-width) solid var(--color-border-light);
+}
+
+.skeleton-table__cell {
+    flex: 1;
+    height: 1em;
+}
+
+.skeleton-table__cell--short {
+    flex: 0 0 100px;
+}
+
+.skeleton-table__cell--long {
+    flex: 2;
+}
+

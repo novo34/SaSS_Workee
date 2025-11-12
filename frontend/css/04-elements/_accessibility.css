@@ -1,0 +1,238 @@
+/**
+ * Accesibilidad CSS - Workee
+ * 
+ * ITCSS Layer 04: Elements
+ * Mejoras de accesibilidad: skip links, focus, contraste, motion
+ */
+
+/* ============================================
+   SKIP LINKS
+   ============================================ */
+.skip-link {
+    /* Ocultar completamente hasta que se haga focus */
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+    /* Asegurar que no esté en el tab order visual inicial */
+    top: -9999px;
+    left: -9999px;
+}
+
+.skip-link:focus {
+    /* Mostrar solo cuando se hace focus */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: auto;
+    height: auto;
+    padding: var(--spacing-sm) var(--spacing-md);
+    margin: 0;
+    clip: auto;
+    white-space: normal;
+    background: var(--color-primary);
+    color: var(--color-text-inverse);
+    text-decoration: none;
+    border-radius: 0 0 var(--border-radius) 0;
+    font-weight: var(--font-weight-semibold);
+    z-index: calc(var(--z-tooltip) + 1);
+    outline: var(--outline-width) solid var(--color-text-inverse);
+    outline-offset: var(--outline-offset);
+}
+
+/* ============================================
+   FOCUS VISIBLE - OBLIGATORIO
+   ============================================ */
+/* Focus visible para todos los elementos interactivos */
+*:focus-visible {
+    outline: var(--outline-width) solid var(--color-primary);
+    outline-offset: var(--outline-offset);
+    outline-style: solid;
+}
+
+/* NUNCA ocultar outline sin reemplazo */
+*:focus {
+    outline: none; /* Solo ocultar si hay :focus-visible */
+}
+
+/* Botones con focus mejorado */
+button:focus-visible,
+.btn:focus-visible {
+    outline: var(--outline-width) solid var(--color-primary);
+    outline-offset: var(--outline-offset);
+    box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.25);
+}
+
+/* Inputs con focus mejorado */
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+    outline: var(--outline-width) solid var(--color-primary);
+    outline-offset: var(--outline-offset);
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.1);
+}
+
+/* Links con focus mejorado */
+a:focus-visible {
+    outline: var(--outline-width) solid var(--color-primary);
+    outline-offset: var(--outline-offset);
+    text-decoration: underline;
+}
+
+/* ============================================
+   PREFERS-REDUCED-MOTION
+   ============================================ */
+/* Respetar preferencia de usuario para reducir movimiento */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* ============================================
+   PREFERS-CONTRAST (Alto Contraste)
+   ============================================ */
+@media (prefers-contrast: high) {
+    :root {
+        --color-text: #000000;
+        --color-text-muted: #333333;
+        --color-bg: #ffffff;
+        --color-border: #000000;
+    }
+    
+    .btn {
+        border-width: var(--border-width-thick);
+    }
+    
+    .card {
+        border-width: var(--border-width-thick);
+    }
+}
+
+/* NAV-133: Soporte para prefers-contrast: more (alto contraste mejorado) */
+@media (prefers-contrast: more) {
+    .sidebar-nav .nav-link {
+        border-left-width: 4px;
+        border-left-color: var(--color-text);
+    }
+    
+    .sidebar-nav .nav-link.active {
+        border-left-width: 6px;
+        background-color: var(--color-primary); /* Fondo sólido azul para mejor contraste en modo alto contraste */
+        color: var(--color-text-inverse); /* Texto blanco sobre fondo azul para contraste máximo */
+    }
+    
+    .breadcrumb-nav__link {
+        border: 1px solid var(--color-border-dark);
+    }
+    
+    .breadcrumb-nav__link:hover,
+    .breadcrumb-nav__link:focus-visible {
+        border-color: var(--color-primary);
+        border-width: 2px;
+    }
+    
+    .nav-subsection-title--toggle {
+        border: 1px solid var(--color-border-dark);
+    }
+    
+    .nav-subsection-title--toggle:hover,
+    .nav-subsection-title--toggle:focus-visible {
+        border-color: var(--color-primary);
+        border-width: 2px;
+    }
+}
+
+/* ============================================
+   CONTRASTE WCAG AA
+   ============================================ */
+/* Asegurar contraste mínimo WCAG AA */
+/* Texto normal: ratio mínimo 4.5:1 */
+/* Texto grande (18px+): ratio mínimo 3:1 */
+
+/* Verificación de contraste (los colores en theme.css deben cumplir) */
+.text-muted {
+    /* --color-text-muted debe tener contraste 4.5:1 con --color-bg */
+    color: var(--color-text-muted);
+}
+
+/* Texto sobre fondos de color */
+.btn-primary {
+    /* --color-primary con --color-text-inverse debe tener contraste 4.5:1 */
+    color: var(--color-text-inverse);
+    background-color: var(--color-primary);
+}
+
+.btn-success {
+    color: var(--color-text-inverse);
+    background-color: var(--color-primary);
+}
+
+.btn-danger {
+    color: var(--color-text-inverse);
+    background-color: var(--color-danger);
+}
+
+.btn-warning {
+    /* Warning sobre fondo claro necesita texto oscuro */
+    color: var(--color-text);
+    background-color: var(--color-warning);
+}
+
+/* ============================================
+   TAMAÑOS DE TOQUE (Touch Targets)
+   ============================================ */
+/* Ya implementado en theme.css con --touch-target-min: 44px */
+/* Verificar que todos los elementos interactivos cumplan */
+
+button,
+.btn,
+a.btn,
+input[type="button"],
+input[type="submit"],
+input[type="reset"],
+input[type="checkbox"],
+input[type="radio"] {
+    min-height: var(--touch-target-min);
+    min-width: var(--touch-target-min);
+}
+
+/* ============================================
+   ARIA HIDDEN Y VISUALLY HIDDEN
+   ============================================ */
+.visually-hidden,
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+.visually-hidden-focusable:not(:focus):not(:focus-within) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+

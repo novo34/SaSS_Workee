@@ -1,0 +1,261 @@
+/**
+ * Mega Menu Styles - Workee
+ * 
+ * NAV-134: Estilos para mega menu con layout en columnas,
+ * iconos grandes, descripciones y quick actions.
+ */
+
+/* ==========================================================================
+   MEGA MENU - BASE
+   ========================================================================== */
+
+.mega-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    max-width: 800px;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-lg);
+    padding: var(--spacing-lg);
+    z-index: var(--z-dropdown);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: var(--transition-base);
+    pointer-events: none;
+}
+
+.mega-menu--visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+.mega-menu__wrapper {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--spacing-lg);
+    max-width: 100%;
+}
+
+/* ==========================================================================
+   MEGA MENU - COLUMNAS
+   ========================================================================== */
+
+.mega-menu__column {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    min-width: 0; /* Permite que el contenido se ajuste */
+}
+
+/* ==========================================================================
+   MEGA MENU - ITEMS
+   ========================================================================== */
+
+.mega-menu__item {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius);
+    text-decoration: none;
+    color: var(--color-text);
+    transition: var(--transition-base);
+    cursor: pointer;
+}
+
+.mega-menu__item:hover,
+.mega-menu__item:focus {
+    background: var(--color-bg-light);
+    color: var(--color-primary);
+    transform: translateX(4px);
+    outline: none;
+}
+
+.mega-menu__item:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+/* Icono grande */
+.mega-menu__icon {
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-bg-light);
+    border-radius: var(--border-radius);
+    color: var(--color-primary);
+}
+
+.mega-menu__item:hover .mega-menu__icon,
+.mega-menu__item:focus .mega-menu__icon {
+    background: var(--color-primary);
+    color: var(--color-text-inverse);
+    transform: scale(1.1);
+}
+
+/* Contenido */
+.mega-menu__content {
+    flex: 1;
+    min-width: 0;
+}
+
+.mega-menu__title {
+    font-weight: var(--font-weight-semibold);
+    font-size: var(--font-size-base);
+    color: var(--color-text);
+    margin-bottom: var(--spacing-xs);
+}
+
+.mega-menu__item:hover .mega-menu__title,
+.mega-menu__item:focus .mega-menu__title {
+    color: var(--color-primary);
+}
+
+.mega-menu__description {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    line-height: var(--line-height-base);
+}
+
+/* ==========================================================================
+   MEGA MENU - QUICK ACTIONS
+   ========================================================================== */
+
+.mega-menu__quick-actions {
+    grid-column: 1 / -1;
+    margin-top: var(--spacing-md);
+    padding-top: var(--spacing-md);
+    border-top: 1px solid var(--color-border);
+}
+
+.mega-menu__quick-actions-title {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: var(--spacing-sm);
+}
+
+.mega-menu__quick-actions-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+}
+
+.mega-menu__quick-action {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--border-radius);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    transition: var(--transition-base);
+}
+
+.mega-menu__quick-action:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.mega-menu__quick-action:active {
+    transform: translateY(0);
+    box-shadow: var(--shadow-sm);
+}
+
+/* ==========================================================================
+   MEGA MENU - RESPONSIVE
+   ========================================================================== */
+
+@media (max-width: 991.98px) {
+    .mega-menu {
+        position: fixed;
+        top: auto;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        max-width: 100%;
+        max-height: 80vh;
+        border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
+        transform: translateY(100%);
+        overflow-y: auto;
+    }
+    
+    .mega-menu--visible {
+        transform: translateY(0);
+    }
+    
+    .mega-menu__wrapper {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-md);
+    }
+    
+    .mega-menu__column {
+        gap: var(--spacing-xs);
+    }
+    
+    .mega-menu__item {
+        padding: var(--spacing-sm) var(--spacing-md);
+    }
+    
+    .mega-menu__icon {
+        width: 40px;
+        height: 40px;
+    }
+}
+
+/* ==========================================================================
+   MEGA MENU - ACCESIBILIDAD
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+    .mega-menu {
+        transition: none;
+    }
+    
+    .mega-menu__item {
+        transition: none;
+    }
+    
+    .mega-menu__item:hover,
+    .mega-menu__item:focus {
+        transform: none;
+    }
+    
+    .mega-menu__icon {
+        transition: none;
+    }
+    
+    .mega-menu__item:hover .mega-menu__icon,
+    .mega-menu__item:focus .mega-menu__icon {
+        transform: none;
+    }
+}
+
+/* Alto contraste */
+@media (prefers-contrast: more) {
+    .mega-menu {
+        border: 2px solid var(--color-text);
+    }
+    
+    .mega-menu__item {
+        border: 1px solid transparent;
+    }
+    
+    .mega-menu__item:hover,
+    .mega-menu__item:focus {
+        border-color: var(--color-text);
+        background: var(--color-bg);
+    }
+}
+

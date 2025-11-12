@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workee - Asignaciones</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/frontend/css/main.css">
+    <link rel="stylesheet" href="/frontend/css/components/components.css">
+    <link rel="stylesheet" href="/frontend/css/assignments.css">
+</head>
+<body>
+    <!-- El sidebar y header se inyectan automáticamente por index.php -->
+    
+    <main id="main-content" class="container-fluid" role="main">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title" data-i18n="assignments.title">Asignaciones</h1>
+            <div class="page-actions">
+                <button class="btn-modern btn-modern--primary" id="btn-assign-worker">
+                    <svg class="btn-modern__icon btn-modern__icon--left" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
+                    </svg>
+                    <span data-i18n="assignments.assign_worker">Asignar Trabajador</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Filtros -->
+        <div class="card-modern mb-4">
+            <div class="card-modern__body">
+                <div class="row g-3">
+                    <div class="col-12 col-md-3">
+                        <div class="form-modern__group">
+                            <label class="form-modern__label" data-i18n="assignments.filter_date_from">Desde</label>
+                            <input type="date" class="form-modern__input" id="filter-from">
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-3">
+                        <div class="form-modern__group">
+                            <label class="form-modern__label" data-i18n="assignments.filter_date_to">Hasta</label>
+                            <input type="date" class="form-modern__input" id="filter-to">
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-3">
+                        <div class="form-modern__group">
+                            <label class="form-modern__label" data-i18n="assignments.filter_status">Estado</label>
+                            <select class="form-modern__select" id="filter-status">
+                                <option value="" data-i18n="assignments.filter_all_status">Todos</option>
+                                <option value="assigned" data-i18n="assignments.status_assigned">Asignado</option>
+                                <option value="in_progress" data-i18n="assignments.status_in_progress">En curso</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-3 d-flex align-items-end">
+                        <button class="btn-modern btn-modern--ghost w-100" id="btn-clear-filters">
+                            <svg class="btn-modern__icon btn-modern__icon--left" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                            <span data-i18n="assignments.clear_filters">Limpiar</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lista de Asignaciones -->
+        <div class="card-modern">
+            <div class="card-modern__body">
+                <div id="assignments-container">
+                    <div class="text-center py-5" id="loading-spinner-container">
+                        <!-- LoadingSpinner se inicializa aquí -->
+                    </div>
+                </div>
+                
+                <!-- Paginación -->
+                <nav aria-label="Paginación" id="pagination-container" class="d-none">
+                    <ul class="pagination justify-content-center" id="pagination"></ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Asignar Trabajador -->
+    <div class="modal fade" id="modal-assign" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" data-i18n="assignments.assign_worker">Asignar Trabajador</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form class="form-modern" id="form-assign">
+                        <div class="row g-3">
+                            <div class="col-12 col-md-6">
+                                <div class="form-modern__group">
+                                    <label class="form-modern__label" data-i18n="assignments.shift_start">Inicio</label>
+                                    <input type="datetime-local" class="form-modern__input" id="assign-start" required>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="form-modern__group">
+                                    <label class="form-modern__label" data-i18n="assignments.shift_end">Fin</label>
+                                    <input type="datetime-local" class="form-modern__input" id="assign-end" required>
+                                </div>
+                            </div>
+                            
+                            <div class="col-12 col-md-6">
+                                <div class="form-modern__group">
+                                    <label class="form-modern__label" data-i18n="assignments.employee_type">Tipo de Empleado</label>
+                                    <select class="form-modern__select" id="assign-employee-type" required>
+                                        <option value="own_employee" data-i18n="assignments.employee_own">Empleado Propio</option>
+                                        <option value="agency_worker" data-i18n="assignments.employee_agency">Trabajador Temporero</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="col-12 col-md-6" id="container-own-employee">
+                                <div class="form-modern__group">
+                                    <label class="form-modern__label" data-i18n="assignments.employee">Empleado</label>
+                                    <select class="form-modern__select" id="assign-own-employee">
+                                        <option value="" data-i18n="assignments.select_employee">Seleccionar empleado</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="col-12 col-md-6 d-none" id="container-agency-worker">
+                                <div class="form-modern__group">
+                                    <label class="form-modern__label" data-i18n="assignments.worker">Trabajador</label>
+                                    <select class="form-modern__select" id="assign-agency-worker">
+                                        <option value="" data-i18n="assignments.select_worker">Seleccionar trabajador</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="col-12 col-md-6">
+                                <div class="form-modern__group">
+                                    <label class="form-modern__label" data-i18n="assignments.group">Grupo</label>
+                                    <select class="form-modern__select" id="assign-group">
+                                        <option value="" data-i18n="assignments.no_group">Sin grupo</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="col-12 col-md-6">
+                                <div class="form-modern__group">
+                                    <label class="form-modern__label" data-i18n="assignments.location">Ubicación</label>
+                                    <input type="text" class="form-modern__input" id="assign-location">
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-modern btn-modern--secondary" data-bs-dismiss="modal" data-i18n="common.cancel">Cancelar</button>
+                    <button type="button" class="btn-modern btn-modern--primary" id="btn-confirm-assign" data-i18n="assignments.assign">Asignar</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/frontend/js/core/components-loader.js"></script>
+    <script src="/frontend/js/layout.js"></script>
+    <script src="/frontend/js/assignments.js"></script>
+</body>
+</html>
+
