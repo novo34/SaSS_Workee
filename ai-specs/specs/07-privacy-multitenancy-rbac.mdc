@@ -1,0 +1,75 @@
+# Privacidad, Multitenancy y RBAC - Workee SaaS
+
+> **Versión:** 1.0  
+> **Última actualización:** 2025-01-XX  
+> **Referencia:** `docs/Workee_kickoff_v_1.md` secciones 2-3
+
+---
+
+## Multitenancy
+
+### Aislamiento de Datos
+
+- ✅ **Single DB, single schema con `tenant_id`** en todas las tablas de negocio
+- ❌ **NUNCA permitir queries cross-tenant sin autorización explícita**
+- ✅ **Relaciones Empresa ↔ Temporera SOLO a través de `agency_company_links`** con permisos verificados
+
+### Middleware Obligatorio
+
+- ✅ **TenantMiddleware DEBE extraer `tenant_id` de JWT/sesión/cabecera**
+- ✅ **TenantMiddleware DEBE validar `tenant_id` antes de cualquier query**
+- ❌ **NUNCA confiar en que el usuario no puede cambiar `tenant_id` en el frontend**
+
+---
+
+## RBAC (Role-Based Access Control)
+
+### Estructura de Roles
+
+- **Empresa:** Admin, Planificador, Supervisor, Empleado, Cliente-Viewer
+- **Temporera:** Admin, Coordinador, Trabajador
+- **Owner:** Admin
+
+### Permisos Granulares
+
+- ✅ **Matriz `role_page_permissions`** con granularidad por módulo/acción
+- ✅ **Verificación obligatoria en backend** (nunca solo en frontend)
+
+### Middleware Obligatorio
+
+- ✅ **RBACMiddleware DEBE verificar permisos por rol/acción antes de ejecutar**
+- ❌ **NUNCA crear endpoints sin RBACMiddleware**
+
+---
+
+## Privacidad
+
+### Visibilidad PII Configurable
+
+- ✅ **Configuración por tenant** de visibilidad de PII (teléfono/email) del trabajador temporero
+- **Opciones:** `oculto`, `visible_al_confirmar`, `oculto_tras_cierre`
+
+### Logs de Acceso a PII
+
+- ✅ **Registrar TODOS los accesos a datos PII**
+- **Campos:** quién (user_id, tenant_id), cuándo (timestamp), qué datos (tipo), propósito
+
+### Enmascaramiento
+
+- ✅ **Enmascarar datos según configuración** (ej: `+41 ** *** 12 34` para teléfono)
+- ✅ **Reportes de acceso a PII** disponibles para Owner y Temporera-Admin
+
+### Cumplimiento GDPR/LPD Suiza
+
+- ✅ **Retención configurables**
+- ✅ **Exportabilidad de datos**
+- ✅ **Derecho al olvido** (soft-delete donde aplique)
+
+---
+
+## Referencias
+
+- `docs/Workee_kickoff_v_1.md` - Especificación oficial
+- `specs/02-project-guardrails.mdc` - Reglas de seguridad
+- `backend/core/TenantMiddleware.php` - Implementación del middleware
+- `backend/core/RBACMiddleware.php` - Implementación del middleware

@@ -1,0 +1,231 @@
+# Cursor Rules - Workee SaaS
+
+> **Versión:** 1.0  
+> **Última actualización:** 2025-01-XX  
+> **Referencia:** `.cursorrules` (archivo completo en raíz del proyecto)
+
+---
+
+## Stack Tecnológico
+
+### Backend
+- **PHP:** 8.x + mysqli (NO PDO)
+- **MySQL:** 5.7+
+- **JWT:** Autenticación con tokens
+- **i18n:** Sistema de traducciones multi-idioma (es, de, fr, it)
+
+### Frontend
+- **Bootstrap:** 5 (OBLIGATORIO, NUNCA versiones anteriores)
+- **JavaScript:** Modular (ES6+)
+- **DataTables:** Serverside processing (OBLIGATORIO para tablas grandes)
+- **FullCalendar:** Calendario interactivo con drag & drop
+- **CSS:** ITCSS (Inverted Triangle CSS) con design tokens
+- **Gráficos:** Chart.js / ApexCharts (para visualización de datos)
+
+### Librerías Específicas
+- **DataTables:** Serverside processing para tablas con >100 registros
+- **FullCalendar:** Calendario drag & drop con validaciones
+- **Chart.js / ApexCharts:** Gráficos responsivos para dashboards
+
+---
+
+## Reglas Críticas de Multitenancy
+
+- ✅ **TODAS las tablas de negocio DEBEN tener `tenant_id`**
+- ✅ **TODAS las queries DEBEN filtrar por `tenant_id`**
+- ✅ **Middleware TenantMiddleware obligatorio en todas las rutas API**
+- ❌ **NUNCA permitir queries cross-tenant sin autorización explícita**
+- ❌ **NUNCA confiar en `tenant_id` del cliente (siempre desde middleware)**
+
+---
+
+## Reglas de Internacionalización
+
+- ❌ **NUNCA hardcodear texto visible al usuario**
+- ✅ **SIEMPRE usar función `t()` con claves de traducción**
+- **Formato:** `namespace.modulo.clave` (ej: `common.save`, `users.welcome`)
+- **Estructura:** `backend/lang/{locale}/{namespace}.php`
+- **Idiomas soportados:** español (es), alemán (de), francés (fr), italiano (it)
+
+---
+
+## Reglas de Frontend
+
+- ✅ **Mobile-first obligatorio** - Todas las interfaces diseñadas primero para móvil
+- ✅ **Componentes reutilizables** en `frontend/js/components/`
+- ✅ **Cliente API centralizado** en `frontend/js/core/api.js` (OBLIGATORIO usar)
+- ✅ **CSS según ITCSS** con design tokens en `frontend/css/01-settings/theme.css`
+- ✅ **Componente DataTable** obligatorio para todas las tablas
+- ✅ **DataTables serverside** obligatorio para tablas con >100 registros
+- ✅ **FullCalendar** para calendario drag & drop (un solo planificador por tenant)
+- ❌ **NUNCA hardcodear colores en CSS** (usar variables CSS)
+- ❌ **NUNCA hacer llamadas API directamente** (usar cliente centralizado)
+- ❌ **NUNCA crear múltiples calendarios** o instancias de planificador
+
+---
+
+## Reglas de Backend
+
+- ✅ **Prepared statements SIEMPRE** (prevenir SQL injection)
+- ✅ **Validación y sanitización** de todas las entradas
+- ✅ **Respuestas JSON consistentes** con formato estándar
+- ✅ **Middleware RBACMiddleware** obligatorio en todas las rutas API
+- ❌ **NUNCA usar PDO** (solo mysqli)
+- ❌ **NUNCA concatenar variables en SQL** (usar prepared statements)
+- ❌ **NUNCA retornar mensajes de error hardcodeados** (usar claves de traducción)
+
+---
+
+## Estructura de Respuestas JSON
+
+**Formato estándar obligatorio:**
+
+```json
+{
+  "success": true|false,
+  "error": "clave_de_traduccion" o null,
+  "error_key": "validation.required",
+  "error_params": {"field": "email"},
+  "data": {...}
+}
+```
+
+---
+
+## Estructura de Archivos
+
+### Backend
+- `backend/core/` - Middlewares, servicios core
+- `backend/api/` - Endpoints API REST
+- `backend/models/` - Modelos de datos
+- `backend/helpers/` - Utilidades reutilizables
+- `backend/jobs/` - Cron jobs
+- `backend/db/` - Migraciones y schemas
+- `backend/lang/` - Traducciones i18n
+
+### Frontend
+- `frontend/pages/` - Páginas HTML (una por vista)
+- `frontend/js/core/` - Cliente API, auth, utils
+- `frontend/js/components/` - Componentes reutilizables
+- `frontend/js/modules/` - Módulos por funcionalidad
+- `frontend/css/` - Estilos ITCSS (01-settings, 03-generic, 04-elements, 05-objects, 06-components, 07-utilities)
+
+### Scripts No Esenciales
+- `scripts/` - Scripts de utilidad, dev, mantenimiento, importación, exportación
+- ❌ **NUNCA crear scripts en raíz** o carpetas de ejecución
+
+---
+
+## Convenciones de Nomenclatura
+
+### Archivos Generales
+- **Archivos PHP:** `snake_case.php` (ej: `staffing_requests.php`)
+- **Archivos JS:** `kebab-case.js` (ej: `group-builder.js`)
+- **Clases PHP:** `PascalCase` (ej: `TenantMiddleware`)
+- **Funciones PHP:** `camelCase` (ej: `getTenantId()`)
+- **Tablas DB:** `snake_case` (ej: `work_groups`)
+- **Archivos CSS:** `kebab-case.css` (ej: `data-table.css`)
+
+### Convenciones MVC PHP (Recomendadas)
+
+Cuando se implemente arquitectura MVC, usar sufijos obligatorios:
+
+- **Vistas:** `*_view.php` (ej: `staffing_requests_view.php`)
+- **Acciones:** `*_action.php` (ej: `staffing_requests_action.php`)
+- **Datos:** `*_data.php` (ej: `staffing_requests_data.php`)
+
+**Estructura MVC Recomendada:**
+- Separar lógica de presentación (view) de lógica de negocio (action)
+- Separar acceso a datos (data) de lógica de negocio
+- Mantener consistencia en nomenclatura según tipo de archivo
+
+**Nota:** Actualmente el proyecto no usa estos sufijos, pero se recomienda para futuras implementaciones MVC.
+
+---
+
+## Reglas de Desarrollo
+
+- ✅ **SIEMPRE buscar código existente** antes de crear nuevo
+- ✅ **REUTILIZAR o EXTENDER** funcionalidad existente, no duplicar
+- ❌ **NUNCA refactorizar sin solicitud explícita**
+- ❌ **NUNCA eliminar código sin verificar dependencias**
+- ✅ **SIEMPRE consultar** `docs/Workee_kickoff_v_1.md` antes de desarrollar
+
+---
+
+## Soluciones Permanentes
+
+- ❌ **PROHIBIDO parches temporales** - Todas las soluciones DEBEN resolver el problema desde la raíz
+- ❌ **PROHIBIDO:** código comentado con "TODO: arreglar después", validaciones solo en frontend, try-catch que oculta errores
+- ✅ **SIEMPRE:** analizar causa raíz, implementar solución correcta desde el inicio
+
+---
+
+## Aplicación Completa en Todo el Sistema
+
+- ✅ **SIEMPRE aplicar cambios globales en TODAS las páginas**
+- ❌ **NUNCA dejar implementaciones parciales**
+- ✅ **Verificar funcionalidad en TODAS las páginas afectadas**
+
+---
+
+## Regla de Arquitectura: Un Solo Planificador
+
+- ✅ **SIEMPRE usar un único calendario/planificador** por tenant
+- ❌ **NUNCA crear múltiples calendarios** o instancias de planificador
+- ✅ **Reutilizar componente de calendario existente** (`frontend/js/calendar.js`)
+- ✅ **Centralizar lógica de planificación** en módulo único
+- **Razón:** Evitar inconsistencias y duplicación de lógica de planificación
+
+---
+
+## Componentes Reutilizables Existentes (OBLIGATORIO USAR)
+
+### Componentes JS Disponibles
+
+- **API Client:** `frontend/js/core/api.js` - Cliente API centralizado (OBLIGATORIO)
+- **Modal:** `frontend/js/components/modal.js` - Modales reutilizables
+- **Toast:** `frontend/js/components/toast.js` - Notificaciones toast
+- **DataTable:** `frontend/js/components/data-table.js` - Tablas con paginación serverside
+- **EmptyState:** `frontend/js/components/empty-state.js` - Estados vacíos
+- **LoadingSpinner:** `frontend/js/components/loading-spinner.js` - Indicadores de carga
+- **FormValidator:** `frontend/js/components/form-validator.js` - Validación de formularios
+- **BottomSheet:** `frontend/js/components/bottom-sheet.js` - Bottom sheets para móvil
+- **FloatingActionButton:** `frontend/js/components/floating-action-button.js` - FAB para móvil
+- **SkeletonScreen:** `frontend/js/components/skeleton-screen.js` - Skeleton loading
+- **Tooltip:** `frontend/js/components/tooltip.js` - Tooltips reutilizables
+
+### Regla de Reutilización
+
+- ✅ **SIEMPRE buscar componente existente** antes de crear nuevo
+- ✅ **SIEMPRE reutilizar o extender** componentes existentes
+- ❌ **NUNCA duplicar funcionalidad** de componentes existentes
+- ❌ **NUNCA crear páginas sueltas** sin integrar componentes existentes
+
+---
+
+## Regla de Comunicación: ES→EN
+
+### Principio
+
+- **Usuario escribe en español:** Todas las solicitudes del usuario están en español
+- **Agente trabaja en inglés internamente:** Código, comentarios, nombres de variables/funciones en inglés
+- **Traducciones en frontend:** Textos visibles al usuario traducidos con sistema i18n
+
+### Aplicación
+
+- ✅ **Comentarios en código:** Inglés (ej: `// Get user data`)
+- ✅ **Nombres de variables/funciones:** Inglés (ej: `getUserData()`, `$userId`)
+- ✅ **Mensajes de commit:** Inglés (ej: `[develop-100] Add user validation`)
+- ✅ **Textos visibles al usuario:** Claves de traducción (ej: `t('common.save')`)
+- ❌ **NUNCA hardcodear texto en español** en código (usar claves de traducción)
+
+---
+
+## Referencias
+
+- `.cursorrules` - Reglas completas de desarrollo (1291 líneas)
+- `docs/Workee_kickoff_v_1.md` - Especificación oficial del proyecto
+- `specs/02-project-guardrails.mdc` - Reglas de seguridad
+- `specs/05-frontend-standards.mdc` - Estándares frontend detallados
+- `specs/06-backend-standards-php.mdc` - Estándares backend detallados

@@ -1,0 +1,555 @@
+# Repositorio Manifesto - Workee SaaS
+
+> **Versión:** 1.0  
+> **Última actualización:** 2025-01-XX
+
+---
+
+## Visión del Proyecto
+
+SaaS multitenant que conecta **Empresas** (planifican trabajo) con **Temporeras** (suministran trabajadores).
+
+---
+
+## Estructura Real del Repositorio
+
+### Backend (Estructura Real)
+
+```
+backend/
+├── core/           # Middlewares, servicios core (PROTEGIDO)
+│   ├── TenantMiddleware.php
+│   ├── RBACMiddleware.php
+│   ├── Auth.php
+│   ├── Config.php
+│   ├── AuditLogger.php
+│   ├── FileStorage.php
+│   ├── MatchingService.php
+│   ├── NotificationService.php
+│   ├── WebhookService.php
+│   ├── WorkLogGenerator.php
+│   ├── ConflictValidator.php
+│   ├── Observability.php
+│   ├── Performance.php
+│   ├── Security.php
+│   └── ApiKeyMiddleware.php
+├── api/            # Endpoints API REST (EDITABLE con plan)
+│   ├── auth.php
+│   ├── users.php
+│   ├── shifts.php
+│   ├── work_orders.php
+│   ├── staffing_requests.php
+│   ├── staffing_proposals.php
+│   ├── assignments.php
+│   ├── approvals.php
+│   ├── disputes.php
+│   ├── work_groups.php
+│   ├── clients.php
+│   ├── projects.php
+│   ├── employees.php
+│   ├── own_employees.php
+│   ├── agency_workers.php
+│   ├── agency_company_links.php
+│   ├── time_clock.php
+│   ├── group_shift_reports.php
+│   ├── work_order_daily_reports.php
+│   ├── work_order_assignments.php
+│   ├── work_order_signoffs.php
+│   ├── ratings.php
+│   ├── reports.php
+│   ├── exports.php
+│   ├── invoices.php
+│   ├── tenants.php
+│   ├── api_keys.php
+│   ├── webhooks.php
+│   ├── config.php
+│   ├── i18n.php
+│   ├── gdpr.php
+│   ├── import_export.php
+│   ├── notification_preferences.php
+│   ├── health.php
+│   ├── example.php
+│   └── v1/         # Versión API v1
+│       └── index.php
+├── helpers/        # Utilidades reutilizables (EDITABLE)
+│   ├── db_helper.php
+│   ├── i18n.php
+│   ├── env.php
+│   ├── pdf_invoice.php
+│   └── pdf_work_order.php
+├── jobs/           # Cron jobs (EDITABLE con plan)
+│   ├── invoice_run.php
+│   └── usage_snapshot.php
+├── db/             # Migraciones y schemas (PROTEGIDO)
+│   ├── schema_v2.sql
+│   ├── schema_work_orders.sql
+│   └── setup_database.php
+└── lang/           # Traducciones i18n (EDITABLE)
+    ├── es/         # Español (41 archivos de traducción)
+    ├── de/         # Alemán
+    ├── fr/         # Francés
+    └── it/         # Italiano
+```
+
+**Nota:** No existe `backend/models/` ni `backend/lib/` en la estructura actual.
+
+---
+
+### Frontend (Estructura Real)
+
+```
+frontend/
+├── pages/          # Páginas HTML (EDITABLE con plan) - 28 archivos
+│   ├── owner/      # Páginas Owner (SaaS)
+│   │   ├── dashboard.html
+│   │   └── billing.html
+│   ├── [empresa/]  # Páginas Empresa (implícito en estructura)
+│   ├── [temporera/] # Páginas Temporera (implícito en estructura)
+│   ├── calendar.html
+│   ├── dashboard.html
+│   ├── dashboard-new.html
+│   ├── work-orders.html
+│   ├── work-orders-calendar.html
+│   ├── work_orders_edit.html
+│   ├── work-order-daily-report.html
+│   ├── group-builder.html
+│   ├── group-shift-report.html
+│   ├── staffing-requests.html
+│   ├── staffing-proposals.html
+│   ├── assignments.html
+│   ├── approvals.html
+│   ├── disputes.html
+│   ├── employees.html
+│   ├── agency-workers.html
+│   ├── agency-company-links.html
+│   ├── time-clock.html
+│   ├── reports.html
+│   ├── ratings.html
+│   ├── settings.html
+│   ├── settings-notifications.html
+│   ├── import-export.html
+│   ├── onboarding.html
+│   ├── login.html
+│   └── index.html
+├── components/     # Componentes HTML reutilizables (PROTEGIDO)
+│   ├── header.html
+│   ├── sidebar.html
+│   └── skip-links.html
+├── js/             # JavaScript modular
+│   ├── core/       # Cliente API y utilidades core (PROTEGIDO) - 19 archivos
+│   │   ├── api.js  # Cliente API centralizado (OBLIGATORIO)
+│   │   ├── auth.js
+│   │   ├── components-loader.js
+│   │   ├── accessibility.js
+│   │   ├── autocomplete.js
+│   │   ├── button-state.js
+│   │   ├── error-helper.js
+│   │   ├── filter-manager.js
+│   │   ├── form-mobile-optimizer.js
+│   │   ├── global-search.js
+│   │   ├── icon-helper.js
+│   │   ├── image-mobile-optimizer.js
+│   │   ├── keyboard-shortcuts.js
+│   │   ├── mega-menu-init.js
+│   │   ├── performance-mobile.js
+│   │   ├── performance.js
+│   │   ├── pull-to-refresh.js
+│   │   ├── swipe-gestures.js
+│   │   ├── ui-initializer.js
+│   │   └── virtual-scroll.js
+│   ├── components/ # Componentes JS reutilizables (PROTEGIDO) - 14 componentes
+│   │   ├── data-table.js
+│   │   ├── modal.js
+│   │   ├── toast.js
+│   │   ├── empty-state.js
+│   │   ├── loading-spinner.js
+│   │   ├── form-validator.js
+│   │   ├── bottom-sheet.js
+│   │   ├── floating-action-button.js
+│   │   ├── skeleton-screen.js
+│   │   ├── tooltip.js
+│   │   ├── mega-menu.js
+│   │   ├── progress-bar.js
+│   │   ├── task-progress.js
+│   │   └── achievements.js
+│   ├── modules/    # Módulos por funcionalidad (EDITABLE) - NO EXISTE ACTUALMENTE
+│   │   # Nota: Los módulos están como archivos legacy en js/ raíz
+│   │   # Ejemplos: calendar.js, group-builder.js, staffing-requests.js
+│   └── [archivos legacy] # Archivos JS en raíz (a refactorizar a modules/)
+│       ├── calendar.js
+│       ├── group-builder.js
+│       ├── staffing-requests.js
+│       ├── staffing-proposals.js
+│       ├── assignments.js
+│       ├── approvals.js
+│       ├── disputes.js
+│       ├── work-orders.js
+│       ├── work-orders-calendar.js
+│       ├── work_orders_edit.js
+│       ├── work-order-daily-report.js
+│       ├── group-shift-report.js
+│       ├── employees.js
+│       ├── agency-workers.js
+│       ├── agency-company-links.js
+│       ├── time-clock.js
+│       ├── reports.js
+│       ├── ratings.js
+│       ├── settings.js
+│       ├── settings-notifications.js
+│       ├── import-export.js
+│       ├── onboarding.js
+│       ├── dashboard.js
+│       ├── layout.js
+│       ├── login.js
+│       ├── owner-base.js
+│       ├── owner-billing.js
+│       └── tests/
+│           └── components.test.js
+└── css/            # Estilos ITCSS
+    ├── 01-settings/  # Design tokens (PROTEGIDO)
+    │   └── theme.css
+    ├── 03-generic/   # Reset CSS (PROTEGIDO)
+    │   └── _reset.css
+    ├── 04-elements/  # Elementos HTML base (EDITABLE) - 5 archivos
+    │   ├── _typography.css
+    │   ├── _forms.css
+    │   ├── _tables.css
+    │   ├── _images.css
+    │   └── _accessibility.css
+    ├── 05-objects/   # Patrones de layout (EDITABLE) - 3 archivos
+    │   ├── _layout.css
+    │   ├── _dashboard-grid.css
+    │   └── _common.css
+    ├── 06-components/ # Componentes UI (EDITABLE) - 38 archivos
+    │   ├── _data-table.css
+    │   ├── _modal.css
+    │   ├── _toast.css
+    │   ├── _empty-state.css
+    │   ├── _loading-spinner.css
+    │   ├── _form-validator.css
+    │   ├── _buttons.css
+    │   ├── _cards.css
+    │   ├── _forms-modern.css
+    │   ├── _badges.css
+    │   └── ... (28 componentes más)
+    ├── 07-utilities/ # Utilidades CSS (EDITABLE) - 12 archivos
+    │   ├── _spacing.css
+    │   ├── _text.css
+    │   ├── _display.css
+    │   ├── _background.css
+    │   ├── _border.css
+    │   ├── _shadow.css
+    │   └── ... (6 utilidades más)
+    ├── pages/        # Estilos específicos por página (EDITABLE) - 13 archivos
+    │   ├── calendar.css
+    │   ├── work-orders.css
+    │   ├── group-builder.css
+    │   └── ... (10 páginas más)
+    └── main.css      # Archivo principal de importación
+```
+
+**Nota:** `frontend/js/modules/` NO existe actualmente. Los módulos están como archivos legacy en `frontend/js/` raíz y deberían refactorizarse a `modules/` en el futuro.
+
+---
+
+## Responsabilidades por Carpeta
+
+### Backend
+
+#### `backend/core/` - Middlewares y Servicios Core (PROTEGIDO)
+
+**Responsabilidad:** Middlewares y servicios compartidos críticos para el funcionamiento del sistema.
+
+**Archivos principales:**
+- `TenantMiddleware.php` - Extrae y valida tenant_id (OBLIGATORIO en todas las rutas)
+- `RBACMiddleware.php` - Verifica permisos por rol (OBLIGATORIO en todas las rutas)
+- `Auth.php` - Gestión de autenticación JWT
+- `Config.php` - Configuración del sistema
+- `AuditLogger.php` - Logging de auditoría
+- `FileStorage.php` - Almacenamiento de archivos (S3-compatible)
+- `MatchingService.php` - Servicio de matching de trabajadores
+- `NotificationService.php` - Servicio de notificaciones
+- `WebhookService.php` - Servicio de webhooks
+- `WorkLogGenerator.php` - Generación de work logs
+- `ConflictValidator.php` - Validación de conflictos de horarios
+- `Observability.php` - Observabilidad y métricas
+- `Performance.php` - Optimización de performance
+- `Security.php` - Utilidades de seguridad
+- `ApiKeyMiddleware.php` - Middleware para API keys
+
+**Regla:** NUNCA modificar sin plan explícito de refactorización o mejora.
+
+---
+
+#### `backend/api/` - Endpoints API REST (EDITABLE con plan)
+
+**Responsabilidad:** Endpoints API REST para todas las funcionalidades del sistema.
+
+**Estructura:** Un archivo por recurso (ej: `work_orders.php`, `staffing_requests.php`)
+
+**Reglas obligatorias:**
+- TODOS los endpoints DEBEN usar TenantMiddleware + RBACMiddleware
+- TODOS los endpoints DEBEN retornar JSON con formato estándar
+- TODOS los endpoints DEBEN usar prepared statements
+- TODOS los errores DEBEN retornar claves de traducción
+
+**Crear nuevos endpoints:** Según plan aprobado, siguiendo convenciones existentes.
+
+---
+
+#### `backend/helpers/` - Utilidades Reutilizables (EDITABLE)
+
+**Responsabilidad:** Funciones helper compartidas entre diferentes partes del sistema.
+
+**Archivos principales:**
+- `db_helper.php` - Helper de base de datos (fuerza tenant_id)
+- `i18n.php` - Helper de traducciones (función `t()`)
+- `env.php` - Helper de variables de entorno
+- `pdf_invoice.php` - Generación de PDFs de facturas
+- `pdf_work_order.php` - Generación de PDFs de órdenes de trabajo
+
+**Crear nuevos helpers:** Según necesidad, siguiendo convenciones.
+
+---
+
+#### `backend/jobs/` - Cron Jobs (EDITABLE con plan)
+
+**Responsabilidad:** Jobs programados que se ejecutan periódicamente.
+
+**Jobs existentes:**
+- `invoice_run.php` - Generación de facturas mensuales
+- `usage_snapshot.php` - Snapshot diario de empleados activos
+
+**Crear nuevos jobs:** Según plan aprobado, documentar frecuencia de ejecución.
+
+---
+
+#### `backend/db/` - Migraciones y Schemas (PROTEGIDO)
+
+**Responsabilidad:** Esquemas de base de datos y migraciones.
+
+**Archivos:**
+- `schema_v2.sql` - Esquema base completo (NUNCA modificar directamente)
+- `schema_work_orders.sql` - Esquema específico de work orders
+- `setup_database.php` - Script de configuración inicial
+
+**Migraciones nuevas:** Convención `YYYYMMDDHHMM__descripcion.sql`
+
+**Regla:** NUNCA modificar migraciones ya aplicadas en producción.
+
+---
+
+#### `backend/lang/` - Traducciones i18n (EDITABLE)
+
+**Responsabilidad:** Archivos de traducción multi-idioma.
+
+**Estructura:** `{locale}/{namespace}.php` (ej: `es/common.php`)
+
+**Idiomas soportados:** es (Español - 41 archivos), de (Alemán), fr (Francés), it (Italiano)
+
+**Agregar traducciones:** Según necesidad, mantener sincronizados todos los idiomas.
+
+---
+
+### Frontend
+
+#### `frontend/pages/` - Páginas HTML (EDITABLE con plan)
+
+**Responsabilidad:** Páginas HTML del sistema (una por vista).
+
+**Estructura:** 28 archivos HTML organizados por funcionalidad
+
+**Organización:**
+- `owner/` - Páginas Owner (SaaS backoffice)
+- Páginas Empresa/Temporera en raíz (organizadas por nombre)
+
+**Crear nuevas páginas:** Según plan aprobado, seguir convenciones de nomenclatura.
+
+---
+
+#### `frontend/components/` - Componentes HTML Reutilizables (PROTEGIDO)
+
+**Responsabilidad:** Componentes HTML compartidos entre páginas.
+
+**Componentes:**
+- `header.html` - Header del sistema
+- `sidebar.html` - Sidebar de navegación
+- `skip-links.html` - Skip links para accesibilidad
+
+**Regla:** Modificar solo con plan explícito.
+
+---
+
+#### `frontend/js/core/` - Cliente API y Utilidades Core (PROTEGIDO)
+
+**Responsabilidad:** Cliente API centralizado y utilidades core compartidas.
+
+**Archivos principales (19 archivos):**
+- `api.js` - Cliente API centralizado (OBLIGATORIO usar para todas las llamadas API)
+- `auth.js` - Gestión de autenticación
+- `components-loader.js` - Cargador de componentes
+- `accessibility.js` - Utilidades de accesibilidad
+- `autocomplete.js` - Autocompletado
+- `button-state.js` - Estados de botones
+- `error-helper.js` - Manejo de errores
+- `filter-manager.js` - Gestión de filtros
+- `form-mobile-optimizer.js` - Optimización móvil de formularios
+- `global-search.js` - Búsqueda global
+- `icon-helper.js` - Utilidades de iconos
+- `image-mobile-optimizer.js` - Optimización móvil de imágenes
+- `keyboard-shortcuts.js` - Atajos de teclado
+- `mega-menu-init.js` - Inicialización de mega menu
+- `performance-mobile.js` - Performance móvil
+- `performance.js` - Performance general
+- `pull-to-refresh.js` - Pull to refresh
+- `swipe-gestures.js` - Gestos de swipe
+- `ui-initializer.js` - Inicializador de UI
+- `virtual-scroll.js` - Virtual scrolling
+
+**Regla:** NUNCA modificar sin plan explícito, especialmente `api.js`.
+
+---
+
+#### `frontend/js/components/` - Componentes JS Reutilizables (PROTEGIDO)
+
+**Responsabilidad:** Componentes JavaScript reutilizables para toda la aplicación.
+
+**Componentes disponibles (14 componentes):**
+- `data-table.js` - Tabla de datos con paginación serverside (OBLIGATORIO para tablas)
+- `modal.js` - Modales reutilizables
+- `toast.js` - Notificaciones toast
+- `empty-state.js` - Estados vacíos
+- `loading-spinner.js` - Indicadores de carga
+- `form-validator.js` - Validación de formularios
+- `bottom-sheet.js` - Bottom sheets para móvil
+- `floating-action-button.js` - FAB para móvil
+- `skeleton-screen.js` - Skeleton loading
+- `tooltip.js` - Tooltips reutilizables
+- `mega-menu.js` - Mega menu
+- `progress-bar.js` - Barras de progreso
+- `task-progress.js` - Progreso de tareas
+- `achievements.js` - Logros y badges
+
+**Regla:** Extender sí, modificar solo con plan explícito.
+
+---
+
+#### `frontend/js/` (Raíz) - Archivos Legacy (A REFACTORIZAR)
+
+**Responsabilidad:** Archivos JS específicos por página que deberían estar en `modules/`.
+
+**Estado actual:** Archivos legacy en raíz (ej: `calendar.js`, `group-builder.js`, etc.)
+
+**Plan futuro:** Refactorizar a `frontend/js/modules/{funcionalidad}/` según plan de limpieza.
+
+**Nota:** `frontend/js/modules/` NO existe actualmente, pero es la estructura objetivo.
+
+---
+
+#### `frontend/css/01-settings/` - Design Tokens (PROTEGIDO)
+
+**Responsabilidad:** Variables CSS y design tokens del sistema.
+
+**Archivo principal:** `theme.css` - Variables CSS corporativas
+
+**Regla:** Solo agregar tokens nuevos, NUNCA modificar tokens existentes sin plan.
+
+---
+
+#### `frontend/css/06-components/` - Componentes UI (EDITABLE)
+
+**Responsabilidad:** Estilos de componentes UI reutilizables.
+
+**Estructura:** 38 archivos CSS, uno por componente
+
+**Crear nuevos estilos:** Según necesidad, seguir convención BEM y usar variables CSS.
+
+---
+
+#### `frontend/css/pages/` - Estilos Específicos por Página (EDITABLE)
+
+**Responsabilidad:** Estilos específicos para páginas individuales (mínimos).
+
+**Estructura:** 13 archivos CSS, uno por página cuando sea necesario
+
+**Regla:** Minimizar estilos específicos, preferir componentes reutilizables.
+
+---
+
+## Convenciones de Nomenclatura
+
+- **Archivos PHP:** `snake_case.php` (ej: `staffing_requests.php`, `tenant_middleware.php`)
+- **Archivos JS:** `kebab-case.js` (ej: `group-builder.js`, `calendar.js`)
+- **Clases PHP:** `PascalCase` (ej: `TenantMiddleware`, `MatchingService`)
+- **Funciones PHP:** `camelCase` (ej: `getTenantId()`, `validatePermissions()`)
+- **Variables:** `camelCase` en PHP y JS
+- **Tablas DB:** `snake_case` (ej: `work_groups`, `staffing_requests`)
+- **Archivos CSS:** `kebab-case.css` (ej: `data-table.css`, `modal.css`)
+
+---
+
+## Arquitectura
+
+### Backend
+- **Lenguaje:** PHP 8.x
+- **Base de Datos:** MySQL 5.7+ con mysqli (NO PDO)
+- **Arquitectura:** Por capas (API → Core → Models → DB)
+- **Seguridad:** JWT + refresh tokens, RBAC por rol, middleware obligatorio
+
+### Frontend
+- **HTML:** HTML5 semántico
+- **CSS:** Bootstrap 5 + ITCSS con design tokens
+- **JavaScript:** Modular, ES6+
+- **Arquitectura:** Por componentes reutilizables
+
+### Base de Datos
+- **Tipo:** MySQL 5.7+
+- **Multitenancy:** Single schema con `tenant_id` en todas las tablas de negocio
+- **Migraciones:** Convención `YYYYMMDDHHMM__descripcion.sql`
+
+---
+
+## Documentación Principal
+
+- `docs/Workee_kickoff_v_1.md` - Especificación oficial del proyecto
+- `.cursorrules` - Reglas de desarrollo completas (1291 líneas)
+- `README.md` - Guía de inicio rápido
+- `docs/TODO_ROADMAP_COMPLETO.md` - Roadmap y tareas pendientes
+- `ai-specs/specs/` - Especificaciones AI modulares
+
+---
+
+## Stack Tecnológico Completo
+
+### Backend
+- PHP 8.x
+- MySQL 5.7+ (mysqli)
+- JWT para autenticación
+- Sistema de traducciones i18n
+
+### Frontend
+- HTML5
+- Bootstrap 5
+- JavaScript ES6+ (modular)
+- CSS ITCSS con design tokens
+
+### Herramientas
+- Git para control de versiones
+- Composer (opcional, para dependencias futuras)
+
+---
+
+## Tipos de Tenant
+
+1. **Empresa:** Planifica, asigna, ejecuta, aprueba y reporta
+2. **Temporera:** Gestiona trabajadores, responde solicitudes, propone candidatos
+3. **Owner (SaaS):** Backoffice global (planes, precios, facturación, auditoría)
+
+---
+
+## Referencias
+
+- `specs/01-cursor-rules.mdc` - Reglas de desarrollo
+- `specs/05-frontend-standards.mdc` - Estándares frontend
+- `specs/06-backend-standards-php.mdc` - Estándares backend
+- `docs/Workee_kickoff_v_1.md` - Especificación completa

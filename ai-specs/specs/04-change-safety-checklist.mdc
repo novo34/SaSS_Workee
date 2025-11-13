@@ -1,0 +1,207 @@
+# Change Safety Checklist - Workee SaaS
+
+> **Versión:** 1.0  
+> **Última actualización:** 2025-01-XX  
+> **Propósito:** Checklist de seguridad antes de realizar cualquier cambio
+
+---
+
+## Checklist Pre-Flight (Antes de Modificar Código)
+
+Antes de modificar código, verificar TODOS los items:
+
+### Lectura de Specs (OBLIGATORIO)
+
+- [ ] Leído `specs/00-governance.mdc` - Reglas de fases
+- [ ] Leído `specs/01-cursor-rules.mdc` - Reglas de desarrollo
+- [ ] Leído `specs/02-project-guardrails.mdc` - Reglas de seguridad
+- [ ] Leído `specs/04-change-safety-checklist.mdc` - Este checklist
+- [ ] Leído spec específico según cambio (frontend/backend/testing)
+
+### Gobernanza
+
+- [ ] Plan aprobado en `ai-specs/changes/` con estado `[APPROVED]`
+- [ ] Comando iniciado con `develop-{plan-id}` (no `plan-*`)
+- [ ] Plan referencia archivos específicos a modificar
+- [ ] Plan incluye checklist de verificación pre/post
+
+### Verificación de Zonas
+
+- [ ] Verificado que archivos a modificar están en zona EDITABLE
+- [ ] Si archivos están en zona PROTEGIDA, plan específico aprobado
+- [ ] Si archivos están en zona PROHIBIDA, plan de refactorización aprobado
+- [ ] Justificación documentada para modificar zona protegida/prohibida
+
+### Archivos Afectados (OBLIGATORIO LISTAR)
+
+**Lista específica de archivos a modificar/crear/eliminar:**
+
+- `backend/api/example.php` - **Acción:** Modificar endpoint X, **Razón:** [justificación]
+- `frontend/pages/example.html` - **Acción:** Crear nueva página, **Razón:** [justificación]
+- `frontend/js/components/example.js` - **Acción:** Extender componente, **Razón:** [justificación]
+
+**Justificación requerida para cada archivo:**
+- ¿Por qué se modifica este archivo?
+- ¿Por qué no se puede reutilizar código existente?
+- ¿Por qué está en zona protegida si aplica?
+
+### Verificación de Componentes Existentes
+
+- [ ] Buscado componente existente en `frontend/js/components/`
+- [ ] Verificado que no se duplica funcionalidad existente
+- [ ] Si existe componente similar, justificado por qué no se reutiliza
+- [ ] Listado componentes reutilizados en este cambio
+
+### Multitenancy
+- [ ] Cambios incluyen `tenant_id` en queries si aplica
+- [ ] No se expone información cross-tenant
+- [ ] Middleware TenantMiddleware presente en rutas nuevas/modificadas
+- [ ] `tenant_id` obtenido desde middleware (nunca del cliente)
+
+### RBAC
+- [ ] Permisos verificados en backend (no solo frontend)
+- [ ] RBACMiddleware presente en rutas nuevas/modificadas
+- [ ] Roles y permisos documentados en plan
+- [ ] Verificación de permisos antes de ejecutar acciones
+
+### Base de Datos
+- [ ] Migraciones siguen convención `YYYYMMDDHHMM__descripcion.sql`
+- [ ] Migraciones incluyen rollback si aplica
+- [ ] No se modifica migración ya aplicada en producción
+- [ ] Foreign Keys definidas apropiadamente
+- [ ] Tablas nuevas incluyen `tenant_id` (excepto globales)
+
+### Código Existente
+- [ ] Búsqueda realizada para código similar existente
+- [ ] No se duplica funcionalidad existente
+- [ ] Componentes/utilidades existentes reutilizados
+- [ ] Dependencias verificadas antes de eliminar código
+- [ ] No se refactoriza sin solicitud explícita
+
+### Verificación de Reglas Específicas
+
+- [ ] Convenciones MVC PHP respetadas (`*_view.php`, `*_action.php`, `*_data.php` si aplica)
+- [ ] DataTables serverside usado para tablas grandes (>100 registros)
+- [ ] Un solo planificador/calendario (no múltiples instancias)
+- [ ] Comentarios y código en inglés (regla ES→EN)
+- [ ] Textos visibles al usuario con claves de traducción
+
+### Frontend
+
+- [ ] CSS usa variables CSS (no colores hardcodeados)
+- [ ] `theme.css` importado en páginas nuevas
+- [ ] Componente DataTable usado para tablas
+- [ ] Cliente API centralizado (`api.js`) usado para llamadas API
+- [ ] Diseño mobile-first verificado
+- [ ] Componentes reutilizables usados antes de crear nuevos
+- [ ] Componente de calendario existente reutilizado (no crear múltiples)
+
+### Backend
+- [ ] Prepared statements usados (no concatenación SQL)
+- [ ] Validación y sanitización de entradas
+- [ ] Respuestas JSON con formato estándar
+- [ ] Claves de traducción usadas (no texto hardcodeado)
+- [ ] Manejo de errores apropiado con códigos HTTP
+
+### Internacionalización
+- [ ] Todos los textos usan función `t()` con claves
+- [ ] Traducciones creadas en todos los idiomas soportados (es, de, fr, it)
+- [ ] No hay texto hardcodeado en código
+- [ ] Formato de claves: `namespace.modulo.clave`
+
+### Testing
+- [ ] Tests de aislamiento actualizados si aplica
+- [ ] Funcionalidad probada en móvil (iOS y Android)
+- [ ] Accesibilidad verificada (WCAG AA mínimo)
+- [ ] Navegación por teclado funcional
+
+### Archivos y Estructura
+- [ ] Sigue estructura de carpetas definida
+- [ ] Scripts no esenciales en `scripts/` (no en raíz)
+- [ ] Convenciones de nomenclatura respetadas
+
+---
+
+## Checklist Post-Flight (Después de Modificar Código)
+
+Después de modificar código, verificar:
+
+### Verificación de Código
+
+- [ ] Código sigue convenciones de nomenclatura
+- [ ] No hay código muerto o comentado obsoleto
+- [ ] Comentarios en inglés (regla ES→EN)
+- [ ] Nombres de variables/funciones en inglés
+- [ ] No hay duplicación de código
+
+### Run Tests and Self-Fix if Failing
+
+- [ ] Script de pruebas generado en ubicación correcta (`/tests/` o `/frontend/tests/`)
+- [ ] Script de pruebas ejecutado inmediatamente después de generar código
+- [ ] Todas las pruebas pasan (exit code 0)
+- [ ] Si pruebas fallaron, código corregido automáticamente hasta que pasen
+- [ ] Resultado documentado: **Tests Passed: Yes/No**
+- [ ] Mensaje de resultado incluido en diff o consola
+
+### Diff Explicado
+
+**Resumen de cambios realizados:**
+
+- **Archivo X:** [Descripción breve del cambio]
+- **Archivo Y:** [Descripción breve del cambio]
+
+**Justificación de cambios:**
+- ¿Por qué se hizo este cambio?
+- ¿Qué problema resuelve?
+- ¿Cómo se relaciona con el plan aprobado?
+
+### Pruebas Manuales
+
+- [ ] Funcionalidad probada manualmente en desarrollo
+- [ ] Probado en móvil (iOS y Android)
+- [ ] Probado en diferentes navegadores (Chrome, Firefox, Safari)
+- [ ] Probado con diferentes roles/permisos
+- [ ] Probado con diferentes tenants (multitenancy)
+
+### Actualización de Documentación
+
+- [ ] `api-spec.yml` actualizado si se agregaron/modificaron endpoints
+- [ ] Documentación en `docs/` actualizada si aplica
+- [ ] Comentarios en código actualizados si aplica
+- [ ] README actualizado si cambió estructura
+
+### Verificación de Trazabilidad
+
+- [ ] Commit incluye referencia al plan: `[develop-{plan-id}] ...`
+- [ ] Mensaje de commit en inglés (regla ES→EN)
+- [ ] Plan marcado como `[IMPLEMENTED]` si corresponde
+- [ ] PR incluye referencia al plan aprobado
+
+### Linter y Tests
+
+- [ ] Linter sin errores críticos
+- [ ] Tests pasando (OBLIGATORIO - exit code 0)
+- [ ] Script de pruebas generado y ejecutado
+- [ ] Autocorrección aplicada si tests fallaron
+- [ ] Resultado de tests documentado (✅/❌)
+
+---
+
+## Checklist Pre-PR
+
+Antes de crear Pull Request:
+
+- [ ] Todos los items del checklist pre-cambio verificados
+- [ ] Todos los items del checklist post-cambio verificados
+- [ ] Plan marcado como `[IMPLEMENTED]` si corresponde
+- [ ] PR incluye referencia al plan aprobado
+- [ ] Descripción del PR clara y completa
+
+---
+
+## Referencias
+
+- `specs/00-governance.mdc` - Reglas de fases
+- `specs/02-project-guardrails.mdc` - Reglas de seguridad
+- `specs/05-frontend-standards.mdc` - Estándares frontend
+- `specs/06-backend-standards-php.mdc` - Estándares backend

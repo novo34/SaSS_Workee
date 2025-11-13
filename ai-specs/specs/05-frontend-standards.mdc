@@ -1,0 +1,133 @@
+# Frontend Standards - Workee SaaS
+
+> **Versión:** 1.0  
+> **Última actualización:** 2025-01-XX  
+> **Referencia:** `docs/FRONTEND_ARCHITECTURE.md`, `.cursorrules` sección 16-18
+
+---
+
+## Arquitectura CSS (ITCSS)
+
+### Estructura Obligatoria
+
+```
+frontend/css/
+├── 01-settings/    # Design tokens (theme.css)
+├── 03-generic/     # Reset CSS
+├── 04-elements/    # Elementos HTML base
+├── 05-objects/     # Patrones de layout
+├── 06-components/  # Componentes UI
+└── 07-utilities/   # Utilidades CSS
+```
+
+### Design Tokens
+
+- ✅ **TODOS los valores DEBEN usar variables CSS**
+- ❌ **NUNCA hardcodear colores, espaciados, sombras, transiciones**
+- **Variables definidas en:** `frontend/css/01-settings/theme.css`
+
+### Componentes CSS
+
+- **Convención BEM:** `.block__element--modifier`
+- **Archivos pequeños:** Máximo 300-400 líneas por archivo
+- **Un archivo por componente**
+
+---
+
+## Arquitectura JavaScript
+
+### Estructura Obligatoria
+
+```
+frontend/js/
+├── core/           # Cliente API, auth, utils
+├── components/     # Componentes reutilizables
+└── modules/        # Módulos por funcionalidad
+```
+
+### Componentes Obligatorios
+
+- **DataTable:** Todas las tablas DEBEN usar `data-table.js`
+- **Modal:** Modales reutilizables con `modal.js`
+- **Toast:** Notificaciones con `toast.js`
+- **EmptyState:** Estados vacíos con `empty-state.js`
+- **LoadingSpinner:** Indicadores de carga con `loading-spinner.js`
+- **FormValidator:** Validación de formularios con `form-validator.js`
+
+### Cliente API
+
+- ✅ **OBLIGATORIO usar** `frontend/js/core/api.js` para TODAS las llamadas API
+- ❌ **NUNCA usar `fetch()` directamente**
+- **Características:** Autenticación automática, manejo de errores global, traducción automática
+
+---
+
+## Mobile-First Obligatorio
+
+- ✅ **Todas las interfaces diseñadas primero para móvil**
+- ✅ **Botones mínimo 44x44px**
+- ✅ **Espaciado adecuado entre elementos** (mínimo 8px)
+- ✅ **Navegación hamburguesa en móvil**
+- ✅ **Bootstrap 5 responsive**
+
+---
+
+## Componentes Reutilizables
+
+**Antes de crear componente específico por página:**
+
+1. Buscar componente existente en `frontend/js/components/`
+2. Si existe, reutilizar o extender
+3. Si no existe, crear componente reutilizable
+4. Documentar props/parámetros del componente
+
+---
+
+## Ejemplos de Uso
+
+### Cliente API
+
+```javascript
+// ✅ CORRECTO
+const response = await API.get('/work-orders', { page: 1 });
+if (response && response.success) {
+    // Usar response.data
+}
+
+// ❌ INCORRECTO
+const response = await fetch('/api/v1/work-orders');
+```
+
+### DataTable
+
+```javascript
+const table = new DataTable(container, {
+    columns: [
+        { key: 'name', label: 'Nombre', sortable: true }
+    ],
+    fetchData: async (page, pageSize) => {
+        const response = await API.get('/endpoint', { page, page_size: pageSize });
+        return { data: response.data, total: response.total };
+    }
+});
+```
+
+### Toast
+
+```javascript
+// ✅ CORRECTO
+Toast.success(t('common.save_success'));
+Toast.error(t('errors.save_failed'));
+
+// ❌ INCORRECTO
+alert('Operación exitosa');
+```
+
+---
+
+## Referencias
+
+- `docs/FRONTEND_ARCHITECTURE.md` - Arquitectura frontend completa
+- `docs/CSS_ARCHITECTURE_GUIDE.md` - Guía de arquitectura CSS
+- `docs/DESIGN_TOKENS_GUIDE.md` - Guía de design tokens
+- `specs/01-cursor-rules.mdc` - Reglas de desarrollo

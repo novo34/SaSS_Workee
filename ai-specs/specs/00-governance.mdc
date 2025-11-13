@@ -1,0 +1,175 @@
+# Gobernanza AI-Specs - Workee SaaS
+
+> **Versión:** 1.0  
+> **Última actualización:** 2025-01-XX  
+> **Referencia:** `ai-specs/changes/BOOTSTRAP_AI_SPECS_PLAN.md`
+
+---
+
+## Fases de Trabajo
+
+### Fase `plan-*`
+
+**Comando:** `plan-{descripcion}` (ej: `plan-frontend-refactor`, `plan-api-v2`)
+
+**Reglas:**
+
+- ✅ **PERMITIDO:**
+  - Crear documentos Markdown en `ai-specs/changes/`
+  - Leer y analizar código existente
+  - Leer documentación (`docs/`, `.cursorrules`, `ai-specs/specs/`)
+  - Buscar código con herramientas de búsqueda
+  - Crear plan detallado con estructura, archivos afectados, pasos de implementación
+
+- ❌ **PROHIBIDO:**
+  - Modificar código fuente (`.php`, `.js`, `.html`, `.css`, `.sql`)
+  - Crear archivos de implementación
+  - Ejecutar migraciones
+  - Modificar configuración (`.env`, etc.)
+  - Ejecutar comandos que modifiquen el sistema
+
+**Objetivo:** Definir plan de cambio completo antes de implementar.
+
+**Salida esperada:** Archivo `ai-specs/changes/{ID}_{NOMBRE}_PLAN.md` con plan detallado.
+
+---
+
+### Fase `develop-*`
+
+**Comando:** `develop-{plan-id}` (ej: `develop-100-planner-v2`, `develop-200-backend-crm`)
+
+**Reglas:**
+
+- ✅ **PERMITIDO:**
+  - Modificar código según plan aprobado
+  - Crear archivos según plan aprobado
+  - Ejecutar migraciones según plan aprobado
+  - Modificar configuración según plan aprobado
+
+- ❌ **PROHIBIDO:**
+  - Desviarse del plan sin crear nuevo plan primero
+  - Modificar archivos no listados en el plan
+  - Implementar funcionalidad no descrita en el plan
+  - Saltarse pasos del plan
+
+**Requisito previo:** Plan aprobado en `ai-specs/changes/` con estado `[APPROVED]`.
+
+**Objetivo:** Implementar plan línea por línea.
+
+**Salida esperada:** Código implementado según plan, commits con referencia `[develop-{plan-id}]`.
+
+---
+
+## Automated Testing & Self-Correction
+
+### Regla Obligatoria
+
+Cada tarea `develop-*` DEBE incluir pruebas automáticas y autocorrección de fallos.
+
+### Proceso Obligatorio
+
+1. **Generar script de pruebas:**
+   - Crear script de pruebas (unit o integration) en `/tests/` o `/frontend/tests/` según el módulo
+   - Nombre del script: `<module>.test.php` (Backend) o `<module>.test.js` (Frontend)
+   - El script debe devolver exit code 0 si todas las pruebas pasan
+
+2. **Ejecutar pruebas inmediatamente:**
+   - Ejecutar el script de pruebas inmediatamente después de generar el código
+   - No continuar hasta que las pruebas pasen
+
+3. **Autocorrección automática:**
+   - Si alguna prueba falla, corregir el código automáticamente
+   - Reiterar correcciones hasta que todas las pruebas pasen
+   - No preguntar confirmación durante la corrección automática
+
+4. **Documentar resultado:**
+   - Documentar el resultado final de las pruebas (✅/❌) en el diff del PR o en la consola
+   - Incluir mensaje claro: "Tests Passed: Yes/No"
+
+### Tipos de Pruebas
+
+- **Backend:** PHPUnit o script `php test_runner.php`
+- **Frontend:** JS tests (Vitest, Jest o script local)
+
+### Simplicidad de Pruebas
+
+Las pruebas deben ser simples y enfocadas:
+- CRUD básico (crear, leer, actualizar, eliminar)
+- Validaciones de entrada
+- Render de componentes (Frontend)
+- Verificación de respuestas API (Backend)
+
+### Exit Code
+
+- Cada test debe devolver **exit code 0** si todo pasa
+- Si no pasa, el agente reitera cambios hasta lograr exit code 0
+
+### Excepciones
+
+- Si el plan explícitamente indica "sin tests" o "tests manuales solamente", documentar la razón
+- Tests de aislamiento multitenancy siempre obligatorios para endpoints API
+
+---
+
+## Flujo de Aprobación
+
+1. **Crear plan:** `plan-{descripcion}` → genera `ai-specs/changes/{ID}_{NOMBRE}_PLAN.md`
+2. **Revisar plan:** Verificar que no rompe reglas de `specs/02-project-guardrails.mdc`
+3. **Aprobar plan:** Marcar como `[APPROVED]` en el header del plan
+4. **Implementar:** `develop-{plan-id}` → seguir plan línea por línea
+
+---
+
+## Reglas de Trazabilidad
+
+- Cada cambio DEBE referenciar un plan aprobado
+- Cada plan DEBE listar archivos afectados
+- Cada plan DEBE incluir checklist de verificación pre/post
+- Commits DEBEN incluir referencia al plan: `[develop-100] Implementar...`
+
+---
+
+## Prohibiciones Absolutas
+
+- ❌ Modificar código sin plan aprobado (excepto correcciones menores documentadas)
+- ❌ Crear páginas top-level nuevas sin plan
+- ❌ Renombrar/eliminar archivos sin plan de limpieza
+- ❌ Duplicar componentes/utilidades existentes
+- ❌ Ignorar specs en `ai-specs/specs/`
+
+---
+
+## Prioridad de Especificaciones
+
+1. **Especificaciones AI-Specs** (`ai-specs/specs/`) - Máxima prioridad
+2. **Especificación oficial** (`docs/Workee_kickoff_v_1.md`) - Alta prioridad
+3. **Reglas de desarrollo** (`.cursorrules`) - Alta prioridad
+4. **Documentación** (`docs/`) - Referencia
+
+---
+
+## Ejemplos de Uso
+
+### Ejemplo 1: Crear Plan
+```
+Usuario: plan-frontend-refactor
+Claude: Crea plan en ai-specs/changes/100_FRONTEND_REFACTOR_PLAN.md
+        (NO modifica código)
+```
+
+### Ejemplo 2: Implementar Plan
+```
+Usuario: develop-100-frontend-refactor
+Claude: Lee plan ai-specs/changes/100_FRONTEND_REFACTOR_PLAN.md
+        Implementa según plan línea por línea
+        Commits con referencia [develop-100]
+```
+
+---
+
+## Referencias
+
+- `specs/02-project-guardrails.mdc` - Reglas de seguridad
+- `specs/04-change-safety-checklist.mdc` - Checklist de seguridad
+- `docs/Workee_kickoff_v_1.md` - Especificación oficial del proyecto
+- `.cursorrules` - Reglas de desarrollo completas

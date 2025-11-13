@@ -1,0 +1,238 @@
+# Project Guardrails - Workee SaaS
+
+> **Versión:** 1.0  
+> **Última actualización:** 2025-01-XX  
+> **Propósito:** Reglas de seguridad para NO romper el proyecto
+
+---
+
+## Reglas de Seguridad Absolutas
+
+### Multitenancy
+
+- ❌ **NUNCA permitir queries cross-tenant sin autorización explícita**
+- ❌ **NUNCA confiar en `tenant_id` del cliente** (siempre desde middleware)
+- ✅ **SIEMPRE validar `tenant_id` en cada request**
+- ✅ **SIEMPRE incluir `tenant_id` en WHERE de todas las queries**
+- ✅ **SIEMPRE usar TenantMiddleware** antes de cualquier query
+
+### RBAC
+
+- ❌ **NUNCA crear endpoints sin RBACMiddleware**
+- ❌ **NUNCA asumir permisos sin verificar en backend**
+- ✅ **SIEMPRE verificar permisos antes de ejecutar acciones**
+- ✅ **SIEMPRE usar RBACMiddleware** en todas las rutas API
+
+### Base de Datos
+
+- ❌ **NUNCA modificar migraciones ya aplicadas en producción**
+- ❌ **NUNCA crear tablas sin `tenant_id`** (excepto tablas globales)
+- ❌ **NUNCA hacer DELETE físico sin verificar dependencias**
+- ✅ **SIEMPRE usar Foreign Keys con ON DELETE apropiado**
+- ✅ **SIEMPRE seguir convención de migraciones:** `YYYYMMDDHHMM__descripcion.sql`
+
+### Código Existente
+
+- ❌ **NUNCA refactorizar sin solicitud explícita**
+- ❌ **NUNCA eliminar código sin verificar dependencias**
+- ❌ **NUNCA duplicar funcionalidad existente**
+- ✅ **SIEMPRE buscar código existente antes de crear nuevo**
+- ✅ **SIEMPRE reutilizar componentes/utilidades existentes**
+
+### Archivos y Estructura
+
+- ❌ **NUNCA crear páginas top-level nuevas sin plan aprobado**
+- ❌ **NUNCA renombrar/eliminar archivos sin plan de limpieza**
+- ❌ **NUNCA crear scripts en raíz o carpetas de ejecución** (usar `scripts/`)
+- ✅ **SIEMPRE seguir estructura de carpetas definida**
+- ✅ **SIEMPRE verificar zona** (EDITABLE/PROTEGIDO/PROHIBIDO) antes de modificar
+
+---
+
+## Zonas Editables vs Zonas Protegidas
+
+### Zonas Editables (Permitido Modificar con Plan Aprobado)
+
+- `frontend/pages/` - Páginas HTML (crear nuevas con plan)
+- `frontend/js/modules/` - Módulos JS por funcionalidad (si existe)
+- `frontend/css/pages/` - Estilos específicos por página
+- `frontend/css/06-components/` - Estilos de componentes UI nuevos
+- `frontend/css/07-utilities/` - Utilidades CSS nuevas
+- `backend/api/` - Endpoints API nuevos (con middlewares obligatorios)
+- `backend/helpers/` - Utilidades nuevas
+- `backend/lang/{locale}/` - Traducciones nuevas
+- `scripts/` - Scripts no esenciales (utilidad, dev, mantenimiento)
+
+**Regla:** Modificar según plan aprobado, seguir convenciones de nomenclatura.
+
+---
+
+### Zonas Protegidas (Requieren Plan Específico de Modificación)
+
+- `backend/core/` - Middlewares y servicios core
+  - **Solo modificar con plan explícito** de refactorización o mejora
+  - Ejemplos: TenantMiddleware.php, RBACMiddleware.php, Auth.php, Config.php
+  
+- `frontend/js/core/` - Cliente API y utilidades core
+  - **Solo modificar con plan explícito**
+  - `api.js` - Cliente API centralizado (OBLIGATORIO usar, modificar solo con plan)
+  - `auth.js`, `utils.js`, etc.
+  
+- `frontend/js/components/` - Componentes JS reutilizables
+  - **Extender sí, modificar solo con plan explícito**
+  - data-table.js, modal.js, toast.js, etc.
+  
+- `frontend/components/` - Componentes HTML reutilizables
+  - **Modificar solo con plan explícito**
+  - header.html, sidebar.html, skip-links.html
+  
+- `frontend/css/01-settings/theme.css` - Design tokens
+  - **Solo agregar tokens nuevos**
+  - **NUNCA modificar tokens existentes sin plan**
+  
+- `frontend/css/03-generic/` - Reset CSS
+  - **Modificar solo con plan explícito**
+  
+- `backend/db/schema_v2.sql` - Esquema base
+  - **NUNCA modificar directamente**
+  - **Solo migraciones nuevas:** `YYYYMMDDHHMM__descripcion.sql`
+  
+- `.cursorrules` - Reglas de desarrollo
+  - **Solo actualizar con plan explícito**
+  
+- `ai-specs/specs/` - Especificaciones AI
+  - **Solo actualizar con plan explícito**
+
+**Regla:** Requieren plan específico de modificación con justificación clara.
+
+---
+
+### Zonas Prohibidas (NUNCA Modificar Sin Plan de Refactorización Completo)
+
+- **Estructura raíz del proyecto** (carpetas principales)
+  - No crear nuevas carpetas top-level sin plan de arquitectura
+  
+- **Archivos de configuración críticos**
+  - `.env`, `.gitignore`, `composer.json` (si existe)
+  - Modificar solo con plan explícito y justificación
+  
+- **Migraciones ya aplicadas en producción**
+  - NUNCA modificar migraciones ya ejecutadas
+  - Crear nueva migración para cambios
+  
+- **Componentes core sin plan de refactorización explícito**
+  - TenantMiddleware, RBACMiddleware, API Client
+  - Modificar solo con plan completo de refactorización
+
+**Regla:** NUNCA modificar sin plan de refactorización completo y aprobado.
+
+---
+
+### Reglas de Modificación por Zona
+
+- ✅ **Zonas editables:** Modificar según plan aprobado, seguir convenciones
+- ⚠️ **Zonas protegidas:** Requieren plan específico de modificación con justificación
+- ❌ **Zonas prohibidas:** NUNCA modificar sin plan de refactorización completo
+
+### Verificación Obligatoria
+
+Antes de modificar cualquier archivo:
+1. Verificar en qué zona está el archivo
+2. Si es zona protegida/prohibida, verificar que existe plan aprobado
+3. Si no hay plan, crear plan primero (`plan-{descripcion}`)
+4. Justificar por qué se modifica zona protegida/prohibida
+
+### Frontend
+
+- ❌ **NUNCA hardcodear colores en CSS** (usar variables CSS)
+- ❌ **NUNCA crear componentes específicos por página sin intentar reutilizar**
+- ❌ **NUNCA hacer llamadas API directamente** (usar cliente centralizado)
+- ✅ **SIEMPRE importar `theme.css` en todas las páginas**
+- ✅ **SIEMPRE usar componente DataTable para tablas**
+- ✅ **SIEMPRE usar cliente API centralizado** (`frontend/js/core/api.js`)
+
+### Backend
+
+- ❌ **NUNCA usar PDO** (solo mysqli)
+- ❌ **NUNCA concatenar variables en SQL** (usar prepared statements)
+- ❌ **NUNCA retornar mensajes de error hardcodeados**
+- ✅ **SIEMPRE retornar claves de traducción en errores**
+- ✅ **SIEMPRE validar y sanitizar entradas**
+
+---
+
+## Checklist Pre-Cambio (OBLIGATORIO)
+
+Antes de cualquier cambio, verificar:
+
+### Gobernanza
+- [ ] Plan aprobado en `ai-specs/changes/` con estado `[APPROVED]`
+- [ ] Comando iniciado con `develop-{plan-id}` (no `plan-*`)
+- [ ] Plan referencia archivos específicos a modificar
+
+### Multitenancy
+- [ ] Cambios incluyen `tenant_id` en queries si aplica
+- [ ] No se expone información cross-tenant
+- [ ] Middleware TenantMiddleware presente en rutas nuevas/modificadas
+
+### RBAC
+- [ ] Permisos verificados en backend (no solo frontend)
+- [ ] RBACMiddleware presente en rutas nuevas/modificadas
+- [ ] Roles y permisos documentados en plan
+
+### Base de Datos
+- [ ] Migraciones siguen convención `YYYYMMDDHHMM__descripcion.sql`
+- [ ] Migraciones incluyen rollback si aplica
+- [ ] No se modifica migración ya aplicada en producción
+- [ ] Foreign Keys definidas apropiadamente
+
+### Código Existente
+- [ ] Búsqueda realizada para código similar existente
+- [ ] No se duplica funcionalidad existente
+- [ ] Componentes/utilidades existentes reutilizados
+- [ ] Dependencias verificadas antes de eliminar código
+
+### Frontend
+- [ ] CSS usa variables CSS (no colores hardcodeados)
+- [ ] `theme.css` importado en páginas nuevas
+- [ ] Componente DataTable usado para tablas
+- [ ] Cliente API centralizado usado para llamadas API
+- [ ] Diseño mobile-first verificado
+
+### Backend
+- [ ] Prepared statements usados (no concatenación SQL)
+- [ ] Validación y sanitización de entradas
+- [ ] Respuestas JSON con formato estándar
+- [ ] Claves de traducción usadas (no texto hardcodeado)
+
+### Internacionalización
+- [ ] Todos los textos usan función `t()` con claves
+- [ ] Traducciones creadas en todos los idiomas soportados
+- [ ] No hay texto hardcodeado en código
+
+### Testing
+- [ ] Tests de aislamiento actualizados si aplica
+- [ ] Funcionalidad probada en móvil
+- [ ] Accesibilidad verificada (WCAG AA mínimo)
+
+---
+
+## Checklist Post-Cambio
+
+Después de modificar código, verificar:
+
+- [ ] Código sigue convenciones de nomenclatura
+- [ ] No hay código muerto o comentado obsoleto
+- [ ] Documentación actualizada si aplica
+- [ ] Linter sin errores críticos
+- [ ] Funcionalidad probada manualmente
+- [ ] Commit incluye referencia al plan: `[develop-{plan-id}] ...`
+
+---
+
+## Referencias
+
+- `specs/00-governance.mdc` - Reglas de fases y gobernanza
+- `specs/04-change-safety-checklist.mdc` - Checklist detallado
+- `specs/07-privacy-multitenancy-rbac.mdc` - Reglas de multitenancy y RBAC
+- `docs/Workee_kickoff_v_1.md` - Especificación oficial

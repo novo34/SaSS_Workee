@@ -1,0 +1,133 @@
+# Backend Standards PHP - Workee SaaS
+
+> **Versión:** 1.0  
+> **Última actualización:** 2025-01-XX  
+> **Referencia:** `.cursorrules` secciones 4-15
+
+---
+
+## Stack Tecnológico
+
+- **PHP:** 8.x (requerido)
+- **Base de Datos:** MySQL 5.7+ con mysqli (NO PDO)
+- **Arquitectura:** Por capas (API → Core → Models → DB)
+
+---
+
+## Estructura de Carpetas
+
+```
+backend/
+├── core/           # Middlewares, servicios core
+├── api/            # Endpoints API REST
+├── models/         # Modelos de datos
+├── helpers/        # Utilidades reutilizables
+├── jobs/           # Cron jobs
+├── db/             # Migraciones y schemas
+└── lang/           # Traducciones i18n
+```
+
+---
+
+## Seguridad SQL
+
+### Prepared Statements Obligatorios
+
+```php
+// ✅ CORRECTO
+$stmt = $conn->prepare("SELECT * FROM users WHERE tenant_id = ? AND id = ?");
+$stmt->bind_param("ii", $tenant_id, $user_id);
+$stmt->execute();
+$result = $stmt->get_result();
+
+// ❌ INCORRECTO
+$query = "SELECT * FROM users WHERE tenant_id = $tenant_id AND id = $user_id";
+$result = $conn->query($query);
+```
+
+### Multitenancy Obligatorio
+
+- ✅ **TODAS las queries DEBEN incluir `tenant_id` en WHERE**
+- ❌ **NUNCA confiar en `tenant_id` del cliente**
+- ✅ **SIEMPRE obtener `tenant_id` desde TenantMiddleware**
+
+---
+
+## Respuestas API
+
+### Formato Estándar Obligatorio
+
+```php
+// ✅ CORRECTO
+return json_encode([
+    'success' => true,
+    'data' => $result,
+    'error' => null
+]);
+
+// ❌ INCORRECTO
+return json_encode($result);
+```
+
+### Manejo de Errores
+
+- ✅ **Retornar claves de traducción** (no mensajes hardcodeados)
+- ✅ **Códigos HTTP apropiados** (400, 401, 403, 404, 500)
+- **Formato:** `{"error": "validation.required", "error_params": {"field": "email"}}`
+
+---
+
+## Middlewares Obligatorios
+
+Todas las rutas API DEBEN usar:
+
+1. **TenantMiddleware:** Extrae y valida `tenant_id`
+2. **RBACMiddleware:** Verifica permisos por rol
+
+---
+
+## Internacionalización
+
+- ❌ **NUNCA hardcodear texto visible al usuario**
+- ✅ **SIEMPRE usar función `t()` con claves de traducción**
+- **Formato:** `namespace.modulo.clave` (ej: `common.save`)
+- **Ubicación:** `backend/lang/{locale}/{namespace}.php`
+
+---
+
+## Ejemplos de Uso
+
+### Query con Multitenancy
+
+```php
+// ✅ CORRECTO
+$stmt = $conn->prepare("SELECT * FROM work_groups WHERE tenant_id = ? AND id = ?");
+$stmt->bind_param("ii", $tenant_id, $group_id);
+$stmt->execute();
+
+// ❌ INCORRECTO
+$query = "SELECT * FROM work_groups WHERE id = $group_id";
+```
+
+### Respuesta de Error
+
+```php
+// ✅ CORRECTO
+return json_encode([
+    'success' => false,
+    'error' => t('validation.required', ['field' => 'email']),
+    'error_key' => 'validation.required',
+    'error_params' => ['field' => 'email']
+]);
+
+// ❌ INCORRECTO
+return json_encode(['error' => 'El campo email es requerido']);
+```
+
+---
+
+## Referencias
+
+- `.cursorrules` - Reglas completas de desarrollo
+- `specs/02-project-guardrails.mdc` - Reglas de seguridad
+- `specs/07-privacy-multitenancy-rbac.mdc` - Multitenancy y RBAC
