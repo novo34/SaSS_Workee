@@ -1,0 +1,41 @@
+name: JEV acceptance CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main, chore/plt-010-ci-bootstrap]
+
+permissions:
+  contents: read
+
+jobs:
+  jev-acceptance:
+    name: jev-acceptance
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Check out exact source commit
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - name: Show PHP version
+        run: php --version
+      - name: Check syntax of every tracked PHP file
+        shell: bash
+        run: git ls-files -z -- '*.php' | xargs -0 -r -n 1 php -l
+      - name: Validate PLT-010 acceptance artifact when present
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          path = Path('.jev/acceptance/plt010-973c0e56.md')
+          if path.exists():
+              expected = '# PLT-010\n\nPrueba de escritura mediante GitHub App desde JEV staging.\n'
+              if path.read_bytes() != expected.encode('utf-8'):
+                  raise SystemExit('Unexpected PLT-010 acceptance artifact')
+              print('PLT-010 acceptance artifact: PASS')
+          else:
+              print('No PLT-010 acceptance artifact in this commit')
+          PY
